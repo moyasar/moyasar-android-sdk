@@ -10,6 +10,7 @@ import com.moyasar.android.sdk.payment.PaymentService
 import com.moyasar.android.sdk.payment.RetrofitFactory
 import com.moyasar.android.sdk.payment.models.CardPaymentSource
 import com.moyasar.android.sdk.payment.models.PaymentRequest
+import com.moyasar.android.sdk.ui.PaymentAuthorizationActivity
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -67,7 +68,7 @@ class PaymentSheetViewModel(
             paymentConfig.amount,
             paymentConfig.currency,
             paymentConfig.description,
-            "https://sdk.moyasar.com/payment/return",
+            PaymentAuthorizationActivity.RETURN_URL,
             CardPaymentSource(name.value!!, number.value!!, month.value!!, year.value!!, cvc.value!!)
         )
 
@@ -105,12 +106,36 @@ class PaymentSheetViewModel(
                 }
             }
         }
+    }
 
-        // If we get 4xx, show error to user and abort
-        // If we get 5xx, show error to user and abort
-        // If we get a network error show error and prompt to try again
-        // If we get a 201 with payment initiated, show 3D secure page
-        // If we get authorized or paid, then just close sheet and return completed with payment object
+    fun onPaymentAuthReturn(result: PaymentAuthorizationActivity.AuthResult) {
+        when (result) {
+            is PaymentAuthorizationActivity.AuthResult.Completed -> {
+                if (result.id != _payment.value?.id) {
+                    throw Exception("Got different ID from auth process ${result.id} instead of ${_payment.value?.id}")
+                }
+
+                _payment.value?.apply {
+                    status = result.status
+                    source["message"] = result.message
+                }
+
+                _status.value = Status.Finish
+            }
+            is PaymentAuthorizationActivity.AuthResult.Failed -> {
+                _payment.value = null
+                _status.value = Status.Idle
+                _uiStatus.value = UiStatus.RuntimeError(RuntimeException(result.error ?: "Unknown error"))
+            }
+            is PaymentAuthorizationActivity.AuthResult.Canceled -> {
+                _payment.value = null
+                _status.value = Status.Idle
+                _uiStatus.value = UiStatus.RuntimeError(RuntimeException("User canceled"))
+            }
+            is PaymentAuthorizationActivity.AuthResult.NoResult -> {
+                throw Exception("Got no result from auth activity")
+            }
+        }
     }
 
     internal enum class Status {
