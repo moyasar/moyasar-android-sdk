@@ -9,11 +9,11 @@ import androidx.activity.viewModels
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.whenStarted
 import com.moyasar.android.sdk.PaymentConfig
 import com.moyasar.android.sdk.R
 import com.moyasar.android.sdk.data.PaymentSheetViewModel
 import com.moyasar.android.sdk.databinding.ActivityPaymentSheetBinding
-import java.lang.IllegalArgumentException
 
 class PaymentSheetActivity : AppCompatActivity() {
     private val viewModel: PaymentSheetViewModel by viewModels {
@@ -52,6 +52,24 @@ class PaymentSheetActivity : AppCompatActivity() {
                     is PaymentSheetViewModel.UiStatus.RuntimeError -> {
                         Toast.makeText(this, "Error: ${it.e.message}.", Toast.LENGTH_LONG).show()
                     }
+                }
+            }
+        }
+
+        viewModel.status.observe(this) {
+            runOnUiThread {
+                when (it) {
+                    PaymentSheetViewModel.Status.PaymentAuth3dSecure -> {
+//                        whenStarted {
+//                            registerForActivityResult(PaymentAuthorizationActivityResultContract()) {
+//
+//                            }.launch(viewModel.payment.value?.source?.get("transaction_url"))
+//                        }
+                    }
+                    PaymentSheetViewModel.Status.Finish -> {
+
+                    }
+                    else -> {}
                 }
             }
         }

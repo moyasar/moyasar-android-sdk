@@ -1,5 +1,6 @@
 package com.moyasar.android.sdk.ui
 
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import androidx.activity.result.contract.ActivityResultContract
@@ -12,7 +13,12 @@ class PaymentAuthorizationActivityResultContract : ActivityResultContract<String
     }
 
     override fun parseResult(resultCode: Int, intent: Intent?): PaymentAuthorizationActivity.AuthResult {
-        TODO("Not yet implemented")
+        return when (resultCode) {
+            Activity.RESULT_OK ->
+                intent?.getParcelableExtra(EXTRA_RESULT) ?:
+                PaymentAuthorizationActivity.AuthResult.NoResult
+            else -> PaymentAuthorizationActivity.AuthResult.NoResult
+        }
     }
 
     companion object {

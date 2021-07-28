@@ -4,7 +4,7 @@ import com.google.gson.annotations.SerializedName
 
 data class Payment(
     val id: String,
-    val status: String,
+    var status: String,
     val amount: Int,
     val fee: Int,
     val currency: String,
@@ -20,7 +20,7 @@ data class Payment(
     @SerializedName("created_at") val createdAt: String,
     @SerializedName("updated_at") val updatedAt: String,
     val metadata: Map<String, String>,
-    val source: Map<String, String>
+    val source: MutableMap<String, String>
 ) {
     fun getCardTransactionUrl(): String {
         if (!source.containsKey("type") || !source["type"].equals("creditcard")) {
