@@ -33,6 +33,10 @@ class PaymentSheetActivity : AppCompatActivity() {
         DataBindingUtil.setContentView(this, R.layout.activity_payment_sheet)
     }
 
+    private val authActivity = registerForActivityResult(PaymentAuthorizationActivityResultContract()) {
+
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -57,20 +61,16 @@ class PaymentSheetActivity : AppCompatActivity() {
         }
 
         viewModel.status.observe(this) {
-            runOnUiThread {
-                when (it) {
-                    PaymentSheetViewModel.Status.PaymentAuth3dSecure -> {
-//                        whenStarted {
-//                            registerForActivityResult(PaymentAuthorizationActivityResultContract()) {
-//
-//                            }.launch(viewModel.payment.value?.source?.get("transaction_url"))
-//                        }
-                    }
-                    PaymentSheetViewModel.Status.Finish -> {
-
-                    }
-                    else -> {}
+            when (it) {
+                PaymentSheetViewModel.Status.PaymentAuth3dSecure -> {
+                    val url = viewModel.payment.value?.source?.get("transaction_url")
+                    Toast.makeText(this, "Transaction URL: ${url}.", Toast.LENGTH_LONG).show()
+                    authActivity.launch(url)
                 }
+                PaymentSheetViewModel.Status.Finish -> {
+
+                }
+                else -> {}
             }
         }
     }
