@@ -40,6 +40,7 @@
             android:id="@+id/creditCardNumberInput"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginTop="15dp"
             android:ems="10"
             android:hint="1234 5678 9101 1123"
             android:inputType="number"
@@ -61,43 +62,34 @@
 
         <EditText
             android:id="@+id/monthInput"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:ems="10"
-            android:hint="MM"
+            android:hint="MM / YY"
             android:inputType="textPersonName"
             android:text="@={viewModel.month}"
+            app:layout_constraintEnd_toStartOf="@+id/cvcInput"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/creditCardNumberInput" />
 
         <EditText
-            android:id="@+id/yearInput"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:ems="10"
-            android:hint="YY"
-            android:inputType="textPersonName"
-            android:text="@={viewModel.year}"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/monthInput" />
-
-        <EditText
             android:id="@+id/cvcInput"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:ems="10"
             android:hint="CVC"
             android:inputType="textPersonName"
             android:text="@={viewModel.cvc}"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/yearInput" />
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/monthInput"
+            app:layout_constraintTop_toBottomOf="@+id/creditCardNumberInput" />
 
         <Button
             android:id="@+id/button"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="Pay"
             android:onClick="@{() -> viewModel.submit()}"
+            android:text="Pay"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent" />

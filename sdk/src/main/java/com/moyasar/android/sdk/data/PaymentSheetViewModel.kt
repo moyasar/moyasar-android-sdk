@@ -49,11 +49,11 @@ class PaymentSheetViewModel(
     internal val payment: LiveData<Payment?> = _payment
     internal val errors: LiveData<String?> = _errors
 
-    val name = MutableLiveData("")
-    val number = MutableLiveData("")
-    val month = MutableLiveData("")
-    val year = MutableLiveData("")
-    val cvc = MutableLiveData("")
+    val name = MutableLiveData("Ali H")
+    val number = MutableLiveData("411111111111111")
+    val month = MutableLiveData("09 / 23")
+    val year = MutableLiveData("23")
+    val cvc = MutableLiveData("123")
 
     fun submit() {
         if (_status.value != Status.Idle) {
