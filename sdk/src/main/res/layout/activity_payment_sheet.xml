@@ -61,27 +61,14 @@
             app:layout_constraintTop_toBottomOf="@+id/nameOnCardInput" />
 
         <EditText
-            android:id="@+id/monthInput"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:ems="10"
-            android:hint="MM / YY"
-            android:inputType="textPersonName"
-            android:text="@={viewModel.month}"
-            app:layout_constraintEnd_toStartOf="@+id/cvcInput"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/creditCardNumberInput" />
-
-        <EditText
             android:id="@+id/cvcInput"
-            android:layout_width="0dp"
+            android:layout_width="150dp"
             android:layout_height="wrap_content"
             android:ems="10"
             android:hint="CVC"
             android:inputType="textPersonName"
             android:text="@={viewModel.cvc}"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/monthInput"
             app:layout_constraintTop_toBottomOf="@+id/creditCardNumberInput" />
 
         <Button
@@ -93,6 +80,32 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
+
+        <Spinner
+            android:id="@+id/spinner"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:dropDownWidth="match_parent"
+            android:entries="@array/months"
+            android:selectedItemPosition="@={viewModel.monthSelectedPos}"
+            android:spinnerMode="dropdown"
+            app:layout_constraintBottom_toBottomOf="@+id/cvcInput"
+            app:layout_constraintEnd_toStartOf="@+id/spinner2"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/creditCardNumberInput" />
+
+        <Spinner
+            android:id="@+id/spinner2"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:dropDownWidth="match_parent"
+            android:entries="@{viewModel.futureYears}"
+            android:selectedItemPosition="@={viewModel.yearSelectedPos}"
+            android:spinnerMode="dropdown"
+            app:layout_constraintBottom_toBottomOf="@+id/cvcInput"
+            app:layout_constraintEnd_toStartOf="@+id/cvcInput"
+            app:layout_constraintStart_toEndOf="@+id/spinner"
+            app:layout_constraintTop_toBottomOf="@+id/creditCardNumberInput" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

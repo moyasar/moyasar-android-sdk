@@ -1,5 +1,5 @@
 package com.moyasar.android.sdk
 
 fun interface PaymentSheetResultCallback {
-    fun onResult(result: String)
+    fun onResult(result: PaymentResult)
 }

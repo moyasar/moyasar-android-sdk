@@ -9,8 +9,8 @@ import androidx.activity.viewModels
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.whenStarted
 import com.moyasar.android.sdk.PaymentConfig
+import com.moyasar.android.sdk.PaymentResult
 import com.moyasar.android.sdk.R
 import com.moyasar.android.sdk.data.PaymentSheetViewModel
 import com.moyasar.android.sdk.databinding.ActivityPaymentSheetBinding
@@ -26,15 +26,15 @@ class PaymentSheetActivity : AppCompatActivity() {
     }
 
     private val config: PaymentConfig? by lazy {
-        intent.getParcelableExtra(PaymentSheetActivityResultContract.EXTRA_ARGS)
+        intent.getParcelableExtra(PaymentSheetContract.EXTRA_ARGS)
     }
 
     private val binding: ActivityPaymentSheetBinding by lazy {
         DataBindingUtil.setContentView(this, R.layout.activity_payment_sheet)
     }
 
-    private val authActivity = registerForActivityResult(PaymentAuthorizationActivityResultContract()) {
-
+    private val authActivity = registerForActivityResult(PaymentAuthContract()) {
+        viewModel.onPaymentAuthReturn(it)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -42,12 +42,6 @@ class PaymentSheetActivity : AppCompatActivity() {
 
         binding.lifecycleOwner = this
         binding.viewModel = viewModel
-
-        viewModel.payment.observe(this) {
-            runOnUiThread {
-                Toast.makeText(this, "Got payment with ID: ${it?.id}.", Toast.LENGTH_LONG).show()
-            }
-        }
 
         viewModel.uiStatus.observe(this) {
             runOnUiThread {
@@ -64,18 +58,20 @@ class PaymentSheetActivity : AppCompatActivity() {
             when (it) {
                 PaymentSheetViewModel.Status.PaymentAuth3dSecure -> {
                     val url = viewModel.payment.value?.source?.get("transaction_url")
-                    Toast.makeText(this, "Transaction URL: ${url}.", Toast.LENGTH_LONG).show()
                     authActivity.launch(url)
                 }
                 PaymentSheetViewModel.Status.Finish -> {
-
+                    val result = PaymentResult.Completed(viewModel.payment.value!!)
+                    setResult(Activity.RESULT_OK, Intent().putExtra(PaymentSheetContract.EXTRA_RESULT, result))
+                    finish()
                 }
                 else -> {}
             }
         }
     }
 
-    fun setPaymentResult() {
-        setResult(Activity.RESULT_OK, Intent().putExtra(PaymentSheetActivityResultContract.EXTRA_RESULT, "Hello from new Activity, " + config?.baseUrl))
+    override fun onBackPressed() {
+        setResult(Activity.RESULT_OK, Intent().putExtra(PaymentSheetContract.EXTRA_RESULT, PaymentResult.Canceled))
+        super.onBackPressed()
     }
 }

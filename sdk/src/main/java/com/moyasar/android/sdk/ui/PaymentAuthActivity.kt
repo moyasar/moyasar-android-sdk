@@ -11,11 +11,10 @@ import android.webkit.WebResourceError
 import android.webkit.WebResourceRequest
 import android.webkit.WebView
 import android.webkit.WebViewClient
-import android.widget.Toast
 import androidx.annotation.RequiresApi
 import kotlinx.parcelize.Parcelize
 
-class PaymentAuthorizationActivity : AppCompatActivity() {
+class PaymentAuthActivity : AppCompatActivity() {
     private val webViewClient by lazy {
         val activity = this
 
@@ -61,7 +60,7 @@ class PaymentAuthorizationActivity : AppCompatActivity() {
     }
 
     private val authUrl: String? by lazy {
-        intent.getStringExtra(PaymentAuthorizationActivityResultContract.EXTRA_AUTH_URL)
+        intent.getStringExtra(PaymentAuthContract.EXTRA_AUTH_URL)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -76,7 +75,7 @@ class PaymentAuthorizationActivity : AppCompatActivity() {
             setResult(
                 Activity.RESULT_OK,
                 Intent().putExtra(
-                    PaymentSheetActivityResultContract.EXTRA_RESULT,
+                    PaymentSheetContract.EXTRA_RESULT,
                     AuthResult.Failed("Missing Payment 3DS Auth URL.")
                 )
             )
@@ -92,7 +91,7 @@ class PaymentAuthorizationActivity : AppCompatActivity() {
 
         setResult(
             Activity.RESULT_OK,
-            Intent().putExtra(PaymentSheetActivityResultContract.EXTRA_RESULT, AuthResult.Canceled)
+            Intent().putExtra(PaymentSheetContract.EXTRA_RESULT, AuthResult.Canceled)
         )
 
         finish()
@@ -107,7 +106,7 @@ class PaymentAuthorizationActivity : AppCompatActivity() {
             setResult(
                 Activity.RESULT_OK,
                 Intent().putExtra(
-                    PaymentSheetActivityResultContract.EXTRA_RESULT,
+                    PaymentSheetContract.EXTRA_RESULT,
                     AuthResult.Completed(id, status, message)
                 )
             )
@@ -122,7 +121,7 @@ class PaymentAuthorizationActivity : AppCompatActivity() {
     fun onReceivedError(error: String?) {
         setResult(
             Activity.RESULT_OK,
-            Intent().putExtra(PaymentSheetActivityResultContract.EXTRA_RESULT, AuthResult.Failed(error))
+            Intent().putExtra(PaymentSheetContract.EXTRA_RESULT, AuthResult.Failed(error))
         )
         finish()
     }
@@ -136,9 +135,6 @@ class PaymentAuthorizationActivity : AppCompatActivity() {
 
         @Parcelize
         object Canceled : AuthResult()
-
-        @Parcelize
-        object NoResult : AuthResult()
     }
 
     companion object {

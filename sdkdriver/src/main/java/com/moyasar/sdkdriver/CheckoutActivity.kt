@@ -15,7 +15,7 @@ class CheckoutActivity : AppCompatActivity() {
             this,
             {
                 runOnUiThread {
-                    Toast.makeText(this, it, Toast.LENGTH_LONG ).show()
+                    Toast.makeText(this, "Status: $it", Toast.LENGTH_LONG ).show()
                 }
             },
             PaymentConfig(

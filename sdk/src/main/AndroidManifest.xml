@@ -4,7 +4,7 @@
 
     <application>
         <activity
-            android:name=".ui.PaymentAuthorizationActivity"
+            android:name=".ui.PaymentAuthActivity"
             android:exported="true" />
         <activity
             android:name=".ui.PaymentSheetActivity"
