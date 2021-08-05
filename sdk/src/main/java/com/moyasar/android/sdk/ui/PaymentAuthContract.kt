@@ -5,19 +5,19 @@ import android.content.Context
 import android.content.Intent
 import androidx.activity.result.contract.ActivityResultContract
 
-class PaymentAuthorizationActivityResultContract : ActivityResultContract<String, PaymentAuthorizationActivity.AuthResult>() {
+class PaymentAuthContract : ActivityResultContract<String, PaymentAuthActivity.AuthResult>() {
     override fun createIntent(context: Context, input: String?): Intent {
-        return Intent(context, PaymentAuthorizationActivity::class.java).apply {
+        return Intent(context, PaymentAuthActivity::class.java).apply {
             putExtra(EXTRA_AUTH_URL, input)
         }
     }
 
-    override fun parseResult(resultCode: Int, intent: Intent?): PaymentAuthorizationActivity.AuthResult {
+    override fun parseResult(resultCode: Int, intent: Intent?): PaymentAuthActivity.AuthResult {
         return when (resultCode) {
             Activity.RESULT_OK ->
                 intent?.getParcelableExtra(EXTRA_RESULT) ?:
-                PaymentAuthorizationActivity.AuthResult.NoResult
-            else -> PaymentAuthorizationActivity.AuthResult.NoResult
+                PaymentAuthActivity.AuthResult.Failed("No data was returned from PaymentAuthActivity")
+            else -> PaymentAuthActivity.AuthResult.Failed("Unexpected activity result code was returned from PaymentAuthActivity")
         }
     }
 

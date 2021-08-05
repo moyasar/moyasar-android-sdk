@@ -10,7 +10,7 @@ import com.moyasar.android.sdk.payment.PaymentService
 import com.moyasar.android.sdk.payment.RetrofitFactory
 import com.moyasar.android.sdk.payment.models.CardPaymentSource
 import com.moyasar.android.sdk.payment.models.PaymentRequest
-import com.moyasar.android.sdk.ui.PaymentAuthorizationActivity
+import com.moyasar.android.sdk.ui.PaymentAuthActivity
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -19,6 +19,7 @@ import retrofit2.HttpException
 import java.io.IOException
 import java.lang.Exception
 import java.lang.RuntimeException
+import java.util.*
 
 class PaymentSheetViewModel(
     private val paymentConfig: PaymentConfig
@@ -50,10 +51,21 @@ class PaymentSheetViewModel(
     internal val errors: LiveData<String?> = _errors
 
     val name = MutableLiveData("Ali H")
-    val number = MutableLiveData("411111111111111")
-    val month = MutableLiveData("09 / 23")
-    val year = MutableLiveData("23")
+    val number = MutableLiveData("4111111111111111")
     val cvc = MutableLiveData("123")
+    val monthSelectedPos = MutableLiveData(0)
+    val yearSelectedPos = MutableLiveData(3)
+
+    val futureYears: List<String> by lazy {
+        val year = Calendar.getInstance().get(Calendar.YEAR)
+        (year..(year + 15)).map { it.toString() }.toList()
+    }
+
+    val selectedMonth: String
+        get() = (monthSelectedPos.value!! + 1).toString()
+
+    val selectedYear: String
+        get() = futureYears[yearSelectedPos.value!!]
 
     fun submit() {
         if (_status.value != Status.Idle) {
@@ -68,8 +80,8 @@ class PaymentSheetViewModel(
             paymentConfig.amount,
             paymentConfig.currency,
             paymentConfig.description,
-            PaymentAuthorizationActivity.RETURN_URL,
-            CardPaymentSource(name.value!!, number.value!!, month.value!!, year.value!!, cvc.value!!)
+            PaymentAuthActivity.RETURN_URL,
+            CardPaymentSource(name.value!!, number.value!!, selectedMonth, selectedYear, cvc.value!!)
         )
 
         viewModelScope.launch(exceptionHandler) {
@@ -108,9 +120,9 @@ class PaymentSheetViewModel(
         }
     }
 
-    fun onPaymentAuthReturn(result: PaymentAuthorizationActivity.AuthResult) {
+    fun onPaymentAuthReturn(result: PaymentAuthActivity.AuthResult) {
         when (result) {
-            is PaymentAuthorizationActivity.AuthResult.Completed -> {
+            is PaymentAuthActivity.AuthResult.Completed -> {
                 if (result.id != _payment.value?.id) {
                     throw Exception("Got different ID from auth process ${result.id} instead of ${_payment.value?.id}")
                 }
@@ -122,18 +134,15 @@ class PaymentSheetViewModel(
 
                 _status.value = Status.Finish
             }
-            is PaymentAuthorizationActivity.AuthResult.Failed -> {
+            is PaymentAuthActivity.AuthResult.Failed -> {
                 _payment.value = null
                 _status.value = Status.Idle
                 _uiStatus.value = UiStatus.RuntimeError(RuntimeException(result.error ?: "Unknown error"))
             }
-            is PaymentAuthorizationActivity.AuthResult.Canceled -> {
+            is PaymentAuthActivity.AuthResult.Canceled -> {
                 _payment.value = null
                 _status.value = Status.Idle
                 _uiStatus.value = UiStatus.RuntimeError(RuntimeException("User canceled"))
-            }
-            is PaymentAuthorizationActivity.AuthResult.NoResult -> {
-                throw Exception("Got no result from auth activity")
             }
         }
     }
