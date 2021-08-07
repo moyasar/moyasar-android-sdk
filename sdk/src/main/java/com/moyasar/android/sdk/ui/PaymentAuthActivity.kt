@@ -55,6 +55,8 @@ class PaymentAuthActivity : AppCompatActivity() {
 
     private val webView by lazy {
         val wv = WebView(this)
+        wv.settings.domStorageEnabled = true
+        wv.settings.javaScriptEnabled = true
         wv.webViewClient = webViewClient
         wv
     }
@@ -75,7 +77,7 @@ class PaymentAuthActivity : AppCompatActivity() {
             setResult(
                 Activity.RESULT_OK,
                 Intent().putExtra(
-                    PaymentSheetContract.EXTRA_RESULT,
+                    PaymentAuthContract.EXTRA_RESULT,
                     AuthResult.Failed("Missing Payment 3DS Auth URL.")
                 )
             )
@@ -91,7 +93,7 @@ class PaymentAuthActivity : AppCompatActivity() {
 
         setResult(
             Activity.RESULT_OK,
-            Intent().putExtra(PaymentSheetContract.EXTRA_RESULT, AuthResult.Canceled)
+            Intent().putExtra(PaymentAuthContract.EXTRA_RESULT, AuthResult.Canceled)
         )
 
         finish()
@@ -106,7 +108,7 @@ class PaymentAuthActivity : AppCompatActivity() {
             setResult(
                 Activity.RESULT_OK,
                 Intent().putExtra(
-                    PaymentSheetContract.EXTRA_RESULT,
+                    PaymentAuthContract.EXTRA_RESULT,
                     AuthResult.Completed(id, status, message)
                 )
             )
@@ -121,7 +123,7 @@ class PaymentAuthActivity : AppCompatActivity() {
     fun onReceivedError(error: String?) {
         setResult(
             Activity.RESULT_OK,
-            Intent().putExtra(PaymentSheetContract.EXTRA_RESULT, AuthResult.Failed(error))
+            Intent().putExtra(PaymentAuthContract.EXTRA_RESULT, AuthResult.Failed(error))
         )
         finish()
     }

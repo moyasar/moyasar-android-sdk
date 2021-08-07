@@ -22,7 +22,7 @@ data class Payment(
     @SerializedName("callback_url") val callbackUrl: String,
     @SerializedName("created_at") val createdAt: String,
     @SerializedName("updated_at") val updatedAt: String,
-    val metadata: Map<String, String>,
+    val metadata: Map<String, String>?,
     val source: MutableMap<String, String>
 ) : Parcelable {
     fun getCardTransactionUrl(): String {
