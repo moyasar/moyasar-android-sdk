@@ -55,17 +55,19 @@ class PaymentSheetActivity : AppCompatActivity() {
         }
 
         viewModel.status.observe(this) {
-            when (it) {
-                PaymentSheetViewModel.Status.PaymentAuth3dSecure -> {
-                    val url = viewModel.payment.value?.source?.get("transaction_url")
-                    authActivity.launch(url)
+            runOnUiThread {
+                when (it) {
+                    PaymentSheetViewModel.Status.PaymentAuth3dSecure -> {
+                        val url = viewModel.payment.value?.source?.get("transaction_url")
+                        authActivity.launch(url)
+                    }
+                    PaymentSheetViewModel.Status.Finish -> {
+                        val result = PaymentResult.Completed(viewModel.payment.value!!)
+                        setResult(Activity.RESULT_OK, Intent().putExtra(PaymentSheetContract.EXTRA_RESULT, result))
+                        finish()
+                    }
+                    else -> {}
                 }
-                PaymentSheetViewModel.Status.Finish -> {
-                    val result = PaymentResult.Completed(viewModel.payment.value!!)
-                    setResult(Activity.RESULT_OK, Intent().putExtra(PaymentSheetContract.EXTRA_RESULT, result))
-                    finish()
-                }
-                else -> {}
             }
         }
     }

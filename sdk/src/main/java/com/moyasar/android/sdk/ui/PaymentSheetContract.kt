@@ -18,7 +18,7 @@ class PaymentSheetContract : ActivityResultContract<PaymentConfig, PaymentResult
     override fun parseResult(resultCode: Int, intent: Intent?): PaymentResult {
         return when (resultCode) {
             Activity.RESULT_OK ->
-                intent?.getParcelableExtra(PaymentAuthContract.EXTRA_RESULT) ?:
+                intent?.getParcelableExtra(EXTRA_RESULT) ?:
                 PaymentResult.Failed("No data was returned from PaymentSheetActivity")
             else -> PaymentResult.Failed("Unexpected activity result code was returned from PaymentSheetActivity")
         }
