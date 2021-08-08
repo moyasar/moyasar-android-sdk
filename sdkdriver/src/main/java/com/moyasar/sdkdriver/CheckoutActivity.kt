@@ -2,30 +2,25 @@ package com.moyasar.sdkdriver
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.widget.Toast
-import com.moyasar.android.sdk.PaymentConfig
-import com.moyasar.android.sdk.PaymentSheet
+import android.widget.Button
+import androidx.databinding.DataBindingUtil
+import androidx.activity.viewModels
+import com.moyasar.sdkdriver.databinding.ActivityCheckoutBinding
 
 class CheckoutActivity : AppCompatActivity() {
+    private val binding: ActivityCheckoutBinding by lazy {
+        DataBindingUtil.setContentView(this, R.layout.activity_checkout)
+    }
+
+    private val viewModel: CheckoutViewModel by viewModels()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_checkout)
 
-        val sheet = PaymentSheet(
-            this,
-            {
-                runOnUiThread {
-                    Toast.makeText(this, "Status: $it", Toast.LENGTH_LONG ).show()
-                }
-            },
-            PaymentConfig(
-                amount = 100,
-                currency = "SAR",
-                description = "Sample Android SDK Payment",
-                apiKey = "pk_test_vcFUHJDBwiyRu4Bd3hFuPpTnRPY4gp2ssYdNJMY3"
-            )
-        )
-
-        sheet.present()
+        val donateBtn = findViewById<Button>(R.id.button2)
+        donateBtn.setOnClickListener {
+            viewModel.beginDonation(this)
+        }
     }
 }
