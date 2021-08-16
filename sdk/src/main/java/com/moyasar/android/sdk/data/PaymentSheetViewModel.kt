@@ -8,39 +8,24 @@ import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.Transformations
 import com.moyasar.android.sdk.PaymentConfig
 import com.moyasar.android.sdk.PaymentResult
+import com.moyasar.android.sdk.exceptions.ApiException
 import com.moyasar.android.sdk.payment.models.Payment
 import com.moyasar.android.sdk.payment.PaymentService
-import com.moyasar.android.sdk.payment.RetrofitFactory
 import com.moyasar.android.sdk.payment.models.CardPaymentSource
 import com.moyasar.android.sdk.payment.models.PaymentRequest
 import com.moyasar.android.sdk.ui.PaymentAuthActivity
-import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import kotlinx.parcelize.Parcelize
-import retrofit2.HttpException
-import java.io.IOException
 import java.lang.Exception
-import java.lang.RuntimeException
 import java.util.*
 
 class PaymentSheetViewModel(
     private val paymentConfig: PaymentConfig
 ) : ViewModel() {
     private val _paymentService: PaymentService by lazy {
-        RetrofitFactory(paymentConfig.baseUrl, paymentConfig.apiKey)
-            .build()
-            .create(PaymentService::class.java)
-    }
-
-    private val exceptionHandler = CoroutineExceptionHandler { _, throwable ->
-        when (throwable) {
-            is IOException, is HttpException, is RuntimeException -> {
-                _status.value = Status.Failure(throwable)
-            }
-            else -> throw throwable
-        }
+        PaymentService(paymentConfig.apiKey, paymentConfig.baseUrl)
     }
 
     private val _status = MutableLiveData<Status>(Status.Reset)
@@ -50,7 +35,6 @@ class PaymentSheetViewModel(
 
     internal val status: LiveData<Status> = _status
     internal val payment: LiveData<Payment?> = _payment
-    internal val errors: LiveData<String?> = _errors
     internal val sheetResult: LiveData<PaymentResult?> = Transformations.distinctUntilChanged(_sheetResult)
 
     val name = MutableLiveData("Ali H")
@@ -85,12 +69,13 @@ class PaymentSheetViewModel(
             CardPaymentSource(name.value!!, number.value!!, selectedMonth, selectedYear, cvc.value!!)
         )
 
-        viewModelScope.launch(exceptionHandler) {
+        viewModelScope.launch {
             val result = withContext(Dispatchers.IO) {
                 try {
                     val response = _paymentService.create(request)
-                    if (response.isSuccessful) RequestResult.Success(response.body()) else
-                        RequestResult.Failure(HttpException(response))
+                    RequestResult.Success(response)
+                } catch (e: ApiException) {
+                    RequestResult.Failure(e)
                 } catch (e: Exception) {
                     RequestResult.Failure(e)
                 }
@@ -98,15 +83,14 @@ class PaymentSheetViewModel(
 
             when (result) {
                 is RequestResult.Success -> {
-                    val payment = result.payment!!
-                    _payment.value = payment
+                    _payment.value = result.payment
 
-                    when (payment.status.lowercase()) {
+                    when (result.payment.status.lowercase()) {
                         "initiated" -> {
-                            _status.value = Status.PaymentAuth3dSecure(payment.getCardTransactionUrl())
+                            _status.value = Status.PaymentAuth3dSecure(result.payment.getCardTransactionUrl())
                         }
                         else -> {
-                            _sheetResult.value = PaymentResult.Completed(payment)
+                            _sheetResult.value = PaymentResult.Completed(result.payment)
                         }
                     }
                 }
@@ -156,7 +140,7 @@ class PaymentSheetViewModel(
     }
 
     internal sealed class RequestResult {
-        data class Success(val payment: Payment?) : RequestResult()
+        data class Success(val payment: Payment) : RequestResult()
         data class Failure(val e: Exception) : RequestResult()
     }
 }

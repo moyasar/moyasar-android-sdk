@@ -1,3 +1,5 @@
 package com.moyasar.android.sdk.exceptions
 
-class ApiException(val type: String, val errors: List<String>?) : MoyasarException()
+import com.moyasar.android.sdk.payment.models.ErrorResponse
+
+class ApiException(val response: ErrorResponse) : MoyasarException()

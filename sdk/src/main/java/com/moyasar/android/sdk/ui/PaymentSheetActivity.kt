@@ -43,30 +43,27 @@ class PaymentSheetActivity : AppCompatActivity() {
         binding.lifecycleOwner = this
         binding.viewModel = viewModel
 
-        viewModel.uiStatus.observe(this) {
+        viewModel.status.observe(this) {
             runOnUiThread {
                 when (it) {
-                    is PaymentSheetViewModel.UiStatus.Ok -> {}
-                    is PaymentSheetViewModel.UiStatus.RuntimeError -> {
-                        Toast.makeText(this, "Error: ${it.e.message}.", Toast.LENGTH_LONG).show()
+                    is PaymentSheetViewModel.Status.PaymentAuth3dSecure -> {
+                        authActivity.launch(it.url)
                     }
+                    is PaymentSheetViewModel.Status.Failure -> {
+                        runOnUiThread {
+                            Toast.makeText(this, it.toString(), Toast.LENGTH_LONG).show()
+                        }
+                    }
+                    else -> {}
                 }
             }
         }
 
-        viewModel.status.observe(this) {
+        viewModel.sheetResult.observe(this) {
             runOnUiThread {
-                when (it) {
-                    PaymentSheetViewModel.Status.PaymentAuth3dSecure -> {
-                        val url = viewModel.payment.value?.source?.get("transaction_url")
-                        authActivity.launch(url)
-                    }
-                    PaymentSheetViewModel.Status.Finish -> {
-                        val result = PaymentResult.Completed(viewModel.payment.value!!)
-                        setResult(Activity.RESULT_OK, Intent().putExtra(PaymentSheetContract.EXTRA_RESULT, result))
-                        finish()
-                    }
-                    else -> {}
+                if (it != null) {
+                    setResult(Activity.RESULT_OK, Intent().putExtra(PaymentSheetContract.EXTRA_RESULT, it))
+                    finish()
                 }
             }
         }

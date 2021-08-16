@@ -17,9 +17,9 @@ class CheckoutViewModel : ViewModel() {
         amount = 100,
         currency = "SAR",
         description = "Sample Android SDK Payment",
-        apiKey = "pk_live_TH6rVePGHRwuJaAtoJ1LsRfeKYovZgC1uddh7NdX",
-//        apiKey = "pk_test_vcFUHJDBwiyRu4Bd3hFuPpTnRPY4gp2ssYdNJMY3",
-        baseUrl = "https://apimig.moyasar.com"
+//        apiKey = "pk_live_TH6rVePGHRwuJaAtoJ1LsRfeKYovZgC1uddh7NdX",
+        apiKey = "pk_test_vcFUHJDBwiyRu4Bd3hFuPpTnRPY4gp2ssYdNJMY3",
+        baseUrl = "https://api.moyasar.com"
     )
 
     fun registerForActivity(activity: CheckoutActivity) {
