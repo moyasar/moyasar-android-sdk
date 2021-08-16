@@ -45,6 +45,8 @@
             android:hint="1234 5678 9101 1123"
             android:inputType="number"
             android:text="@={viewModel.number}"
+            android:afterTextChanged="@{(e) -> viewModel.creditCardTextChanged(e)}"
+            android:digits="0123456789 "
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.448"
             app:layout_constraintStart_toStartOf="parent"
@@ -66,8 +68,10 @@
             android:layout_height="wrap_content"
             android:ems="10"
             android:hint="CVC"
-            android:inputType="textPersonName"
+            android:inputType="number"
             android:text="@={viewModel.cvc}"
+            android:digits="0123456789"
+            android:maxLength="4"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/creditCardNumberInput" />
 

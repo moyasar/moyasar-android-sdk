@@ -7,6 +7,7 @@ import android.util.Log
 import androidx.activity.result.contract.ActivityResultContract
 import com.moyasar.android.sdk.PaymentConfig
 import com.moyasar.android.sdk.PaymentResult
+import java.lang.Exception
 
 class PaymentSheetContract : ActivityResultContract<PaymentConfig, PaymentResult>() {
     override fun createIntent(context: Context, input: PaymentConfig?): Intent {
@@ -16,12 +17,8 @@ class PaymentSheetContract : ActivityResultContract<PaymentConfig, PaymentResult
     }
 
     override fun parseResult(resultCode: Int, intent: Intent?): PaymentResult {
-        return when (resultCode) {
-            Activity.RESULT_OK ->
-                intent?.getParcelableExtra(EXTRA_RESULT) ?:
-                PaymentResult.Failed("No data was returned from PaymentSheetActivity")
-            else -> PaymentResult.Failed("Unexpected activity result code was returned from PaymentSheetActivity")
-        }
+        return intent?.getParcelableExtra(EXTRA_RESULT) ?:
+        PaymentResult.Failed(Exception("No data was returned from PaymentSheetActivity"))
     }
 
     companion object {

@@ -1,6 +1,7 @@
 package com.moyasar.android.sdk.data
 
 import android.os.Parcelable
+import android.text.Editable
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -9,6 +10,7 @@ import androidx.lifecycle.Transformations
 import com.moyasar.android.sdk.PaymentConfig
 import com.moyasar.android.sdk.PaymentResult
 import com.moyasar.android.sdk.exceptions.ApiException
+import com.moyasar.android.sdk.exceptions.PaymentSheetException
 import com.moyasar.android.sdk.payment.models.Payment
 import com.moyasar.android.sdk.payment.PaymentService
 import com.moyasar.android.sdk.payment.models.CardPaymentSource
@@ -27,6 +29,8 @@ class PaymentSheetViewModel(
     private val _paymentService: PaymentService by lazy {
         PaymentService(paymentConfig.apiKey, paymentConfig.baseUrl)
     }
+
+    private var ccOnChangeLocked = false
 
     private val _status = MutableLiveData<Status>(Status.Reset)
     private val _payment = MutableLiveData<Payment?>(null)
@@ -54,6 +58,9 @@ class PaymentSheetViewModel(
     val selectedYear: String
         get() = futureYears[yearSelectedPos.value!!]
 
+    val cleanCardNumber: String
+        get() = number.value!!.replace(" ", "")
+
     fun submit() {
         if (_status.value != Status.Reset) {
             return
@@ -66,7 +73,7 @@ class PaymentSheetViewModel(
             paymentConfig.currency,
             paymentConfig.description,
             PaymentAuthActivity.RETURN_URL,
-            CardPaymentSource(name.value!!, number.value!!, selectedMonth, selectedYear, cvc.value!!)
+            CardPaymentSource(name.value!!, cleanCardNumber, selectedMonth, selectedYear, cvc.value!!)
         )
 
         viewModelScope.launch {
@@ -95,7 +102,11 @@ class PaymentSheetViewModel(
                     }
                 }
                 is RequestResult.Failure -> {
-                    _status.value = Status.Failure(result.e)
+                    if (result.e is ApiException && result.e.response.type == "invalid_request_error") {
+                        _status.value = Status.Failure(result.e)
+                    } else {
+                        _sheetResult.value = PaymentResult.Failed(result.e)
+                    }
                 }
             }
         }
@@ -117,12 +128,39 @@ class PaymentSheetViewModel(
                 _sheetResult.value = PaymentResult.Completed(payment)
             }
             is PaymentAuthActivity.AuthResult.Failed -> {
-                _sheetResult.value = PaymentResult.Failed(result.error)
+                _sheetResult.value = PaymentResult.Failed(PaymentSheetException(result.error))
             }
             is PaymentAuthActivity.AuthResult.Canceled -> {
                 _sheetResult.value = PaymentResult.Canceled
             }
         }
+    }
+
+    fun creditCardTextChanged(textEdit: Editable) {
+        if (ccOnChangeLocked) {
+            return
+        }
+
+        ccOnChangeLocked = true
+
+        val input = textEdit.toString().replace(" ", "")
+        val formatted = StringBuilder()
+
+        for ((current, char) in input.toCharArray().withIndex()) {
+            if (current > 15) {
+                break
+            }
+
+            if (current > 0 && current % 4 == 0) {
+                formatted.append(' ')
+            }
+
+            formatted.append(char)
+        }
+
+        textEdit.replace(0, textEdit.length, formatted.toString())
+
+        ccOnChangeLocked = false
     }
 
     internal sealed class Status : Parcelable {

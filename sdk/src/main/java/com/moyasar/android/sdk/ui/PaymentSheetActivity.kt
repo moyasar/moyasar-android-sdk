@@ -2,8 +2,12 @@ package com.moyasar.android.sdk.ui
 
 import android.app.Activity
 import android.content.Intent
+import android.graphics.Rect
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.text.method.TransformationMethod
+import android.view.View
+import android.widget.EditText
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.databinding.DataBindingUtil

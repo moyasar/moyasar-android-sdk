@@ -9,7 +9,7 @@ sealed class PaymentResult : Parcelable {
     data class Completed(val payment: Payment) : PaymentResult()
 
     @Parcelize
-    data class Failed(val error: String? = null) : PaymentResult()
+    data class Failed(val error: Throwable) : PaymentResult()
 
     @Parcelize
     object Canceled : PaymentResult()
