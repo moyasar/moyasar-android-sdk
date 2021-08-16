@@ -1,6 +1,5 @@
 package com.moyasar.android.sdk.ui
 
-import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import androidx.activity.result.contract.ActivityResultContract
@@ -13,12 +12,8 @@ class PaymentAuthContract : ActivityResultContract<String, PaymentAuthActivity.A
     }
 
     override fun parseResult(resultCode: Int, intent: Intent?): PaymentAuthActivity.AuthResult {
-        return when (resultCode) {
-            Activity.RESULT_OK ->
-                intent?.getParcelableExtra(EXTRA_RESULT) ?:
-                PaymentAuthActivity.AuthResult.Failed("No data was returned from PaymentAuthActivity")
-            else -> PaymentAuthActivity.AuthResult.Failed("Unexpected activity result code was returned from PaymentAuthActivity")
-        }
+        return intent?.getParcelableExtra(EXTRA_RESULT) ?:
+        PaymentAuthActivity.AuthResult.Failed("No data was returned from PaymentAuthActivity")
     }
 
     companion object {

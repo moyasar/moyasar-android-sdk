@@ -1,7 +1,7 @@
 package com.moyasar.android.sdk
 
 import android.os.Parcelable
-import com.moyasar.android.sdk.payment.Payment
+import com.moyasar.android.sdk.payment.models.Payment
 import kotlinx.parcelize.Parcelize
 
 sealed class PaymentResult : Parcelable {

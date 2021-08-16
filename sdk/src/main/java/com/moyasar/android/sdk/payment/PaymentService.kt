@@ -1,12 +1,18 @@
 package com.moyasar.android.sdk.payment
 
+import com.moyasar.android.sdk.payment.models.Payment
 import com.moyasar.android.sdk.payment.models.PaymentRequest
-import retrofit2.Call
-import retrofit2.Response
-import retrofit2.http.Body
-import retrofit2.http.POST
+import khttp.post
 
-interface PaymentService {
-    @POST("v1/payments")
-    suspend fun create(@Body request: PaymentRequest): Response<Payment>
+class PaymentService(private val baseUrl: String) {
+    suspend fun create(request: PaymentRequest): Payment {
+        val createUrl = getResourceUrl("v1/payments")
+        val response = post(createUrl, json = request)
+
+    }
+
+    private fun getResourceUrl(url: String): String {
+        return baseUrl.trimEnd('/').trimEnd() +
+            url.trimStart('/').trimStart()
+    }
 }
