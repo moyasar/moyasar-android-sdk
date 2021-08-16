@@ -1,5 +1,6 @@
 package com.moyasar.android.sdk.ui
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
 import android.net.Uri
@@ -14,6 +15,7 @@ import android.webkit.WebViewClient
 import androidx.annotation.RequiresApi
 import kotlinx.parcelize.Parcelize
 
+@SuppressLint("SetJavaScriptEnabled")
 class PaymentAuthActivity : AppCompatActivity() {
     private val webViewClient by lazy {
         val activity = this

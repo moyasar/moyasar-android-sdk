@@ -1,11 +1,14 @@
 package com.moyasar.android.sdk.data
 
+import android.os.Parcelable
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.Transformations
 import com.moyasar.android.sdk.PaymentConfig
-import com.moyasar.android.sdk.payment.Payment
+import com.moyasar.android.sdk.PaymentResult
+import com.moyasar.android.sdk.payment.models.Payment
 import com.moyasar.android.sdk.payment.PaymentService
 import com.moyasar.android.sdk.payment.RetrofitFactory
 import com.moyasar.android.sdk.payment.models.CardPaymentSource
@@ -15,6 +18,7 @@ import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import kotlinx.parcelize.Parcelize
 import retrofit2.HttpException
 import java.io.IOException
 import java.lang.Exception
@@ -33,22 +37,21 @@ class PaymentSheetViewModel(
     private val exceptionHandler = CoroutineExceptionHandler { _, throwable ->
         when (throwable) {
             is IOException, is HttpException, is RuntimeException -> {
-                _status.value = Status.Idle
-                _uiStatus.value = UiStatus.RuntimeError(throwable as Exception)
+                _status.value = Status.Failure(throwable)
             }
             else -> throw throwable
         }
     }
 
-    private val _uiStatus = MutableLiveData<UiStatus>(UiStatus.Ok)
-    private val _status = MutableLiveData(Status.Idle)
+    private val _status = MutableLiveData<Status>(Status.Reset)
     private val _payment = MutableLiveData<Payment?>(null)
     private val _errors = MutableLiveData<String?>(null)
+    private val _sheetResult = MutableLiveData<PaymentResult?>(null)
 
-    internal val uiStatus: LiveData<UiStatus> = _uiStatus
     internal val status: LiveData<Status> = _status
     internal val payment: LiveData<Payment?> = _payment
     internal val errors: LiveData<String?> = _errors
+    internal val sheetResult: LiveData<PaymentResult?> = Transformations.distinctUntilChanged(_sheetResult)
 
     val name = MutableLiveData("Ali H")
     val number = MutableLiveData("4111111111111111")
@@ -68,14 +71,12 @@ class PaymentSheetViewModel(
         get() = futureYears[yearSelectedPos.value!!]
 
     fun submit() {
-        if (_status.value != Status.Idle) {
-            // TODO: Show error, or just quit quietly
+        if (_status.value != Status.Reset) {
             return
         }
 
         _status.value = Status.SubmittingPayment
 
-        // Take params
         val request = PaymentRequest(
             paymentConfig.amount,
             paymentConfig.currency,
@@ -88,10 +89,8 @@ class PaymentSheetViewModel(
             val result = withContext(Dispatchers.IO) {
                 try {
                     val response = _paymentService.create(request)
-                    if (!response.isSuccessful) {
-                        throw HttpException(response)
-                    }
-                    RequestResult.Success(response.body())
+                    if (response.isSuccessful) RequestResult.Success(response.body()) else
+                        RequestResult.Failure(HttpException(response))
                 } catch (e: Exception) {
                     RequestResult.Failure(e)
                 }
@@ -103,18 +102,16 @@ class PaymentSheetViewModel(
                     _payment.value = payment
 
                     when (payment.status.lowercase()) {
-                        "initiated" -> _status.value = Status.PaymentAuth3dSecure
-                        "paid", "authorized" -> _status.value = Status.Finish
+                        "initiated" -> {
+                            _status.value = Status.PaymentAuth3dSecure(payment.getCardTransactionUrl())
+                        }
                         else -> {
-                            _status.value = Status.Idle
-                            _payment.value = null
-                            _uiStatus.value = UiStatus.RuntimeError(InvalidPaymentException(payment))
+                            _sheetResult.value = PaymentResult.Completed(payment)
                         }
                     }
                 }
                 is RequestResult.Failure -> {
-                    _status.value = Status.Idle
-                    _uiStatus.value = UiStatus.RuntimeError(result.e)
+                    _status.value = Status.Failure(result.e)
                 }
             }
         }
@@ -127,42 +124,39 @@ class PaymentSheetViewModel(
                     throw Exception("Got different ID from auth process ${result.id} instead of ${_payment.value?.id}")
                 }
 
-                _payment.value?.apply {
+                val payment = _payment.value!!
+                payment.apply {
                     status = result.status
                     source["message"] = result.message
                 }
 
-                _status.value = Status.Finish
+                _sheetResult.value = PaymentResult.Completed(payment)
             }
             is PaymentAuthActivity.AuthResult.Failed -> {
-                _payment.value = null
-                _status.value = Status.Idle
-                _uiStatus.value = UiStatus.RuntimeError(RuntimeException(result.error ?: "Unknown error"))
+                _sheetResult.value = PaymentResult.Failed(result.error)
             }
             is PaymentAuthActivity.AuthResult.Canceled -> {
-                _payment.value = null
-                _status.value = Status.Idle
-                _uiStatus.value = UiStatus.RuntimeError(RuntimeException("User canceled"))
+                _sheetResult.value = PaymentResult.Canceled
             }
         }
     }
 
-    internal enum class Status {
-        Idle,
-        SubmittingPayment,
-        PaymentAuth3dSecure,
-        Finish,
-    }
+    internal sealed class Status : Parcelable {
+        @Parcelize
+        object Reset : Status()
 
-    internal sealed class UiStatus {
-        object Ok : UiStatus()
-        data class RuntimeError(val e: Exception) : UiStatus()
+        @Parcelize
+        object SubmittingPayment : Status()
+
+        @Parcelize
+        data class PaymentAuth3dSecure(val url: String) : Status()
+
+        @Parcelize
+        data class Failure(val e: Throwable) : Status()
     }
 
     internal sealed class RequestResult {
         data class Success(val payment: Payment?) : RequestResult()
         data class Failure(val e: Exception) : RequestResult()
     }
-
-    internal class InvalidPaymentException(val payment: Payment) : RuntimeException()
 }

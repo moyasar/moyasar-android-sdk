@@ -18,9 +18,14 @@ class CheckoutActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_checkout)
 
+        binding.lifecycleOwner = this
+        binding.viewModel = viewModel
+
+        viewModel.registerForActivity(this)
+
         val donateBtn = findViewById<Button>(R.id.button2)
         donateBtn.setOnClickListener {
-            viewModel.beginDonation(this)
+            viewModel.beginDonation()
         }
     }
 }
