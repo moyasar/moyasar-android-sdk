@@ -21,6 +21,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import kotlinx.parcelize.Parcelize
 import java.lang.Exception
+import java.text.NumberFormat
 import java.util.*
 
 class PaymentSheetViewModel(
@@ -31,6 +32,7 @@ class PaymentSheetViewModel(
     }
 
     private var ccOnChangeLocked = false
+    private var ccExpiryOnChangeLocked = false
 
     private val _status = MutableLiveData<Status>(Status.Reset)
     private val _payment = MutableLiveData<Payment?>(null)
@@ -44,22 +46,29 @@ class PaymentSheetViewModel(
     val name = MutableLiveData("Ali H")
     val number = MutableLiveData("4111111111111111")
     val cvc = MutableLiveData("123")
-    val monthSelectedPos = MutableLiveData(0)
-    val yearSelectedPos = MutableLiveData(3)
-
-    val futureYears: List<String> by lazy {
-        val year = Calendar.getInstance().get(Calendar.YEAR)
-        (year..(year + 15)).map { it.toString() }.toList()
-    }
-
-    val selectedMonth: String
-        get() = (monthSelectedPos.value!! + 1).toString()
-
-    val selectedYear: String
-        get() = futureYears[yearSelectedPos.value!!]
+    val expiry = MutableLiveData("09 / 25")
 
     val cleanCardNumber: String
         get() = number.value!!.replace(" ", "")
+
+    val expiryMonth: String
+        get() = ""
+
+    val expiryYear: String
+        get() = ""
+
+    val currency: String
+        get() = paymentConfig.currency.uppercase()
+
+    val formattedAmount: String
+        get() {
+            val formatter = NumberFormat.getInstance()
+            formatter.currency = Currency.getInstance(paymentConfig.currency)
+            formatter.minimumFractionDigits = formatter.currency!!.defaultFractionDigits
+            return formatter.format(paymentConfig.amount / (Math.pow(10.0,
+                formatter.currency!!.defaultFractionDigits.toDouble()
+            )))
+        }
 
     fun submit() {
         if (_status.value != Status.Reset) {
@@ -73,7 +82,7 @@ class PaymentSheetViewModel(
             paymentConfig.currency,
             paymentConfig.description,
             PaymentAuthActivity.RETURN_URL,
-            CardPaymentSource(name.value!!, cleanCardNumber, selectedMonth, selectedYear, cvc.value!!)
+            CardPaymentSource(name.value!!, cleanCardNumber, expiryMonth, expiryYear, cvc.value!!)
         )
 
         viewModelScope.launch {
@@ -161,6 +170,36 @@ class PaymentSheetViewModel(
         textEdit.replace(0, textEdit.length, formatted.toString())
 
         ccOnChangeLocked = false
+    }
+
+    fun expiryChanged(textEdit: Editable) {
+        if (ccExpiryOnChangeLocked) {
+            return
+        }
+
+        ccExpiryOnChangeLocked = true
+
+        val input = textEdit.toString()
+            .replace(" ", "")
+            .replace("/", "")
+
+        val formatted = StringBuilder()
+
+        for ((current, char) in input.toCharArray().withIndex()) {
+            if (current > 5) {
+                break
+            }
+
+            if (current == 2) {
+                formatted.append(" / ")
+            }
+
+            formatted.append(char)
+        }
+
+        textEdit.replace(0, textEdit.length, formatted.toString())
+
+        ccExpiryOnChangeLocked = false
     }
 
     internal sealed class Status : Parcelable {
