@@ -10,106 +10,148 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:padding="15dp"
+        android:layout_margin="16dp"
         tools:context=".ui.PaymentSheetActivity">
 
-        <TextView
-            android:id="@+id/nameOnCardTextView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Name on Card"
-            android:textSize="16sp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <EditText
+        <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/nameOnCardInput"
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="15dp"
-            android:ems="10"
-            android:hint="Name on Card"
-            android:inputType="textPersonName"
-            android:text="@={viewModel.name}"
+            android:hint="@string/name_on_card_label"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.034"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/nameOnCardTextView" />
+            app:layout_constraintTop_toTopOf="parent">
 
-        <EditText
-            android:id="@+id/creditCardNumberInput"
-            android:layout_width="0dp"
+            <com.google.android.material.textfield.TextInputEditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@={viewModel.name}" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/cardNumberInput"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="15dp"
-            android:ems="10"
-            android:hint="1234 5678 9101 1123"
-            android:inputType="number"
-            android:text="@={viewModel.number}"
-            android:afterTextChanged="@{(e) -> viewModel.creditCardTextChanged(e)}"
-            android:digits="0123456789 "
+            android:hint="@string/credit_card_label"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.448"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/cardInfoTextView" />
+            app:layout_constraintTop_toBottomOf="@id/nameOnCardInput"
+            android:layout_marginTop="8dp">
 
-        <TextView
-            android:id="@+id/cardInfoTextView"
-            android:layout_width="wrap_content"
+            <com.google.android.material.textfield.TextInputEditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:afterTextChanged="@{(e) -> viewModel.creditCardTextChanged(e)}"
+                android:digits="0123456789 "
+                android:inputType="number"
+                android:text="@={viewModel.number}" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/cardExpiryDateInput"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:text="Card Info"
-            android:textSize="16sp"
+            android:hint="@string/expiration_date_label"
+            app:layout_constraintTop_toBottomOf="@id/cardNumberInput"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/nameOnCardInput" />
-
-        <EditText
-            android:id="@+id/cvcInput"
-            android:layout_width="150dp"
-            android:layout_height="wrap_content"
-            android:ems="10"
-            android:hint="CVC"
-            android:inputType="number"
-            android:text="@={viewModel.cvc}"
-            android:digits="0123456789"
-            android:maxLength="4"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/creditCardNumberInput" />
+            android:layout_marginTop="8dp">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:afterTextChanged="@{(e) -> viewModel.expiryChanged(e)}"
+                android:digits="0123456789 /"
+                android:inputType="number"
+                android:text="@={viewModel.expiry}" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/cardSecurityCodeInput"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/security_code_label"
+            app:layout_constraintTop_toBottomOf="@id/cardExpiryDateInput"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginTop="8dp">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:digits="0123456789 "
+                android:inputType="number"
+                android:maxLength="4"
+                android:text="@={viewModel.cvc}" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/totalsView"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toTopOf="@id/bottomSheetDivider">
+
+            <ImageView
+                android:id="@+id/networkImage"
+                android:src="@drawable/ic_visawhite"
+                android:layout_width="72dp"
+                android:layout_height="match_parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent" />
+
+            <TextView
+                android:id="@+id/totalsCurrency"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@{viewModel.currency}"
+                android:textColor="@color/light_blue_600"
+                android:textSize="16sp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginRight="8dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/totalsTextView"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/totalsTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@{viewModel.formattedAmount}"
+                android:textColor="@color/light_blue_600"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:layout_marginEnd="16dp"
+                android:layout_marginRight="16dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <View
+            android:id="@+id/bottomSheetDivider"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toTopOf="@id/payButton"
+            android:layout_marginTop="4dp"
+            android:layout_marginBottom="16dp"
+            style="@style/Divider" />
 
         <Button
-            android:id="@+id/button"
-            android:layout_width="0dp"
+            android:id="@+id/payButton"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:onClick="@{() -> viewModel.submit()}"
-            android:text="Pay"
+            android:text="@string/payBtnLabel"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
-
-        <Spinner
-            android:id="@+id/spinner"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:dropDownWidth="match_parent"
-            android:entries="@array/months"
-            android:selectedItemPosition="@={viewModel.monthSelectedPos}"
-            android:spinnerMode="dropdown"
-            app:layout_constraintBottom_toBottomOf="@+id/cvcInput"
-            app:layout_constraintEnd_toStartOf="@+id/spinner2"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/creditCardNumberInput" />
-
-        <Spinner
-            android:id="@+id/spinner2"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:dropDownWidth="match_parent"
-            android:entries="@{viewModel.futureYears}"
-            android:selectedItemPosition="@={viewModel.yearSelectedPos}"
-            android:spinnerMode="dropdown"
-            app:layout_constraintBottom_toBottomOf="@+id/cvcInput"
-            app:layout_constraintEnd_toStartOf="@+id/cvcInput"
-            app:layout_constraintStart_toEndOf="@+id/spinner"
-            app:layout_constraintTop_toBottomOf="@+id/creditCardNumberInput" />
-
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
