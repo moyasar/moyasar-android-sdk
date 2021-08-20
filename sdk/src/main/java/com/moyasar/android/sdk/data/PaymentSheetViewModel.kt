@@ -16,6 +16,10 @@ import com.moyasar.android.sdk.payment.PaymentService
 import com.moyasar.android.sdk.payment.models.CardPaymentSource
 import com.moyasar.android.sdk.payment.models.PaymentRequest
 import com.moyasar.android.sdk.ui.PaymentAuthActivity
+import com.moyasar.android.sdk.util.CreditCardNetwork
+import com.moyasar.android.sdk.util.getNetwork
+import com.moyasar.android.sdk.util.isValidLuhnNumber
+import com.moyasar.android.sdk.util.parseExpiry
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -36,7 +40,6 @@ class PaymentSheetViewModel(
 
     private val _status = MutableLiveData<Status>(Status.Reset)
     private val _payment = MutableLiveData<Payment?>(null)
-    private val _errors = MutableLiveData<String?>(null)
     private val _sheetResult = MutableLiveData<PaymentResult?>(null)
 
     internal val status: LiveData<Status> = _status
@@ -46,7 +49,29 @@ class PaymentSheetViewModel(
     val name = MutableLiveData("Ali H")
     val number = MutableLiveData("4111111111111111")
     val cvc = MutableLiveData("123")
-    val expiry = MutableLiveData("09 / 25")
+    val expiry = MutableLiveData("09 / 2025")
+
+    val nameValidator = LiveDataValidator(name).apply {
+        val nameRegex = Regex("")
+        addRule("Name is required") { it.isNullOrBlank() }
+        addRule("Both first and last names are required") { !nameRegex.matches(it ?: "") }
+    }
+
+    val numberValidator = LiveDataValidator(number).apply {
+        addRule("Credit card number is required") { it.isNullOrBlank() }
+        addRule("Credit card number is invalid") { isValidLuhnNumber(it ?: "") }
+        addRule("Unsupported credit card network") { getNetwork(it ?: "") == CreditCardNetwork.Unknown }
+    }
+
+    val cvcValidator = LiveDataValidator(cvc).apply {
+        addRule("Security code is required") { it.isNullOrBlank() }
+    }
+
+    val expiryValidator = LiveDataValidator(expiry).apply {
+        addRule("Expiry date is required") { it.isNullOrBlank() }
+        addRule("Invalid date") { parseExpiry(it ?: "") == null }
+        addRule("Expired card") { parseExpiry(it ?: "")?.expired() ?: false }
+    }
 
     val cleanCardNumber: String
         get() = number.value!!.replace(" ", "")
@@ -200,6 +225,22 @@ class PaymentSheetViewModel(
         textEdit.replace(0, textEdit.length, formatted.toString())
 
         ccExpiryOnChangeLocked = false
+    }
+
+    fun onNameInputLeave() {
+
+    }
+
+    fun onNumberInputLeave() {
+
+    }
+
+    fun onExpiryInputLeave() {
+
+    }
+
+    fun onCvcInputLeave() {
+
     }
 
     internal sealed class Status : Parcelable {
