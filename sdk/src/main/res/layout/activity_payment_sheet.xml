@@ -19,8 +19,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/name_on_card_label"
+            android:disableWhenLoading="@{viewModel.status}"
             app:errorEnabled="true"
-            app:errorContentDescription="@{viewModel.nameValidator.error}"
+            app:error="@{viewModel.nameValidator.error}"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -29,7 +30,8 @@
             <com.google.android.material.textfield.TextInputEditText
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@={viewModel.name}" />
+                android:text="@={viewModel.name}"
+                app:onFocusChangeListener="@{(v, hf) -> viewModel.nameValidator.onFieldFocusChange(v, hf)}"/>
 
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -38,8 +40,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/credit_card_label"
+            android:disableWhenLoading="@{viewModel.status}"
             app:errorEnabled="true"
-            app:errorContentDescription="@{viewModel.numberValidator.error}"
+            app:error="@{viewModel.numberValidator.error}"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/nameOnCardInput"
@@ -52,7 +55,8 @@
                 android:afterTextChanged="@{(e) -> viewModel.creditCardTextChanged(e)}"
                 android:digits="0123456789 "
                 android:inputType="number"
-                android:text="@={viewModel.number}" />
+                android:text="@={viewModel.number}"
+                app:onFocusChangeListener="@{(v, hf) -> viewModel.numberValidator.onFieldFocusChange(v, hf)}"/>
 
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -61,8 +65,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/expiration_date_label"
+            android:disableWhenLoading="@{viewModel.status}"
             app:errorEnabled="true"
-            app:errorContentDescription="@{viewModel.expiryValidator.error}"
+            app:error="@{viewModel.expiryValidator.error}"
             app:layout_constraintTop_toBottomOf="@id/cardNumberInput"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -75,7 +80,8 @@
                 android:afterTextChanged="@{(e) -> viewModel.expiryChanged(e)}"
                 android:digits="0123456789 /"
                 android:inputType="number"
-                android:text="@={viewModel.expiry}" />
+                android:text="@={viewModel.expiry}"
+                app:onFocusChangeListener="@{(v, hf) -> viewModel.expiryValidator.onFieldFocusChange(v, hf)}"/>
 
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -84,8 +90,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/security_code_label"
+            android:disableWhenLoading="@{viewModel.status}"
             app:errorEnabled="true"
-            app:errorContentDescription="@{viewModel.cvcValidator.error}"
+            app:error="@{viewModel.cvcValidator.error}"
             app:layout_constraintTop_toBottomOf="@id/cardExpiryDateInput"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -98,36 +105,39 @@
                 android:digits="0123456789 "
                 android:inputType="number"
                 android:maxLength="4"
-                android:text="@={viewModel.cvc}" />
+                android:text="@={viewModel.cvc}"
+                app:onFocusChangeListener="@{(v, hf) -> viewModel.cvcValidator.onFieldFocusChange(v, hf)}"/>
 
         </com.google.android.material.textfield.TextInputLayout>
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/totalsView"
             android:layout_width="match_parent"
-            android:layout_height="48dp"
-            app:layout_constraintStart_toStartOf="parent"
+            android:layout_height="52dp"
+            android:layout_marginHorizontal="16dp"
+            android:layout_marginBottom="8dp"
+            app:layout_constraintBottom_toTopOf="@id/bottomSheetDivider"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintBottom_toTopOf="@id/bottomSheetDivider">
+            app:layout_constraintStart_toStartOf="parent">
 
             <ImageView
                 android:id="@+id/networkImage"
-                android:src="@drawable/ic_visawhite"
-                android:layout_width="72dp"
+                android:layout_width="52dp"
                 android:layout_height="match_parent"
+                app:imageResource="@{viewModel.networkLogo}"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent" />
+                app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
                 android:id="@+id/totalsCurrency"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:layout_marginRight="8dp"
                 android:text="@{viewModel.currency}"
                 android:textColor="@color/light_blue_600"
                 android:textSize="16sp"
-                android:layout_marginEnd="8dp"
-                android:layout_marginRight="8dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@id/totalsTextView"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -140,8 +150,6 @@
                 android:textColor="@color/light_blue_600"
                 android:textSize="16sp"
                 android:textStyle="bold"
-                android:layout_marginEnd="16dp"
-                android:layout_marginRight="16dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -150,21 +158,33 @@
 
         <View
             android:id="@+id/bottomSheetDivider"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintBottom_toTopOf="@id/payButton"
-            android:layout_marginTop="8dp"
+            style="@style/Divider"
             android:layout_marginBottom="8dp"
-            style="@style/Divider" />
+            app:layout_constraintBottom_toTopOf="@id/payButton"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
 
         <Button
             android:id="@+id/payButton"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="52dp"
             android:onClick="@{() -> viewModel.submit()}"
             android:text="@string/payBtnLabel"
+            android:showWhenReset="@{viewModel.status}"
+            android:disableWhenLoading="@{viewModel.status}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
+
+        <com.google.android.material.progressindicator.CircularProgressIndicator
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:indeterminate="true"
+            android:showWhenLoading="@{viewModel.status}"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/bottomSheetDivider" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

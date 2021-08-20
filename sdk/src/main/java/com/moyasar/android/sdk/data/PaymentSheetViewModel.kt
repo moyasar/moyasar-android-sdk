@@ -2,13 +2,10 @@ package com.moyasar.android.sdk.data
 
 import android.os.Parcelable
 import android.text.Editable
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
-import androidx.lifecycle.Transformations
+import androidx.lifecycle.*
 import com.moyasar.android.sdk.PaymentConfig
 import com.moyasar.android.sdk.PaymentResult
+import com.moyasar.android.sdk.R
 import com.moyasar.android.sdk.exceptions.ApiException
 import com.moyasar.android.sdk.exceptions.PaymentSheetException
 import com.moyasar.android.sdk.payment.models.Payment
@@ -41,8 +38,9 @@ class PaymentSheetViewModel(
     private val _status = MutableLiveData<Status>(Status.Reset)
     private val _payment = MutableLiveData<Payment?>(null)
     private val _sheetResult = MutableLiveData<PaymentResult?>(null)
+    private val _isFormValid = MediatorLiveData<Boolean>()
 
-    internal val status: LiveData<Status> = _status
+    val status: LiveData<Status> = _status
     internal val payment: LiveData<Payment?> = _payment
     internal val sheetResult: LiveData<PaymentResult?> = Transformations.distinctUntilChanged(_sheetResult)
 
@@ -52,35 +50,59 @@ class PaymentSheetViewModel(
     val expiry = MutableLiveData("09 / 2025")
 
     val nameValidator = LiveDataValidator(name).apply {
-        val nameRegex = Regex("")
+        val latinRegex = Regex("^[a-zA-Z\\-\\s]+\$")
+        val nameRegex = Regex("^[a-zA-Z\\-]+\\s+?([a-zA-Z\\-]+\\s?)+\$")
+
         addRule("Name is required") { it.isNullOrBlank() }
+        addRule("Name should only contain English alphabet") { !latinRegex.matches(it ?: "") }
         addRule("Both first and last names are required") { !nameRegex.matches(it ?: "") }
     }
 
     val numberValidator = LiveDataValidator(number).apply {
         addRule("Credit card number is required") { it.isNullOrBlank() }
-        addRule("Credit card number is invalid") { isValidLuhnNumber(it ?: "") }
+        addRule("Credit card number is invalid") { !isValidLuhnNumber(it ?: "") }
         addRule("Unsupported credit card network") { getNetwork(it ?: "") == CreditCardNetwork.Unknown }
     }
 
     val cvcValidator = LiveDataValidator(cvc).apply {
         addRule("Security code is required") { it.isNullOrBlank() }
+        addRule("Invalid security code") {
+            when (getNetwork(number.value ?: "")) {
+                CreditCardNetwork.Amex -> (it?.length ?: 0) < 4
+                else -> (it?.length ?: 0) < 3
+            }
+        }
     }
 
     val expiryValidator = LiveDataValidator(expiry).apply {
         addRule("Expiry date is required") { it.isNullOrBlank() }
-        addRule("Invalid date") { parseExpiry(it ?: "") == null }
+        addRule("Invalid date") { parseExpiry(it ?: "")?.isInvalid() ?: true }
         addRule("Expired card") { parseExpiry(it ?: "")?.expired() ?: false }
+    }
+
+    fun validateForm(): Boolean {
+        val validators = listOf(nameValidator, numberValidator, cvcValidator, expiryValidator)
+        return validators.all { it.isValid() }.also { _isFormValid.value = it }
+    }
+
+    val networkLogo: LiveData<Int?> = Transformations.map(number) {
+        when (getNetwork(it)) {
+            CreditCardNetwork.Amex -> R.drawable.ic_amex_square
+            CreditCardNetwork.Mada -> R.drawable.ic_mada_square
+            CreditCardNetwork.Visa -> R.drawable.ic_visa_square
+            CreditCardNetwork.Mastercard -> R.drawable.ic_mastercard_square
+            CreditCardNetwork.Unknown -> null
+        }
     }
 
     val cleanCardNumber: String
         get() = number.value!!.replace(" ", "")
 
     val expiryMonth: String
-        get() = ""
+        get() = parseExpiry(expiry.value ?: "")?.month.toString()
 
     val expiryYear: String
-        get() = ""
+        get() = parseExpiry(expiry.value ?: "")?.year.toString()
 
     val currency: String
         get() = paymentConfig.currency.uppercase()
@@ -96,6 +118,10 @@ class PaymentSheetViewModel(
         }
 
     fun submit() {
+        if (!validateForm()) {
+            return;
+        }
+
         if (_status.value != Status.Reset) {
             return
         }
@@ -227,23 +253,7 @@ class PaymentSheetViewModel(
         ccExpiryOnChangeLocked = false
     }
 
-    fun onNameInputLeave() {
-
-    }
-
-    fun onNumberInputLeave() {
-
-    }
-
-    fun onExpiryInputLeave() {
-
-    }
-
-    fun onCvcInputLeave() {
-
-    }
-
-    internal sealed class Status : Parcelable {
+    sealed class Status : Parcelable {
         @Parcelize
         object Reset : Status()
 

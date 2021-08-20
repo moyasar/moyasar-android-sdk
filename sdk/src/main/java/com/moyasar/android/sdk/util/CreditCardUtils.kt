@@ -7,9 +7,10 @@ val visaRangeRegex = Regex("^4")
 val masterCardRangeRegex = Regex("^(?:5[1-5][0-9]{2}|222[1-9]|22[3-9][0-9]|2[3-6][0-9]{2}|27[01][0-9]|2720)")
 
 fun isValidLuhnNumber(number: String): Boolean {
-    var sum = number.replace(" ", "").last().digitToInt()
+    val cleanNumber = number.replace(" ", "")
+    var sum = cleanNumber.last().digitToInt()
 
-    for ((i, char) in number.toCharArray().withIndex()) {
+    for ((i, char) in cleanNumber.toCharArray().take(cleanNumber.length - 1).withIndex()) {
         var value = char.digitToInt()
         if (i % 2 == 0) {
             value *= 2
@@ -26,10 +27,10 @@ fun isValidLuhnNumber(number: String): Boolean {
 fun getNetwork(number: String): CreditCardNetwork {
     val number = number.replace(" ", "")
     return when {
-        amexRangeRegex.matches(number) -> CreditCardNetwork.Amex
+        amexRangeRegex.containsMatchIn(number) -> CreditCardNetwork.Amex
         inMadaRange(number) -> CreditCardNetwork.Mada
-        visaRangeRegex.matches(number) -> CreditCardNetwork.Visa
-        masterCardRangeRegex.matches(number) -> CreditCardNetwork.Mastercard
+        visaRangeRegex.containsMatchIn(number) -> CreditCardNetwork.Visa
+        masterCardRangeRegex.containsMatchIn(number) -> CreditCardNetwork.Mastercard
         else -> CreditCardNetwork.Unknown
     }
 }
@@ -38,11 +39,16 @@ fun parseExpiry(date: String): ExpiryDate? {
     val clean = date.replace(" ", "")
         .replace("/", "")
 
-    if (clean.length != 6) {
-        return null
+    return when (clean.length) {
+        4 -> {
+            val millennium = (Calendar.getInstance().get(Calendar.YEAR) / 100) * 100
+            ExpiryDate(clean.substring(0, 2).toInt(), millennium + clean.substring(2).toInt())
+        }
+        6 -> {
+            ExpiryDate(clean.substring(0, 2).toInt(), clean.substring(2).toInt())
+        }
+        else -> null
     }
-
-    return ExpiryDate(clean.substring(0, 2).toInt(), clean.substring(2).toInt())
 }
 
 fun isValidCvc(network: CreditCardNetwork, cvc: String): Boolean {
@@ -63,11 +69,15 @@ enum class CreditCardNetwork {
 
 data class ExpiryDate(val month: Int, val year: Int) {
     fun isValid(): Boolean {
-        return month in 1..12 && year > Calendar.getInstance().get(Calendar.YEAR)
+        return month in 1..12 && year > 1900
+    }
+
+    fun isInvalid(): Boolean {
+        return !isValid()
     }
 
     fun expired(): Boolean {
-        return Calendar.getInstance().before(expiryDate())
+        return Calendar.getInstance().after(expiryDate())
     }
 
     fun expiryDate(): Calendar {
