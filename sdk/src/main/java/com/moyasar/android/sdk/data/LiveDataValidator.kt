@@ -1,5 +1,6 @@
 package com.moyasar.android.sdk.data
 
+import android.view.View
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 
@@ -24,6 +25,13 @@ class LiveDataValidator(private val liveData: LiveData<String>) {
 
     fun addRule(message: String, predicate: Predicate) {
         rules.add(ValidationRule(predicate, message))
+    }
+
+    fun onFieldFocusChange(view: View, hasFocus: Boolean) {
+        when (hasFocus) {
+            true -> error.value = null
+            false -> isValid()
+        }
     }
 
     data class ValidationRule(val predicate: Predicate, val error: String)
