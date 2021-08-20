@@ -1,6 +1,5 @@
 package com.moyasar.android.sdk.util
 
-import java.time.LocalDate
 import java.util.*
 
 val amexRangeRegex = Regex("^3[47]")
@@ -35,12 +34,15 @@ fun getNetwork(number: String): CreditCardNetwork {
     }
 }
 
-fun parseExpiry(date: String): CreditCardDate? {
+fun parseExpiry(date: String): ExpiryDate? {
+    val clean = date.replace(" ", "")
+        .replace("/", "")
 
-}
+    if (clean.length != 6) {
+        return null
+    }
 
-fun isValidExpiry(date: String): Boolean {
-    val cleanDate = date.repla
+    return ExpiryDate(clean.substring(0, 2).toInt(), clean.substring(2).toInt())
 }
 
 fun isValidCvc(network: CreditCardNetwork, cvc: String): Boolean {
@@ -59,16 +61,18 @@ enum class CreditCardNetwork {
     Unknown
 }
 
-data class CreditCardDate(val month: Int, val year: Int) {
+data class ExpiryDate(val month: Int, val year: Int) {
     fun isValid(): Boolean {
         return month in 1..12 && year > Calendar.getInstance().get(Calendar.YEAR)
     }
 
     fun expired(): Boolean {
-        return Date().before(expiryDate())
+        return Calendar.getInstance().before(expiryDate())
     }
 
-    fun expiryDate(): Date {
-
+    fun expiryDate(): Calendar {
+        return Calendar.getInstance().apply {
+            set(year, month, 1)
+        }
     }
 }
