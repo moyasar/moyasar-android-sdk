@@ -24,7 +24,7 @@ class PaymentSheetActivity : AppCompatActivity() {
         object : ViewModelProvider.Factory {
             override fun <T : ViewModel?> create(modelClass: Class<T>): T {
                 @Suppress("UNCHECKED_CAST")
-                return PaymentSheetViewModel(config!!) as T
+                return PaymentSheetViewModel(config!!, resources) as T
             }
         }
     }
