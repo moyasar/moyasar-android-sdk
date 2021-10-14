@@ -11,11 +11,15 @@ android {
     buildToolsVersion "30.0.3"
 
     defaultConfig {
-        minSdkVersion 16
+        minSdkVersion 17
         targetSdkVersion 30
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles "consumer-rules.pro"
+
+        vectorDrawables {
+            useSupportLibrary true
+        }
     }
 
     buildTypes {

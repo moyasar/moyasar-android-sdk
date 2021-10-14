@@ -31,23 +31,25 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@={viewModel.name}"
-                app:onFocusChangeListener="@{(v, hf) -> viewModel.nameValidator.onFieldFocusChange(v, hf)}"/>
+                android:textDirection="ltr"
+                app:onFocusChangeListener="@{(v, hf) -> viewModel.nameValidator.onFieldFocusChange(v, hf)}"
+                tools:ignore="TouchTargetSizeCheck,SpeakableTextPresentCheck" />
 
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/cardNumberInput"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="@string/credit_card_label"
+            android:layout_marginTop="8dp"
             android:disableWhenLoading="@{viewModel.status}"
-            app:errorEnabled="true"
+            android:hint="@string/credit_card_label"
             app:error="@{viewModel.numberValidator.error}"
+            app:errorEnabled="true"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/nameOnCardInput"
-            android:layout_marginTop="8dp"
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+            app:layout_constraintTop_toBottomOf="@id/nameOnCardInput">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:layout_width="match_parent"
@@ -56,7 +58,9 @@
                 android:digits="0123456789 "
                 android:inputType="number"
                 android:text="@={viewModel.number}"
-                app:onFocusChangeListener="@{(v, hf) -> viewModel.numberValidator.onFieldFocusChange(v, hf)}"/>
+                android:textDirection="ltr"
+                app:onFocusChangeListener="@{(v, hf) -> viewModel.numberValidator.onFieldFocusChange(v, hf)}"
+                tools:ignore="TouchTargetSizeCheck,SpeakableTextPresentCheck" />
 
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -81,7 +85,9 @@
                 android:digits="0123456789 /"
                 android:inputType="number"
                 android:text="@={viewModel.expiry}"
-                app:onFocusChangeListener="@{(v, hf) -> viewModel.expiryValidator.onFieldFocusChange(v, hf)}"/>
+                android:textDirection="ltr"
+                app:onFocusChangeListener="@{(v, hf) -> viewModel.expiryValidator.onFieldFocusChange(v, hf)}"
+                tools:ignore="TouchTargetSizeCheck,SpeakableTextPresentCheck" />
 
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -106,70 +112,18 @@
                 android:inputType="number"
                 android:maxLength="4"
                 android:text="@={viewModel.cvc}"
-                app:onFocusChangeListener="@{(v, hf) -> viewModel.cvcValidator.onFieldFocusChange(v, hf)}"/>
+                android:textDirection="ltr"
+                app:onFocusChangeListener="@{(v, hf) -> viewModel.cvcValidator.onFieldFocusChange(v, hf)}"
+                tools:ignore="TouchTargetSizeCheck,SpeakableTextPresentCheck" />
 
         </com.google.android.material.textfield.TextInputLayout>
-
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/totalsView"
-            android:layout_width="match_parent"
-            android:layout_height="52dp"
-            android:layout_marginHorizontal="16dp"
-            android:layout_marginBottom="8dp"
-            app:layout_constraintBottom_toTopOf="@id/bottomSheetDivider"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent">
-
-            <ImageView
-                android:id="@+id/networkImage"
-                android:layout_width="52dp"
-                android:layout_height="match_parent"
-                app:imageResource="@{viewModel.networkLogo}"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <TextView
-                android:id="@+id/totalsCurrency"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="8dp"
-                android:layout_marginRight="8dp"
-                android:text="@{viewModel.currency}"
-                android:textColor="@color/light_blue_600"
-                android:textSize="16sp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@id/totalsTextView"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <TextView
-                android:id="@+id/totalsTextView"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@{viewModel.formattedAmount}"
-                android:textColor="@color/light_blue_600"
-                android:textSize="16sp"
-                android:textStyle="bold"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
-
-        <View
-            android:id="@+id/bottomSheetDivider"
-            style="@style/Divider"
-            android:layout_marginBottom="8dp"
-            app:layout_constraintBottom_toTopOf="@id/payButton"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
 
         <Button
             android:id="@+id/payButton"
             android:layout_width="match_parent"
             android:layout_height="52dp"
             android:onClick="@{() -> viewModel.submit()}"
-            android:text="@string/payBtnLabel"
+            android:text="@{viewModel.payLabel}"
             android:showWhenReset="@{viewModel.status}"
             android:disableWhenLoading="@{viewModel.status}"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -177,14 +131,15 @@
             app:layout_constraintStart_toStartOf="parent" />
 
         <com.google.android.material.progressindicator.CircularProgressIndicator
+            android:id="@+id/circularProgressIndicator"
             android:layout_width="32dp"
             android:layout_height="32dp"
+            android:layout_marginBottom="16dp"
             android:indeterminate="true"
             android:showWhenLoading="@{viewModel.status}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/bottomSheetDivider" />
+            app:layout_constraintStart_toStartOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

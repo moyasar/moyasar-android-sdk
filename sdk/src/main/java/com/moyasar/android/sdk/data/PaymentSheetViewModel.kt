@@ -1,5 +1,6 @@
 package com.moyasar.android.sdk.data
 
+import android.content.res.Resources
 import android.os.Parcelable
 import android.text.Editable
 import androidx.lifecycle.*
@@ -26,7 +27,8 @@ import java.text.NumberFormat
 import java.util.*
 
 class PaymentSheetViewModel(
-    private val paymentConfig: PaymentConfig
+    private val paymentConfig: PaymentConfig,
+    private val resources: Resources
 ) : ViewModel() {
     private val _paymentService: PaymentService by lazy {
         PaymentService(paymentConfig.apiKey, paymentConfig.baseUrl)
@@ -85,16 +87,6 @@ class PaymentSheetViewModel(
         return validators.all { it.isValid() }.also { _isFormValid.value = it }
     }
 
-    val networkLogo: LiveData<Int?> = Transformations.map(number) {
-        when (getNetwork(it)) {
-            CreditCardNetwork.Amex -> R.drawable.ic_amex_square
-            CreditCardNetwork.Mada -> R.drawable.ic_mada_square
-            CreditCardNetwork.Visa -> R.drawable.ic_visa_square
-            CreditCardNetwork.Mastercard -> R.drawable.ic_mastercard_square
-            CreditCardNetwork.Unknown -> null
-        }
-    }
-
     val cleanCardNumber: String
         get() = number.value!!.replace(" ", "")
 
@@ -104,17 +96,19 @@ class PaymentSheetViewModel(
     val expiryYear: String
         get() = parseExpiry(expiry.value ?: "")?.year.toString()
 
-    val currency: String
-        get() = paymentConfig.currency.uppercase()
-
-    val formattedAmount: String
+    val payLabel: String
         get() {
-            val formatter = NumberFormat.getInstance()
-            formatter.currency = Currency.getInstance(paymentConfig.currency)
-            formatter.minimumFractionDigits = formatter.currency!!.defaultFractionDigits
-            return formatter.format(paymentConfig.amount / (Math.pow(10.0,
+            val currency = Currency.getInstance(paymentConfig.currency)
+            val formatter = NumberFormat.getCurrencyInstance()
+            formatter.currency = currency
+            formatter.minimumFractionDigits = currency.defaultFractionDigits
+
+            val label = resources.getString(R.string.payBtnLabel)
+            val amount = formatter.format(paymentConfig.amount / (Math.pow(10.0,
                 formatter.currency!!.defaultFractionDigits.toDouble()
             )))
+
+            return "$label $amount"
         }
 
     fun submit() {
