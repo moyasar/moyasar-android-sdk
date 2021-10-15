@@ -20,13 +20,15 @@ import com.moyasar.android.sdk.data.PaymentSheetViewModel
 import com.moyasar.android.sdk.databinding.ActivityPaymentSheetBinding
 
 class PaymentSheetActivity : AppCompatActivity() {
-    private val viewModel: PaymentSheetViewModel by viewModels {
-        object : ViewModelProvider.Factory {
+    private val viewModel: PaymentSheetViewModel by lazy {
+        val factory = object : ViewModelProvider.Factory {
             override fun <T : ViewModel?> create(modelClass: Class<T>): T {
                 @Suppress("UNCHECKED_CAST")
                 return PaymentSheetViewModel(config!!, resources) as T
             }
         }
+
+        ViewModelProvider(this, factory).get(PaymentSheetViewModel::class.java)
     }
 
     private val config: PaymentConfig? by lazy {
