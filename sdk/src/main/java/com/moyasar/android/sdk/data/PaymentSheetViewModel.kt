@@ -18,9 +18,7 @@ import com.moyasar.android.sdk.util.CreditCardNetwork
 import com.moyasar.android.sdk.util.getNetwork
 import com.moyasar.android.sdk.util.isValidLuhnNumber
 import com.moyasar.android.sdk.util.parseExpiry
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.*
 import kotlinx.parcelize.Parcelize
 import java.lang.Exception
 import java.text.NumberFormat
@@ -130,7 +128,8 @@ class PaymentSheetViewModel(
             CardPaymentSource(name.value!!, cleanCardNumber, expiryMonth, expiryYear, cvc.value!!)
         )
 
-        viewModelScope.launch {
+        CoroutineScope(Job() + Dispatchers.Main)
+            .launch {
             val result = withContext(Dispatchers.IO) {
                 try {
                     val response = _paymentService.create(request)
