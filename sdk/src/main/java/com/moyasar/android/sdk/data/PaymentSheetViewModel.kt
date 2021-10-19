@@ -44,10 +44,10 @@ class PaymentSheetViewModel(
     internal val payment: LiveData<Payment?> = _payment
     internal val sheetResult: LiveData<PaymentResult?> = Transformations.distinctUntilChanged(_sheetResult)
 
-    val name = MutableLiveData("Ali H")
-    val number = MutableLiveData("4111111111111111")
-    val cvc = MutableLiveData("123")
-    val expiry = MutableLiveData("09 / 2025")
+    val name = MutableLiveData("")
+    val number = MutableLiveData("")
+    val cvc = MutableLiveData("")
+    val expiry = MutableLiveData("")
 
     val nameValidator = LiveDataValidator(name).apply {
         val latinRegex = Regex("^[a-zA-Z\\-\\s]+\$")
