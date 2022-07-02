@@ -1,0 +1,22 @@
+<resources>
+    <string-array name="months">
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+        <item>5</item>
+        <item>6</item>
+        <item>7</item>
+        <item>8</item>
+        <item>9</item>
+        <item>10</item>
+        <item>11</item>
+        <item>12</item>
+    </string-array>
+
+    <string name="credit_card_label">Card Number</string>
+    <string name="name_on_card_label">Name on Card</string>
+    <string name="expiration_date_label">Expiration Date</string>
+    <string name="security_code_label">CVC</string>
+    <string name="payBtnLabel">Pay</string>
+</resources>

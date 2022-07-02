@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+        <variable name="viewModel" type="com.moyasar.android.sdk.data.PaymentSheetViewModel" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginHorizontal="16dp"
+        android:layout_marginVertical="8dp"
+        tools:context=".ui.PaymentSheetActivity">
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/nameOnCardInput"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/name_on_card_label"
+            android:disableWhenLoading="@{viewModel.status}"
+            app:errorEnabled="true"
+            app:error="@{viewModel.nameValidator.error}"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@={viewModel.name}"
+                android:textDirection="ltr"
+                app:onFocusChangeListener="@{(v, hf) -> viewModel.nameValidator.onFieldFocusChange(v, hf)}"
+                tools:ignore="TouchTargetSizeCheck,SpeakableTextPresentCheck" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/cardNumberInput"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:disableWhenLoading="@{viewModel.status}"
+            android:hint="@string/credit_card_label"
+            app:error="@{viewModel.numberValidator.error}"
+            app:errorEnabled="true"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/nameOnCardInput">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:afterTextChanged="@{(e) -> viewModel.creditCardTextChanged(e)}"
+                android:digits="0123456789 "
+                android:inputType="number"
+                android:text="@={viewModel.number}"
+                android:textDirection="ltr"
+                app:onFocusChangeListener="@{(v, hf) -> viewModel.numberValidator.onFieldFocusChange(v, hf)}"
+                tools:ignore="TouchTargetSizeCheck,SpeakableTextPresentCheck" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/cardExpiryDateInput"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/expiration_date_label"
+            android:disableWhenLoading="@{viewModel.status}"
+            app:errorEnabled="true"
+            app:error="@{viewModel.expiryValidator.error}"
+            app:layout_constraintTop_toBottomOf="@id/cardNumberInput"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginTop="8dp"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:afterTextChanged="@{(e) -> viewModel.expiryChanged(e)}"
+                android:digits="0123456789 /"
+                android:inputType="number"
+                android:text="@={viewModel.expiry}"
+                android:textDirection="ltr"
+                app:onFocusChangeListener="@{(v, hf) -> viewModel.expiryValidator.onFieldFocusChange(v, hf)}"
+                tools:ignore="TouchTargetSizeCheck,SpeakableTextPresentCheck" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/cardSecurityCodeInput"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/security_code_label"
+            android:disableWhenLoading="@{viewModel.status}"
+            app:errorEnabled="true"
+            app:error="@{viewModel.cvcValidator.error}"
+            app:layout_constraintTop_toBottomOf="@id/cardExpiryDateInput"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginTop="8dp"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:digits="0123456789 "
+                android:inputType="number"
+                android:maxLength="4"
+                android:text="@={viewModel.cvc}"
+                android:textDirection="ltr"
+                app:onFocusChangeListener="@{(v, hf) -> viewModel.cvcValidator.onFieldFocusChange(v, hf)}"
+                tools:ignore="TouchTargetSizeCheck,SpeakableTextPresentCheck" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <Button
+            android:id="@+id/payButton"
+            android:layout_width="match_parent"
+            android:layout_height="52dp"
+            android:onClick="@{() -> viewModel.submit()}"
+            android:text="@{viewModel.payLabel}"
+            android:showWhenReset="@{viewModel.status}"
+            android:disableWhenLoading="@{viewModel.status}"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <com.google.android.material.progressindicator.CircularProgressIndicator
+            android:id="@+id/circularProgressIndicator"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:layout_marginBottom="16dp"
+            android:indeterminate="true"
+            android:showWhenLoading="@{viewModel.status}"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>
