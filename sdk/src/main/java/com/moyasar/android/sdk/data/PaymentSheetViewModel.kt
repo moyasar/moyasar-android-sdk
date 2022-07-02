@@ -155,11 +155,7 @@ class PaymentSheetViewModel(
                     }
                 }
                 is RequestResult.Failure -> {
-                    if (result.e is ApiException && result.e.response.type == "invalid_request_error") {
-                        _status.value = Status.Failure(result.e)
-                    } else {
-                        _sheetResult.value = PaymentResult.Failed(result.e)
-                    }
+                    _sheetResult.value = PaymentResult.Failed(result.e)
                 }
             }
         }
