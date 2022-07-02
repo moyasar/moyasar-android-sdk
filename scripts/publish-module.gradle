@@ -22,7 +22,7 @@ afterEvaluate {
                 // Mostly self-explanatory metadata
                 pom {
                     name = PUBLISH_ARTIFACT_ID
-                    description = 'Stream Chat official Android SDK'
+                    description = 'Moyasar official Android SDK'
                     url = 'https://moyasar.com'
                     licenses {
                         license {
