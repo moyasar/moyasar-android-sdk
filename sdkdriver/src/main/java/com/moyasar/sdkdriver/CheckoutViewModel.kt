@@ -19,7 +19,10 @@ class CheckoutViewModel : ViewModel() {
         description = "Sample Android SDK Payment",
 //        apiKey = "pk_live_TH6rVePGHRwuJaAtoJ1LsRfeKYovZgC1uddh7NdX",
         apiKey = "pk_test_vcFUHJDBwiyRu4Bd3hFuPpTnRPY4gp2ssYdNJMY3",
-        baseUrl = "https://api.moyasar.com"
+        baseUrl = "https://api.moyasar.com",
+        metadata = mapOf(
+            "order_id" to "order_123"
+        )
     )
 
     fun registerForActivity(activity: CheckoutActivity) {
