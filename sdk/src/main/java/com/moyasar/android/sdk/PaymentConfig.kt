@@ -9,10 +9,11 @@ data class PaymentConfig(
     val currency: String = "SAR",
     val description: String,
     val apiKey: String,
-    val baseUrl: String = "https://api.moyasar.com/"
+    val baseUrl: String = "https://api.moyasar.com/",
+    val metadata: Map<String, String>? = null,
 ) : Parcelable {
     fun validate(): Array<String> {
-        var errors = ArrayList<String>()
+        val errors = ArrayList<String>()
 
         if (amount < 100) {
             errors.add("Amount must be greater than or equal to 100")
@@ -32,6 +33,12 @@ data class PaymentConfig(
 
         if (! baseUrl.matches(Regex("^https:\\/\\/api(mig)?.moyasar.com(\\/)?\$"))) {
             errors.add("Invalid base URL")
+        }
+
+        metadata?.let {
+            if (it.count() > 50) {
+                errors.add("You cannot add more than 50 elements in metadata.")
+            }
         }
 
         return errors.toTypedArray()
