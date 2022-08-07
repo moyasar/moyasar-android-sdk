@@ -125,7 +125,8 @@ class PaymentSheetViewModel(
             paymentConfig.currency,
             paymentConfig.description,
             PaymentAuthActivity.RETURN_URL,
-            CardPaymentSource(name.value!!, cleanCardNumber, expiryMonth, expiryYear, cvc.value!!)
+            CardPaymentSource(name.value!!, cleanCardNumber, expiryMonth, expiryYear, cvc.value!!),
+            paymentConfig.metadata ?: HashMap()
         )
 
         CoroutineScope(Job() + Dispatchers.Main)
