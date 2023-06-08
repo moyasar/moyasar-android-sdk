@@ -1,15 +1,14 @@
 package com.moyasar.android.sdk.ui
 
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
-import android.graphics.Rect
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.text.method.TransformationMethod
 import android.view.View
-import android.widget.EditText
+import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
-import androidx.activity.viewModels
+import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.get
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
@@ -22,7 +21,7 @@ import com.moyasar.android.sdk.databinding.ActivityPaymentSheetBinding
 class PaymentSheetActivity : AppCompatActivity() {
     private val viewModel: PaymentSheetViewModel by lazy {
         val factory = object : ViewModelProvider.Factory {
-            override fun <T : ViewModel?> create(modelClass: Class<T>): T {
+            override fun <T : ViewModel> create(modelClass: Class<T>): T {
                 @Suppress("UNCHECKED_CAST")
                 return PaymentSheetViewModel(config!!, resources) as T
             }
@@ -32,6 +31,7 @@ class PaymentSheetActivity : AppCompatActivity() {
     }
 
     private val config: PaymentConfig? by lazy {
+        @Suppress("DEPRECATION")
         intent.getParcelableExtra(PaymentSheetContract.EXTRA_ARGS)
     }
 
@@ -48,6 +48,7 @@ class PaymentSheetActivity : AppCompatActivity() {
 
         binding.lifecycleOwner = this
         binding.viewModel = viewModel
+
 
         viewModel.status.observe(this) {
             runOnUiThread {
@@ -74,9 +75,16 @@ class PaymentSheetActivity : AppCompatActivity() {
             }
         }
     }
+    fun showSoftKeyboard(view: View) {
+        if (view.requestFocus()) {
+            val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+            imm.showSoftInput(view, InputMethodManager.SHOW_IMPLICIT)
+        }
+    }
 
     override fun onBackPressed() {
         setResult(Activity.RESULT_OK, Intent().putExtra(PaymentSheetContract.EXTRA_RESULT, PaymentResult.Canceled))
+        @Suppress("DEPRECATION")
         super.onBackPressed()
     }
 }

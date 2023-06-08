@@ -9,9 +9,9 @@ import com.moyasar.android.sdk.PaymentResult
 import com.moyasar.android.sdk.R
 import com.moyasar.android.sdk.exceptions.ApiException
 import com.moyasar.android.sdk.exceptions.PaymentSheetException
-import com.moyasar.android.sdk.payment.models.Payment
 import com.moyasar.android.sdk.payment.PaymentService
 import com.moyasar.android.sdk.payment.models.CardPaymentSource
+import com.moyasar.android.sdk.payment.models.Payment
 import com.moyasar.android.sdk.payment.models.PaymentRequest
 import com.moyasar.android.sdk.ui.PaymentAuthActivity
 import com.moyasar.android.sdk.util.CreditCardNetwork
@@ -20,7 +20,6 @@ import com.moyasar.android.sdk.util.isValidLuhnNumber
 import com.moyasar.android.sdk.util.parseExpiry
 import kotlinx.coroutines.*
 import kotlinx.parcelize.Parcelize
-import java.lang.Exception
 import java.text.NumberFormat
 import java.util.*
 
@@ -42,7 +41,9 @@ class PaymentSheetViewModel(
 
     val status: LiveData<Status> = _status
     internal val payment: LiveData<Payment?> = _payment
-    internal val sheetResult: LiveData<PaymentResult?> = Transformations.distinctUntilChanged(_sheetResult)
+    internal val sheetResult: LiveData<PaymentResult?> =
+//        liveData<PaymentResult?>(_sheetResult).distinctUntilChanged()//changed in lifecycle 2.6.0
+        Transformations.distinctUntilChanged(_sheetResult)
 
     val name = MutableLiveData("")
     val number = MutableLiveData("")
@@ -61,7 +62,11 @@ class PaymentSheetViewModel(
     val numberValidator = LiveDataValidator(number).apply {
         addRule("Credit card number is required") { it.isNullOrBlank() }
         addRule("Credit card number is invalid") { !isValidLuhnNumber(it ?: "") }
-        addRule("Unsupported credit card network") { getNetwork(it ?: "") == CreditCardNetwork.Unknown }
+        addRule("Unsupported credit card network") {
+            getNetwork(
+                it ?: ""
+            ) == CreditCardNetwork.Unknown
+        }
     }
 
     val cvcValidator = LiveDataValidator(cvc).apply {
@@ -102,11 +107,30 @@ class PaymentSheetViewModel(
             formatter.minimumFractionDigits = currency.defaultFractionDigits
 
             val label = resources.getString(R.string.payBtnLabel)
-            val amount = formatter.format(paymentConfig.amount / (Math.pow(10.0,
-                formatter.currency!!.defaultFractionDigits.toDouble()
-            )))
+
+            val amount = formatter.format(
+                100 / (Math.pow(
+                    10.0,
+                    formatter.currency!!.defaultFractionDigits.toDouble()
+                ))
+            )
 
             return "$label $amount"
+        }
+
+    val amountLabel: String
+        get() {
+            val currency = Currency.getInstance(paymentConfig.currency)
+            val formatter = NumberFormat.getCurrencyInstance()
+            formatter.currency = currency
+            formatter.minimumFractionDigits = currency.defaultFractionDigits
+
+            return formatter.format(
+                100 / (Math.pow(
+                    10.0,
+                    formatter.currency!!.defaultFractionDigits.toDouble()
+                ))
+            )
         }
 
     fun submit() {
@@ -131,35 +155,38 @@ class PaymentSheetViewModel(
 
         CoroutineScope(Job() + Dispatchers.Main)
             .launch {
-            val result = withContext(Dispatchers.IO) {
-                try {
-                    val response = _paymentService.create(request)
-                    RequestResult.Success(response)
-                } catch (e: ApiException) {
-                    RequestResult.Failure(e)
-                } catch (e: Exception) {
-                    RequestResult.Failure(e)
-                }
-            }
-
-            when (result) {
-                is RequestResult.Success -> {
-                    _payment.value = result.payment
-
-                    when (result.payment.status.lowercase()) {
-                        "initiated" -> {
-                            _status.value = Status.PaymentAuth3dSecure(result.payment.getCardTransactionUrl())
-                        }
-                        else -> {
-                            _sheetResult.value = PaymentResult.Completed(result.payment)
-                        }
+                val result = withContext(Dispatchers.IO) {
+                    try {
+                        val response = _paymentService.create(request)
+                        RequestResult.Success(response)
+                    } catch (e: ApiException) {
+                        RequestResult.Failure(e)
+                    } catch (e: Exception) {
+                        RequestResult.Failure(e)
                     }
                 }
-                is RequestResult.Failure -> {
-                    _sheetResult.value = PaymentResult.Failed(result.e)
+
+                when (result) {
+                    is RequestResult.Success -> {
+                        _payment.value = result.payment
+
+                        when (result.payment.status.lowercase()) {
+                            "initiated" -> {
+                                _status.value =
+                                    Status.PaymentAuth3dSecure(result.payment.getCardTransactionUrl())
+                            }
+
+                            else -> {
+                                _sheetResult.value = PaymentResult.Completed(result.payment)
+                            }
+                        }
+                    }
+
+                    is RequestResult.Failure -> {
+                        _sheetResult.value = PaymentResult.Failed(result.e)
+                    }
                 }
             }
-        }
     }
 
     fun onPaymentAuthReturn(result: PaymentAuthActivity.AuthResult) {
@@ -177,9 +204,11 @@ class PaymentSheetViewModel(
 
                 _sheetResult.value = PaymentResult.Completed(payment)
             }
+
             is PaymentAuthActivity.AuthResult.Failed -> {
                 _sheetResult.value = PaymentResult.Failed(PaymentSheetException(result.error))
             }
+
             is PaymentAuthActivity.AuthResult.Canceled -> {
                 _sheetResult.value = PaymentResult.Canceled
             }

@@ -5,7 +5,7 @@ import android.content.Intent
 import androidx.activity.result.contract.ActivityResultContract
 
 class PaymentAuthContract : ActivityResultContract<String, PaymentAuthActivity.AuthResult>() {
-    override fun createIntent(context: Context, input: String?): Intent {
+    override fun createIntent(context: Context, input: String): Intent {
         return Intent(context, PaymentAuthActivity::class.java).apply {
             putExtra(EXTRA_AUTH_URL, input)
         }

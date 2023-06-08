@@ -1,8 +1,13 @@
 package com.moyasar.android.sdk.data
 
+import android.content.Context
+import android.content.ServiceConnection
 import android.view.View
+import android.view.inputmethod.InputMethodManager
+import androidx.core.content.ContextCompat.getSystemService
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import android.content.Context.INPUT_METHOD_SERVICE as INPUT_METHOD_SERVICE1
 
 typealias Predicate = (value: String?) -> Boolean
 
