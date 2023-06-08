@@ -24,17 +24,22 @@ android {
 
     buildTypes {
         release {
-            minifyEnabled true
+            minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
+
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_17
-        targetCompatibility JavaVersion.VERSION_17
+        sourceCompatibility JavaVersion.VERSION_11
+        targetCompatibility JavaVersion.VERSION_11
     }
 
     kotlinOptions {
-        jvmTarget = '17'
+        jvmTarget = '11'
+    }
+
+    kotlin {
+        jvmToolchain(11)
     }
 
     buildFeatures {
@@ -73,7 +78,7 @@ dependencies {
 }
 
 ext {
-    PUBLISH_GROUP_ID = '0.4.0'
+    PUBLISH_GROUP_ID = 'com.moyasar'
     PUBLISH_VERSION = '0.4.0'
     PUBLISH_ARTIFACT_ID = 'android-sdk'
 }
