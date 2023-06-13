@@ -1,6 +1,5 @@
 package com.moyasar.android.sdk
 
-import android.widget.Toast
 import androidx.activity.ComponentActivity
 import com.moyasar.android.sdk.ui.PaymentSheetContract
 
