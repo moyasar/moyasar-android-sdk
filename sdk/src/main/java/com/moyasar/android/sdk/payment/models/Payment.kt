@@ -32,4 +32,10 @@ data class Payment(
 
         return source["transaction_url"]!!
     }
+    fun getStcPayTransactionUrl(): String {
+        if (!source.containsKey("type") || !source["type"].equals("stcpay")) {
+            throw IllegalArgumentException("Source is not stc pay")
+        }
+        return source["transaction_url"]!!
+    }
 }
