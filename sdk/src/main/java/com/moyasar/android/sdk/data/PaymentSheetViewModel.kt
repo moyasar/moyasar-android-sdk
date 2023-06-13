@@ -42,8 +42,8 @@ class PaymentSheetViewModel(
     val status: LiveData<Status> = _status
     internal val payment: LiveData<Payment?> = _payment
     internal val sheetResult: LiveData<PaymentResult?> =
-//        liveData<PaymentResult?>(_sheetResult).distinctUntilChanged()//changed in lifecycle 2.6.0
-        Transformations.distinctUntilChanged(_sheetResult)
+        _sheetResult.distinctUntilChanged()
+
 
     val name = MutableLiveData("")
     val number = MutableLiveData("")
