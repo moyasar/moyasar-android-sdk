@@ -8,7 +8,7 @@ plugins {
 
 android {
     compileSdk 33
-    buildToolsVersion "30.0.3"
+//    buildToolsVersion "30.0.3"
 
     defaultConfig {
         applicationId "com.moyasar.sdkdriver"
@@ -28,16 +28,15 @@ android {
     }
 
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_11
-        targetCompatibility JavaVersion.VERSION_11
-    }
-
-    kotlinOptions {
-        jvmTarget = '11'
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
     }
 
     kotlin {
-        jvmToolchain(11)
+        jvmToolchain(17)
+    }
+    kotlinOptions {
+        jvmTarget = "17"
     }
 
     buildFeatures {
@@ -57,7 +56,7 @@ dependencies {
     //lifecycle
     implementation "androidx.lifecycle:lifecycle-extensions:$arch_version"
     // fragment
-    implementation 'androidx.fragment:fragment-ktx:1.5.7'
+    implementation 'androidx.fragment:fragment-ktx:1.6.0'
     // SDK
     implementation project(path: ':sdk')
     // test implementation
