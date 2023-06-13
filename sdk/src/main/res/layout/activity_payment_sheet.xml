@@ -33,7 +33,7 @@
                     android:id="@+id/amount"
                     android:layout_width="match_parent"
                     android:layout_height="145dp"
-                    android:background="#4D3AB7"
+                    android:background="#363E47"
                     android:gravity="center_horizontal"
                     android:paddingTop="58dp"
                     android:text="@{viewModel.amountLabel}"
@@ -101,7 +101,7 @@
                 </com.google.android.material.textfield.TextInputLayout>
 
                 <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/cardNumberInput"
+                    android:id="@+id/phoneNumberInput"
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
