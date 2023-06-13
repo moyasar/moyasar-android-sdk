@@ -6,7 +6,11 @@
             android:name=".ui.PaymentAuthActivity"
             android:exported="true" />
         <activity
+            android:name=".ui.StcPaySheetActivity"
+            android:exported="true" />
+        <activity
             android:name=".ui.PaymentSheetActivity"
+            android:windowSoftInputMode="adjustResize"
             android:exported="true" />
     </application>
 
