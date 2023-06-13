@@ -5,9 +5,10 @@
     android:windowSoftInputMode="stateVisible|adjustResize">
 
     <data>
+
         <variable
             name="viewModel"
-            type="com.moyasar.android.sdk.data.PaymentSheetViewModel" />
+            type="com.moyasar.android.sdk.data.StcPaySheetViewModel" />
     </data>
 
     <ScrollView
@@ -29,11 +30,12 @@
                 android:layout_height="wrap_content"
                 app:layout_constraintTop_toTopOf="parent">
 
+
                 <TextView
                     android:id="@+id/amount"
                     android:layout_width="match_parent"
                     android:layout_height="145dp"
-                    android:background="#4D3AB7"
+                    android:background="@color/stc_purple"
                     android:gravity="center_horizontal"
                     android:paddingTop="58dp"
                     android:text="@{viewModel.amountLabel}"
@@ -48,7 +50,7 @@
                     app:layout_constraintTop_toTopOf="parent" />
 
                 <TextView
-                    android:id="@+id/textView"
+                    android:id="@+id/totalToPayTextView"
                     android:layout_width="120dp"
                     android:layout_height="21dp"
                     android:gravity="center_horizontal"
@@ -64,6 +66,7 @@
                     app:layout_constraintStart_toStartOf="@+id/amount"
                     app:layout_constraintTop_toTopOf="@+id/amount"
                     app:layout_constraintVertical_bias="0.161" />
+
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <LinearLayout
@@ -75,33 +78,7 @@
                 app:layout_constraintTop_toBottomOf="@+id/constraintLayout">
 
                 <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/nameOnCardInput"
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
-                    android:disableWhenLoading="@{viewModel.status}"
-                    android:hint="@string/name_on_card_label"
-                    app:error="@{viewModel.nameValidator.error}"
-                    app:errorEnabled="true"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHorizontal_bias="0.0"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/amount">
-
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:drawableRight="@drawable/ic_name"
-                        android:text="@={viewModel.name}"
-                        android:textDirection="ltr"
-                        app:onFocusChangeListener="@{(v, hf) -> viewModel.nameValidator.onFieldFocusChange(v, hf)}"
-                        tools:ignore="TouchTargetSizeCheck,SpeakableTextPresentCheck" />
-
-                </com.google.android.material.textfield.TextInputLayout>
-
-                <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/cardNumberInput"
+                    android:id="@+id/phoneNumberInput"
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -118,10 +95,11 @@
                     <com.google.android.material.textfield.TextInputEditText
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:afterTextChanged="@{(e) -> viewModel.creditCardTextChanged(e)}"
+                        android:afterTextChanged="@{(e) -> viewModel.numberTextChanged(e)}"
                         android:digits="0123456789 "
-                        android:drawableRight="@drawable/ic_card"
+                        android:drawableRight="@drawable/ic_phone"
                         android:inputType="number"
+                        android:maxLength="10"
                         android:text="@={viewModel.number}"
                         android:textDirection="ltr"
                         app:onFocusChangeListener="@{(v, hf) -> viewModel.numberValidator.onFieldFocusChange(v, hf)}"
@@ -129,85 +107,20 @@
 
                 </com.google.android.material.textfield.TextInputLayout>
 
-                <LinearLayout
-                    android:id="@+id/linearLayout"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="4dp"
-                    android:orientation="horizontal"
-                    app:layout_constraintBottom_toBottomOf="@+id/payButton"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/cardNumberInput">
-
-                    <com.google.android.material.textfield.TextInputLayout
-                        android:id="@+id/cardExpiryDateInput"
-                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:disableWhenLoading="@{viewModel.status}"
-                        android:hint="@string/expiration_date_label"
-                        android:overScrollMode="always"
-                        android:screenReaderFocusable="false"
-                        app:error="@{viewModel.expiryValidator.error}"
-                        app:errorEnabled="true">
-
-                        <com.google.android.material.textfield.TextInputEditText
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:afterTextChanged="@{(e) -> viewModel.expiryChanged(e)}"
-                            android:digits="0123456789 /"
-                            android:drawableRight="@drawable/ic_calendar"
-                            android:inputType="number"
-                            android:text="@={viewModel.expiry}"
-                            android:textDirection="ltr"
-                            app:onFocusChangeListener="@{(v, hf) -> viewModel.expiryValidator.onFieldFocusChange(v, hf)}"
-                            tools:ignore="TouchTargetSizeCheck,SpeakableTextPresentCheck"
-                            tools:layout_editor_absoluteX="0dp"
-                            tools:layout_editor_absoluteY="288dp" />
-
-                    </com.google.android.material.textfield.TextInputLayout>
-
-                    <com.google.android.material.textfield.TextInputLayout
-                        android:id="@+id/cardSecurityCodeInput"
-                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="end"
-                        android:layout_marginStart="10dp"
-                        android:layout_weight="1"
-                        android:disableWhenLoading="@{viewModel.status}"
-                        android:hint="@string/security_code_label"
-                        app:error="@{viewModel.cvcValidator.error}"
-                        app:errorEnabled="true">
-
-                        <com.google.android.material.textfield.TextInputEditText
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:digits="0123456789 "
-                            android:drawableRight="@drawable/ic_lock"
-                            android:inputType="number"
-                            android:maxLength="4"
-                            android:text="@={viewModel.cvc}"
-                            android:textDirection="ltr"
-                            app:onFocusChangeListener="@{(v, hf) -> viewModel.cvcValidator.onFieldFocusChange(v, hf)}"
-                            tools:ignore="TouchTargetSizeCheck,SpeakableTextPresentCheck" />
-
-                    </com.google.android.material.textfield.TextInputLayout>
-                </LinearLayout>
             </LinearLayout>
 
             <Button
                 android:id="@+id/payButton"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:backgroundTint="@color/stc_oasis"
                 android:disableWhenLoading="@{viewModel.status}"
                 android:onClick="@{() -> viewModel.submit()}"
                 android:showWhenReset="@{viewModel.status}"
                 android:text="@{@string/payBtnLabel+viewModel.payLabel}"
-                app:layout_constraintTop_toBottomOf="@+id/linearLayout2"
-                app:layout_constraintVertical_bias="0.976" />
+                android:textColor="@color/stc_white"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/linearLayout2" />
 
             <com.google.android.material.progressindicator.CircularProgressIndicator
                 android:id="@+id/circularProgressIndicator"

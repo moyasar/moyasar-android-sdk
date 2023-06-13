@@ -16,27 +16,29 @@ import com.moyasar.android.sdk.PaymentConfig
 import com.moyasar.android.sdk.PaymentResult
 import com.moyasar.android.sdk.R
 import com.moyasar.android.sdk.data.PaymentSheetViewModel
+import com.moyasar.android.sdk.data.StcPaySheetViewModel
 import com.moyasar.android.sdk.databinding.ActivityPaymentSheetBinding
+import com.moyasar.android.sdk.databinding.ActivityStcPaySheetBinding
 
-class PaymentSheetActivity : AppCompatActivity() {
-    private val viewModel: PaymentSheetViewModel by lazy {
+class StcPaySheetActivity : AppCompatActivity() {
+    private val viewModel: StcPaySheetViewModel by lazy {
         val factory = object : ViewModelProvider.Factory {
             override fun <T : ViewModel> create(modelClass: Class<T>): T {
                 @Suppress("UNCHECKED_CAST")
-                return PaymentSheetViewModel(config!!, resources) as T
+                return StcPaySheetViewModel(config!!, resources) as T
             }
         }
 
-        ViewModelProvider(this, factory).get(PaymentSheetViewModel::class.java)
+        ViewModelProvider(this, factory).get(StcPaySheetViewModel::class.java)
     }
 
     private val config: PaymentConfig? by lazy {
         @Suppress("DEPRECATION")
-        intent.getParcelableExtra(PaymentSheetContract.EXTRA_ARGS)
+        intent.getParcelableExtra(StcPaySheetContract.EXTRA_ARGS)
     }
 
-    private val binding: ActivityPaymentSheetBinding by lazy {
-        DataBindingUtil.setContentView(this, R.layout.activity_payment_sheet)
+    private val binding: ActivityStcPaySheetBinding by lazy {
+        DataBindingUtil.setContentView(this, R.layout.activity_stc_pay_sheet)
     }
 
     private val authActivity = registerForActivityResult(PaymentAuthContract()) {
@@ -53,10 +55,10 @@ class PaymentSheetActivity : AppCompatActivity() {
         viewModel.status.observe(this) {
             runOnUiThread {
                 when (it) {
-                    is PaymentSheetViewModel.Status.PaymentAuth3dSecure -> {
+                    is StcPaySheetViewModel.Status.PaymentOTPSecure -> {
                         authActivity.launch(it.url)
                     }
-                    is PaymentSheetViewModel.Status.Failure -> {
+                    is StcPaySheetViewModel.Status.Failure -> {
                         runOnUiThread {
                             Toast.makeText(this, it.toString(), Toast.LENGTH_LONG).show()
                         }
@@ -69,7 +71,7 @@ class PaymentSheetActivity : AppCompatActivity() {
         viewModel.sheetResult.observe(this) {
             runOnUiThread {
                 if (it != null) {
-                    setResult(Activity.RESULT_OK, Intent().putExtra(PaymentSheetContract.EXTRA_RESULT, it))
+                    setResult(Activity.RESULT_OK, Intent().putExtra(StcPaySheetContract.EXTRA_RESULT, it))
                     finish()
                 }
             }

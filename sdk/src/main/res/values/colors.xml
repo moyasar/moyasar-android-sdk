@@ -3,4 +3,16 @@
     <color name="light_blue_600">#FF039BE5</color>
     <color name="gray_400">#FFBDBDBD</color>
     <color name="gray_600">#FF757575</color>
+
+    <color name="stc_white">#FFFFFFFF</color>
+    <color name="stc_oasis">#00C48C</color>
+    <color name="stc_sea">#1BCED8</color>
+    <color name="stc_moonLight">#A54EE1</color>
+    <color name="stc_silver">#8E9AA0</color>
+    <color name="stc_sunset">#FF6A39</color>
+    <color name="stc_sun">#FFDD40</color>
+    <color name="stc_purple">#4F008C</color>
+    <color name="stc_coral">#FF2C5E</color>
+    <color name="stc_onyx">#1D252D</color>
+
 </resources>

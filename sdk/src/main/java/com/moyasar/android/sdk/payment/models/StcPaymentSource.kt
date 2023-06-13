@@ -1,10 +1,6 @@
 package com.moyasar.android.sdk.payment.models
 
-data class CardPaymentSource(
-    val name: String,
+data class StcPaymentSource(
     val number: String,
-    val month: String,
-    val year: String,
-    val cvc: String,
-    val type: String = "creditcard",
+    val type: String = "stcpay",
 ) : PaymentSource
