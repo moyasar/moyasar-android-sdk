@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="viewModel"
+            type="com.moyasar.android.sdk.data.StcPaySheetViewModel" />
+    </data>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            xmlns:tools="http://schemas.android.com/tools"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            tools:context=".ui.OtpAuthActivity">
+
+            <TextView
+                android:id="@+id/otp_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="112dp"
+                android:fontFamily="serif"
+                android:text="@string/otp_title"
+                android:textColor="@color/stc_purple"
+                android:textSize="34sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/otpMsg"
+                android:layout_width="323dp"
+                android:layout_height="53dp"
+                android:layout_marginTop="16dp"
+                android:fontFamily="serif"
+                android:textSize="20sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/otp_title" />
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/otpContainer"
+                android:layout_width="304dp"
+                android:layout_height="wrap_content"
+                android:textAlignment="center"
+                app:boxCornerRadiusBottomEnd="23dp"
+                app:boxCornerRadiusBottomStart="23dp"
+                app:boxCornerRadiusTopEnd="23dp"
+                app:boxCornerRadiusTopStart="23dp"
+                app:boxStrokeColor="@color/stc_sea"
+                app:boxStrokeErrorColor="@color/stc_sunset"
+                app:counterOverflowTextColor="@color/stc_sunset"
+                app:errorTextColor="@color/stc_sunset"
+                app:helperText=" "
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.495"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/otpMsg"
+                app:layout_constraintVertical_bias="0.115">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/otpEditText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="serif"
+                    android:hint="OTP"
+                    android:afterTextChanged="@{(e) -> viewModel.otpTextChanged(e)}"
+                    android:inputType="numberPassword"
+                    android:maxLength="6"
+                    android:textAlignment="center"
+                    android:textSize="18sp" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <Button
+                android:id="@+id/verifyBtn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:disableWhenLoading="@{viewModel.status}"
+                android:fontFamily="serif"
+                android:onClick="verifyOTP"
+                android:showWhenReset="@{viewModel.status}"
+                android:text="Verify"
+                android:textColorHighlight="@color/stc_purple"
+                android:textColorLink="@color/stc_purple"
+                android:textSize="18sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/otpContainer"
+                app:layout_constraintVertical_bias="0.215" />
+
+            <com.google.android.material.progressindicator.CircularProgressIndicator
+                android:id="@+id/circularProgressIndicator"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:layout_marginBottom="16dp"
+                android:indeterminate="true"
+                android:showWhenLoading="@{viewModel.status}"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.498"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/verifyBtn"
+                app:layout_constraintVertical_bias="0.056" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </ScrollView>
+</layout>
