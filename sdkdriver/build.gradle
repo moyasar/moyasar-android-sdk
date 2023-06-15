@@ -8,10 +8,12 @@ plugins {
 
 android {
     compileSdk 33
+    buildToolsVersion "30.0.3"
 
     defaultConfig {
         applicationId "com.moyasar.sdkdriver"
         minSdk 21
+        targetSdkVersion 33
         versionCode 1
         versionName "1.0"
 
@@ -31,7 +33,11 @@ android {
     }
 
     kotlinOptions {
-        jvmTarget = "11"
+        jvmTarget = '11'
+    }
+
+    kotlin {
+        jvmToolchain(11)
     }
 
     buildFeatures {
@@ -43,15 +49,15 @@ android {
 dependencies {
 
     implementation 'androidx.core:core-ktx:1.10.1'
-    implementation "androidx.appcompat:appcompat:$appcompact_version"
+    implementation 'androidx.appcompat:appcompat:1.6.1'
     // google material
-    implementation 'com.google.android.material:material:1.6.0'
+    implementation 'com.google.android.material:material:1.9.0'
     // constraint layout
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
     //lifecycle
     implementation "androidx.lifecycle:lifecycle-extensions:$arch_version"
     // fragment
-    implementation "androidx.fragment:fragment-ktx:$fragment_version"
+    implementation 'androidx.fragment:fragment-ktx:1.5.7'
     // SDK
     implementation project(path: ':sdk')
     // test implementation
