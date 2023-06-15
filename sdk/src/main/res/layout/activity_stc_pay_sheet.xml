@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="viewModel"
+            type="com.moyasar.android.sdk.data.StcPaySheetViewModel" />
+    </data>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="16dp"
+            android:layout_marginVertical="16dp"
+            android:animateLayoutChanges="true"
+            android:layoutDirection="inherit"
+            tools:context=".ui.PaymentSheetActivity">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/constraintLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toTopOf="parent">
+
+
+                <TextView
+                    android:id="@+id/amount"
+                    android:layout_width="match_parent"
+                    android:layout_height="145dp"
+                    android:background="@color/stc_purple"
+                    android:gravity="center_horizontal"
+                    android:paddingTop="58dp"
+                    android:text="@{viewModel.amountLabel}"
+                    android:textAlignment="center"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Large"
+                    android:textColor="@android:color/white"
+                    android:textSize="42sp"
+                    android:textStyle="bold"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="1.0"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/totalToPayTextView"
+                    android:layout_width="120dp"
+                    android:layout_height="21dp"
+                    android:gravity="center_horizontal"
+                    android:justificationMode="inter_word"
+                    android:text="Total to Pay"
+                    android:textAlignment="center"
+                    android:textColor="@android:color/white"
+                    android:textDirection="ltr"
+                    android:textSize="18sp"
+                    app:layout_constraintBottom_toBottomOf="@+id/amount"
+                    app:layout_constraintEnd_toEndOf="@+id/amount"
+                    app:layout_constraintHorizontal_bias="0.498"
+                    app:layout_constraintStart_toStartOf="@+id/amount"
+                    app:layout_constraintTop_toTopOf="@+id/amount"
+                    app:layout_constraintVertical_bias="0.161" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <LinearLayout
+                android:id="@+id/linea"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginVertical="15dp"
+                android:orientation="vertical"
+                app:flow_verticalBias="12"
+                app:layout_constraintTop_toBottomOf="@+id/constraintLayout">
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/phoneNumberInput"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/phoneNumber"
+                    android:stcDisableWhenLoading="@{viewModel.status}"
+                    app:error="@{viewModel.numberValidator.error}"
+                    app:errorEnabled="true"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.0"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/nameOnCardInput">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:afterTextChanged="@{(e) -> viewModel.numberTextChanged(e)}"
+                        android:digits="0123456789 "
+                        android:drawableEnd="@drawable/ic_phone"
+                        android:inputType="number"
+                        android:text="@={viewModel.number}"
+                        android:textDirection="ltr"
+                        app:onFocusChangeListener="@{(v, hf) -> viewModel.numberValidator.onFieldFocusChange(v, hf)}"
+                        tools:ignore="TouchTargetSizeCheck,SpeakableTextPresentCheck" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+            </LinearLayout>
+
+            <Button
+                android:id="@+id/payButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:backgroundTint="@color/stc_oasis"
+                android:onClick="@{() -> viewModel.submit()}"
+                android:stcDisableWhenLoading="@{viewModel.status}"
+                android:stcShowWhenReset="@{viewModel.status}"
+                android:text="@{viewModel.payLabel}"
+                android:textColor="@color/stc_white"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent" />
+
+            <com.google.android.material.progressindicator.CircularProgressIndicator
+                android:id="@+id/circularProgressIndicator"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:indeterminate="true"
+                android:stcShowWhenLoading="@{viewModel.status}"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/linea" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </ScrollView>
+</layout>
+
+
+
+

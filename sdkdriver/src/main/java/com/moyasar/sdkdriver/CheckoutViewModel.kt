@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import com.moyasar.android.sdk.PaymentConfig
 import com.moyasar.android.sdk.PaymentResult
 import com.moyasar.android.sdk.PaymentSheet
+import com.moyasar.android.sdk.StcPaySheet
 import com.moyasar.android.sdk.payment.models.Payment
 import kotlinx.parcelize.Parcelize
 
@@ -13,6 +14,7 @@ class CheckoutViewModel : ViewModel() {
     val status = MutableLiveData<Status>(Status.Idle)
     val payment = MutableLiveData<Payment?>(null)
     var paymentSheet: PaymentSheet? = null
+    var stcPaySheet: StcPaySheet? = null
     val config = PaymentConfig(
         amount = 100,
         currency = "SAR",
@@ -26,16 +28,32 @@ class CheckoutViewModel : ViewModel() {
     )
 
     fun registerForActivity(activity: CheckoutActivity) {
-        paymentSheet = PaymentSheet(activity, { this.onPaymentSheetResult(it) }, config)
+//        paymentSheet = PaymentSheet(activity, { this.onPaymentSheetResult(it) }, config)
+        stcPaySheet = StcPaySheet(activity, { this.onPaymentSheetResult(it) }, config)
     }
 
     fun beginDonation() {
-        if (paymentSheet == null) {
-            status.value = Status.Failed(Exception("Payment sheet was not setup for view model"))
-            return
+        when (paymentSheet == null && stcPaySheet == null) {
+
+            true -> {
+
+                if (paymentSheet == null) {
+                    status.value =
+                        Status.Failed(Exception("Payment sheet was not setup for view model"))
+                    return
+                } else if (stcPaySheet == null) {
+                    status.value =
+                        Status.Failed(Exception("Payment sheet was not setup for view model"))
+                    return
+                }
+            }
+
+            false -> {
+                stcPaySheet!!.present()
+//                paymentSheet!!.present()
+            }
         }
 
-        paymentSheet!!.present()
     }
 
     fun onPaymentSheetResult(result: PaymentResult) {

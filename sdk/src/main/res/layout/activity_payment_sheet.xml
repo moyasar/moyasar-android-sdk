@@ -2,7 +2,7 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:windowSoftInputMode="stateVisible|adjustResize">
+    >
 
     <data>
         <variable
@@ -33,7 +33,7 @@
                     android:id="@+id/amount"
                     android:layout_width="match_parent"
                     android:layout_height="145dp"
-                    android:background="#4D3AB7"
+                    android:background="#363E47"
                     android:gravity="center_horizontal"
                     android:paddingTop="58dp"
                     android:text="@{viewModel.amountLabel}"
@@ -92,7 +92,7 @@
                     <com.google.android.material.textfield.TextInputEditText
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:drawableRight="@drawable/ic_name"
+                        android:drawableEnd="@drawable/ic_name"
                         android:text="@={viewModel.name}"
                         android:textDirection="ltr"
                         app:onFocusChangeListener="@{(v, hf) -> viewModel.nameValidator.onFieldFocusChange(v, hf)}"
@@ -101,7 +101,7 @@
                 </com.google.android.material.textfield.TextInputLayout>
 
                 <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/cardNumberInput"
+                    android:id="@+id/phoneNumberInput"
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -158,7 +158,7 @@
                             android:layout_height="wrap_content"
                             android:afterTextChanged="@{(e) -> viewModel.expiryChanged(e)}"
                             android:digits="0123456789 /"
-                            android:drawableRight="@drawable/ic_calendar"
+                            android:drawableEnd="@drawable/ic_calendar"
                             android:inputType="number"
                             android:text="@={viewModel.expiry}"
                             android:textDirection="ltr"

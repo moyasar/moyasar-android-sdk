@@ -19,4 +19,6 @@
     <string name="expiration_date_label">Expiration</string>
     <string name="security_code_label">CVC</string>
     <string name="payBtnLabel">Pay</string>
+    <string name="phoneNumber" translatable="false">05********</string>
+    <string name="otp_title" translatable="false">OTP verification</string>
 </resources>

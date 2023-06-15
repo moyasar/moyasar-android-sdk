@@ -1,15 +1,14 @@
 package com.moyasar.android.sdk
 
 import androidx.activity.ComponentActivity
-import com.moyasar.android.sdk.ui.PaymentSheetContract
+import com.moyasar.android.sdk.ui.StcPaySheetContract
 
-class PaymentSheet(
+class StcPaySheet (
     private val context: ComponentActivity,
     private val callback: PaymentSheetResultCallback,
     private val config: PaymentConfig
 ) {
-    private val sheetActivity =
-        context.registerForActivityResult(PaymentSheetContract()) {
+    private val sheetActivity = context.registerForActivityResult(StcPaySheetContract()) {
         callback.onResult(it)
     }
 
