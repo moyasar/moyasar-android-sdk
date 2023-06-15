@@ -8,16 +8,13 @@ import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.get
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.moyasar.android.sdk.PaymentConfig
 import com.moyasar.android.sdk.PaymentResult
 import com.moyasar.android.sdk.R
-import com.moyasar.android.sdk.data.PaymentSheetViewModel
 import com.moyasar.android.sdk.data.StcPaySheetViewModel
-import com.moyasar.android.sdk.databinding.ActivityPaymentSheetBinding
 import com.moyasar.android.sdk.databinding.ActivityStcPaySheetBinding
 
 class StcPaySheetActivity : AppCompatActivity() {
@@ -28,8 +25,7 @@ class StcPaySheetActivity : AppCompatActivity() {
                 return StcPaySheetViewModel(config!!, resources) as T
             }
         }
-
-        ViewModelProvider(this, factory).get(StcPaySheetViewModel::class.java)
+        ViewModelProvider(this, factory)[StcPaySheetViewModel::class.java]
     }
 
     private val config: PaymentConfig? by lazy {
@@ -41,7 +37,8 @@ class StcPaySheetActivity : AppCompatActivity() {
         DataBindingUtil.setContentView(this, R.layout.activity_stc_pay_sheet)
     }
 
-    private val authActivity = registerForActivityResult(PaymentAuthContract()) {
+    private val authActivity =
+        registerForActivityResult(PaymentAuthContract()) {
         viewModel.onPaymentAuthReturn(it)
     }
 
@@ -55,7 +52,7 @@ class StcPaySheetActivity : AppCompatActivity() {
         viewModel.status.observe(this) {
             runOnUiThread {
                 when (it) {
-                    is StcPaySheetViewModel.Status.PaymentOTPSecure -> {
+                    is StcPaySheetViewModel.Status.PaymentOtpSecure -> {
                         authActivity.launch(it.url)
                     }
                     is StcPaySheetViewModel.Status.Failure -> {

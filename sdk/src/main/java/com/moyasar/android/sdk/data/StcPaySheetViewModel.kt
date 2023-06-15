@@ -17,10 +17,9 @@ import com.moyasar.android.sdk.payment.PaymentService
 import com.moyasar.android.sdk.payment.models.Payment
 import com.moyasar.android.sdk.payment.models.PaymentRequest
 import com.moyasar.android.sdk.payment.models.StcPaymentSource
+import com.moyasar.android.sdk.ui.OtpAuthActivity
+import com.moyasar.android.sdk.ui.OtpAuthContract
 import com.moyasar.android.sdk.ui.PaymentAuthActivity
-import com.moyasar.android.sdk.util.CreditCardNetwork
-import com.moyasar.android.sdk.util.getNetwork
-import com.moyasar.android.sdk.util.isValidLuhnNumber
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -36,35 +35,29 @@ class StcPaySheetViewModel(
     private val resources: Resources
 ) : ViewModel() {
 
-    private val _paymentService: PaymentService by lazy {
+    val _paymentService: PaymentService by lazy {
         PaymentService(paymentConfig.apiKey, paymentConfig.baseUrl)
     }
 
-    private var ccOnChangeLocked = false
+    var ccOnChangeLocked = false
 
-    private val _status = MutableLiveData<Status>(Status.Reset)
-    private val _payment = MutableLiveData<Payment?>(null)
-    private val _sheetResult = MutableLiveData<PaymentResult?>(null)
-    private val _isFormValid = MediatorLiveData<Boolean>()
+    val status = MutableLiveData<Status>(Status.Reset)
+    val payment = MutableLiveData<Payment?>(null)
+    val _isFormValid = MediatorLiveData<Boolean>()
+    val _sheetResult = MutableLiveData<PaymentResult?>(null)
 
-    val status: LiveData<Status> = _status
-    internal val payment: LiveData<Payment?> = _payment
-    internal val sheetResult: LiveData<PaymentResult?> =
-        _sheetResult.distinctUntilChanged()
+    internal val sheetResult: LiveData<PaymentResult?>
+        get() = _sheetResult.distinctUntilChanged()
 
+    //    val status : LiveData<Status>
+//        get() = _status
     val number = MutableLiveData("")
-
 
     val numberValidator = LiveDataValidator(number).apply {
         addRule("Phone number is required") { it.isNullOrBlank() }
-        addRule("Phone number is invalid") { !isValidLuhnNumber(it ?: "") }
-        addRule("Unsupported phone number network") {
-            getNetwork(
-                it ?: ""
-            ) == CreditCardNetwork.Unknown
-        }
+        addRule("Phone number must start with (05)") { !cleanPhoneNumber.startsWith("05") }
+        addRule("Phone number length must be 10 digits") { cleanPhoneNumber.length != 10 }
     }
-
 
     fun validateForm(): Boolean {
         return numberValidator.isValid().also { _isFormValid.value = it }
@@ -113,17 +106,17 @@ class StcPaySheetViewModel(
             return;
         }
 
-        if (_status.value != Status.Reset) {
+        if (status.value != Status.Reset) {
             return
         }
 
-        _status.value = Status.SubmittingPayment
+        status.value = Status.SubmittingPayment
 
         val request = PaymentRequest(
             paymentConfig.amount,
             paymentConfig.currency,
             paymentConfig.description,
-            PaymentAuthActivity.RETURN_URL,
+            OtpAuthActivity.RETURN_URL,
             StcPaymentSource(cleanPhoneNumber),
             paymentConfig.metadata ?: HashMap()
         )
@@ -143,12 +136,12 @@ class StcPaySheetViewModel(
 
                 when (result) {
                     is RequestResult.Success -> {
-                        _payment.value = result.payment
+                        payment.value = result.payment
 
                         when (result.payment.status.lowercase()) {
                             "initiated" -> {
-                                _status.value =
-                                    Status.PaymentOTPSecure(result.payment.getStcPayTransactionUrl())
+                                status.value =
+                                    Status.PaymentOtpSecure(result.payment.getStcPayTransactionUrl())
                             }
 
                             else -> {
@@ -167,11 +160,11 @@ class StcPaySheetViewModel(
     fun onPaymentAuthReturn(result: PaymentAuthActivity.AuthResult) {
         when (result) {
             is PaymentAuthActivity.AuthResult.Completed -> {
-                if (result.id != _payment.value?.id) {
-                    throw Exception("Got different ID from auth process ${result.id} instead of ${_payment.value?.id}")
+                if (result.id != payment.value?.id) {
+                    throw Exception("Got different ID from auth process ${result.id} instead of ${payment.value?.id}")
                 }
 
-                val payment = _payment.value!!
+                val payment = payment.value!!
                 payment.apply {
                     status = result.status
                     source["message"] = result.message
@@ -190,6 +183,11 @@ class StcPaySheetViewModel(
         }
     }
 
+    fun isValidPhoneNumber(number: String): Boolean {
+        val cleanNumber = number.replace(" ", "")
+        return cleanNumber.startsWith("05").and(cleanNumber.length == 10)
+    }
+
     fun numberTextChanged(textEdit: Editable) {
         if (ccOnChangeLocked) {
             return
@@ -201,11 +199,15 @@ class StcPaySheetViewModel(
         val formatted = StringBuilder()
 
         for ((current, char) in input.toCharArray().withIndex()) {
-            if (current > 10) {
+            if (current > 9) {
                 break
             }
 
-            if (current > 0 && current % 3 == 0) {
+            if (current == 2) {
+                formatted.append(' ')
+            }
+
+            if (current%3==0) {
                 formatted.append(' ')
             }
 
@@ -213,6 +215,61 @@ class StcPaySheetViewModel(
         }
 
         textEdit.replace(0, textEdit.length, formatted.toString())
+
+        ccOnChangeLocked = false
+    }
+
+    fun otpTextChanged(textEdit: Editable) {
+        if (ccOnChangeLocked) {
+            return
+        }
+
+        ccOnChangeLocked = true
+
+        val input = textEdit.toString().replace(" ", "")
+        val request = PaymentRequest(
+            paymentConfig.amount,
+            paymentConfig.currency,
+            paymentConfig.description,
+            payment.value?.getStcPayTransactionUrl()!!,
+            StcPaymentSource(cleanPhoneNumber),
+            paymentConfig.metadata ?: HashMap()
+        )
+
+        CoroutineScope(Job() + Dispatchers.Main)
+            .launch {
+                val result = withContext(Dispatchers.IO) {
+                    try {
+                        val response = _paymentService.create(request)
+                        RequestResult.Success(response)
+                    } catch (e: ApiException) {
+                        RequestResult.Failure(e)
+                    } catch (e: Exception) {
+                        RequestResult.Failure(e)
+                    }
+                }
+
+                when (result) {
+                    is RequestResult.Success -> {
+                        payment.value = result.payment
+
+                        when (result.payment.status.lowercase()) {
+                            "paid" -> {
+                                status.value =
+                                    Status.PaymentOtpSecure(result.payment.getStcPayTransactionUrl())
+                            }
+
+                            else -> {
+                                _sheetResult.value = PaymentResult.Completed(result.payment)
+                            }
+                        }
+                    }
+
+                    is RequestResult.Failure -> {
+                        _sheetResult.value = PaymentResult.Failed(result.e)
+                    }
+                }
+            }
 
         ccOnChangeLocked = false
     }
@@ -226,7 +283,7 @@ class StcPaySheetViewModel(
         object SubmittingPayment : Status()
 
         @Parcelize
-        data class PaymentOTPSecure(val url: String) : Status()
+        data class PaymentOtpSecure(val url: String) : Status()
 
         @Parcelize
         data class Failure(val e: Throwable) : Status()

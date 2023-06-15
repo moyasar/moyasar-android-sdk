@@ -75,4 +75,8 @@ class OtpAuthActivity : AppCompatActivity() {
 
 
     fun verifyOTP(view: View) {}
+    companion object {
+        val RETURN_HOST = "sdk.moyasar.com";
+        val RETURN_URL = "https://${RETURN_HOST}/payments"
+    }
 }

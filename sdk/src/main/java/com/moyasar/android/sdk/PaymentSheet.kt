@@ -8,7 +8,8 @@ class PaymentSheet(
     private val callback: PaymentSheetResultCallback,
     private val config: PaymentConfig
 ) {
-    private val sheetActivity = context.registerForActivityResult(PaymentSheetContract()) {
+    private val sheetActivity =
+        context.registerForActivityResult(PaymentSheetContract()) {
         callback.onResult(it)
     }
 

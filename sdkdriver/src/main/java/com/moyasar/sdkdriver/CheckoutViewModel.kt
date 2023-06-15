@@ -28,20 +28,32 @@ class CheckoutViewModel : ViewModel() {
     )
 
     fun registerForActivity(activity: CheckoutActivity) {
-        paymentSheet = PaymentSheet(activity, { this.onPaymentSheetResult(it) }, config)
+//        paymentSheet = PaymentSheet(activity, { this.onPaymentSheetResult(it) }, config)
         stcPaySheet = StcPaySheet(activity, { this.onPaymentSheetResult(it) }, config)
     }
 
     fun beginDonation() {
-        if (paymentSheet == null) {
-            status.value = Status.Failed(Exception("Payment sheet was not setup for view model"))
-            return
-        }else if (stcPaySheet == null) {
-            status.value = Status.Failed(Exception("Payment sheet was not setup for view model"))
-            return
+        when (paymentSheet == null && stcPaySheet == null) {
+
+            true -> {
+
+                if (paymentSheet == null) {
+                    status.value =
+                        Status.Failed(Exception("Payment sheet was not setup for view model"))
+                    return
+                } else if (stcPaySheet == null) {
+                    status.value =
+                        Status.Failed(Exception("Payment sheet was not setup for view model"))
+                    return
+                }
+            }
+
+            false -> {
+                stcPaySheet!!.present()
+//                paymentSheet!!.present()
+            }
         }
-        stcPaySheet!!.present()
-        paymentSheet!!.present()
+
     }
 
     fun onPaymentSheetResult(result: PaymentResult) {

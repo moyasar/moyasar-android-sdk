@@ -36,6 +36,7 @@ data class Payment(
         if (!source.containsKey("type") || !source["type"].equals("stcpay")) {
             throw IllegalArgumentException("Source is not stc pay")
         }
+
         return source["transaction_url"]!!
     }
 }

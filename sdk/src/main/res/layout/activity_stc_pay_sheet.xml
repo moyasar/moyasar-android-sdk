@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:windowSoftInputMode="stateVisible|adjustResize">
+    xmlns:tools="http://schemas.android.com/tools">
 
     <data>
 
@@ -70,9 +69,10 @@
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <LinearLayout
-                android:id="@+id/linearLayout2"
+                android:id="@+id/linea"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginVertical="15dp"
                 android:orientation="vertical"
                 app:flow_verticalBias="12"
                 app:layout_constraintTop_toBottomOf="@+id/constraintLayout">
@@ -82,9 +82,8 @@
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="4dp"
-                    android:disableWhenLoading="@{viewModel.status}"
-                    android:hint="@string/credit_card_label"
+                    android:hint="@string/phoneNumber"
+                    android:stcDisableWhenLoading="@{viewModel.status}"
                     app:error="@{viewModel.numberValidator.error}"
                     app:errorEnabled="true"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -97,9 +96,8 @@
                         android:layout_height="wrap_content"
                         android:afterTextChanged="@{(e) -> viewModel.numberTextChanged(e)}"
                         android:digits="0123456789 "
-                        android:drawableRight="@drawable/ic_phone"
+                        android:drawableEnd="@drawable/ic_phone"
                         android:inputType="number"
-                        android:maxLength="10"
                         android:text="@={viewModel.number}"
                         android:textDirection="ltr"
                         app:onFocusChangeListener="@{(v, hf) -> viewModel.numberValidator.onFieldFocusChange(v, hf)}"
@@ -114,27 +112,25 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:backgroundTint="@color/stc_oasis"
-                android:disableWhenLoading="@{viewModel.status}"
                 android:onClick="@{() -> viewModel.submit()}"
-                android:showWhenReset="@{viewModel.status}"
-                android:text="@{@string/payBtnLabel+viewModel.payLabel}"
+                android:stcDisableWhenLoading="@{viewModel.status}"
+                android:stcShowWhenReset="@{viewModel.status}"
+                android:text="@{viewModel.payLabel}"
                 android:textColor="@color/stc_white"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/linearLayout2" />
+                app:layout_constraintStart_toStartOf="parent" />
 
             <com.google.android.material.progressindicator.CircularProgressIndicator
                 android:id="@+id/circularProgressIndicator"
                 android:layout_width="32dp"
                 android:layout_height="32dp"
-                android:layout_marginBottom="16dp"
                 android:indeterminate="true"
-                android:showWhenLoading="@{viewModel.status}"
+                android:stcShowWhenLoading="@{viewModel.status}"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.498"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/payButton"
-                app:layout_constraintVertical_bias="1.0" />
+                app:layout_constraintTop_toBottomOf="@id/linea" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>
