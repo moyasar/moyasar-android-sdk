@@ -21,4 +21,8 @@
     <string name="payBtnLabel">Pay</string>
     <string name="phoneNumber" translatable="false">05********</string>
     <string name="otp_title" translatable="false">OTP verification</string>
+    <string name="OTP_message" translatable="false">Enter the verification code sent to mobile number: %s</string>
+    <string name="invalid_customer">The mobile number %s\nis not registered to stc-pay account</string>
+    <string name="invalid_otp">Invalid OTP</string>
+    <string name="visibility">%s</string>
 </resources>

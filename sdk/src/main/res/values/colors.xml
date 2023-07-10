@@ -1,4 +1,15 @@
 <resources>
+
+    <color name="colorPrimary">#6200EE</color>
+    <color name="colorPrimaryDark">#3700B3</color>
+    <color name="colorAccent">#03DAC5</color>
+    <color name="colorWhite">#FFFFFF</color>
+    <color name="colorSuccess">#4BB543</color>
+    <color name="colorWarning">#FFCC00</color>
+    <color name="colorNeutral">#434343</color>
+    <color name="colorError">#CC0000</color>
+    <color name="colorTextPrimary">#212121</color>
+
     <color name="light_blue_400">#FF29B6F6</color>
     <color name="light_blue_600">#FF039BE5</color>
     <color name="gray_400">#FFBDBDBD</color>

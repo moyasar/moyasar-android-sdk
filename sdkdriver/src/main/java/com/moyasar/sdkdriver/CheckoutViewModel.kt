@@ -1,6 +1,7 @@
 package com.moyasar.sdkdriver
 
 import android.os.Parcelable
+import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.moyasar.android.sdk.PaymentConfig
@@ -26,10 +27,21 @@ class CheckoutViewModel : ViewModel() {
             "order_id" to "order_123"
         )
     )
+    val stcpayConfig = PaymentConfig(
+        amount = 100,
+        currency = "SAR",
+        description = "Sample Android SDK Payment",
+//        apiKey = "pk_live_TH6rVePGHRwuJaAtoJ1LsRfeKYovZgC1uddh7NdX",
+        apiKey = "pk_live_g2Cc9uHPz5hk1GVGbXegK3dC8wyG8n2QQtdWECn2",
+        baseUrl = "https://apimig.moyasar.com",
+        metadata = mapOf(
+            "order_id" to "order_123"
+        )
+    )
 
     fun registerForActivity(activity: CheckoutActivity) {
 //        paymentSheet = PaymentSheet(activity, { this.onPaymentSheetResult(it) }, config)
-        stcPaySheet = StcPaySheet(activity, { this.onPaymentSheetResult(it) }, config)
+        stcPaySheet = StcPaySheet(activity, { this.onPaymentSheetResult(it) }, stcpayConfig)
     }
 
     fun beginDonation() {
@@ -50,6 +62,7 @@ class CheckoutViewModel : ViewModel() {
 
             false -> {
                 stcPaySheet!!.present()
+                Log.d("CheckoutViewModel().Status: ",status.value.toString())
 //                paymentSheet!!.present()
             }
         }
@@ -65,9 +78,11 @@ class CheckoutViewModel : ViewModel() {
                 when (result.payment.status) {
                     "paid", "authorized" -> status.value = Status.Success
                     else -> status.value = Status.Success
+                    //Failed(Exception("Invalid OTP value"))
                 }
             }
         }
+        Log.d("onPaymentSheetResult(): Status: ",status.value.toString())
     }
 
     sealed class Status : Parcelable {

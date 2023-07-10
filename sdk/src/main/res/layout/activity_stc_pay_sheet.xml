@@ -20,68 +20,186 @@
             android:layout_marginHorizontal="16dp"
             android:layout_marginVertical="16dp"
             android:animateLayoutChanges="true"
+            android:background="@drawable/rounded_corner"
             android:layoutDirection="inherit"
-            tools:context=".ui.PaymentSheetActivity">
+            tools:context=".ui.StcPaySheetActivity">
 
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/constraintLayout"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:layout_constraintTop_toTopOf="parent">
-
-
-                <TextView
-                    android:id="@+id/amount"
-                    android:layout_width="match_parent"
-                    android:layout_height="145dp"
-                    android:background="@color/stc_purple"
-                    android:gravity="center_horizontal"
-                    android:paddingTop="58dp"
-                    android:text="@{viewModel.amountLabel}"
-                    android:textAlignment="center"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Large"
-                    android:textColor="@android:color/white"
-                    android:textSize="42sp"
-                    android:textStyle="bold"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHorizontal_bias="1.0"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
-
-                <TextView
-                    android:id="@+id/totalToPayTextView"
-                    android:layout_width="120dp"
-                    android:layout_height="21dp"
-                    android:gravity="center_horizontal"
-                    android:justificationMode="inter_word"
-                    android:text="Total to Pay"
-                    android:textAlignment="center"
-                    android:textColor="@android:color/white"
-                    android:textDirection="ltr"
-                    android:textSize="18sp"
-                    app:layout_constraintBottom_toBottomOf="@+id/amount"
-                    app:layout_constraintEnd_toEndOf="@+id/amount"
-                    app:layout_constraintHorizontal_bias="0.498"
-                    app:layout_constraintStart_toStartOf="@+id/amount"
-                    app:layout_constraintTop_toTopOf="@+id/amount"
-                    app:layout_constraintVertical_bias="0.161" />
-
-            </androidx.constraintlayout.widget.ConstraintLayout>
 
             <LinearLayout
-                android:id="@+id/linea"
+                android:id="@+id/otpLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginVertical="15dp"
                 android:orientation="vertical"
-                app:flow_verticalBias="12"
-                app:layout_constraintTop_toBottomOf="@+id/constraintLayout">
+                android:visibility="@{viewModel.handleOtpLayoutVisibility}"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:visibility="gone">
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="381dp"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/rounded_corner"
+                    android:foregroundGravity="center"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent">
+
+                    <TextView
+                        android:id="@+id/textView2"
+                        android:layout_width="376dp"
+                        android:layout_height="126dp"
+                        android:background="@color/stc_purple"
+                        android:fontFamily="@font/raleway"
+                        android:gravity="center_horizontal"
+                        android:paddingTop="45dp"
+                        android:text="@string/otp_title"
+                        android:textColor="@color/colorWhite"
+                        android:textSize="42sp"
+                        android:textStyle="bold"
+                        android:visibility="visible"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <TextView
+                        android:id="@+id/otp_message"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginHorizontal="20dp"
+                        android:layout_marginTop="10dp"
+                        android:layout_marginBottom="10dp"
+                        android:background="#9AFFFFFF"
+                        android:fontFamily="@font/raleway"
+                        android:lines="2"
+                        android:maxLines="3"
+                        android:paddingHorizontal="10dp"
+                        android:textAlignment="textStart"
+                        android:textColor="#4A4747"
+                        android:textSize="16sp"
+                        app:layout_constraintBottom_toTopOf="@+id/otpContainer"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintHorizontal_bias="0.526"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/textView2"
+                        app:layout_wrapBehaviorInParent="horizontal_only" />
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/otpContainer"
+                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginHorizontal="20dp"
+                        android:layout_marginVertical="10dp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/otp_message">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/otpEditText"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:digits="0123456789"
+                            android:fontFamily="@font/raleway"
+                            android:hint="OTP"
+                            android:inputType="numberPassword"
+                            android:maxLength="6"
+                            android:text="@={viewModel.otp}" />
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <Button
+                        android:id="@+id/verifyButton"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:backgroundTint="@color/stc_oasis"
+                        android:onClick="@{() -> viewModel.verifyOTP()}"
+                        android:stcDisableWhenLoading="@{viewModel.status}"
+                        android:stcShowWhenReset="@{viewModel.status}"
+                        android:text="Verify"
+                        android:textColor="@color/stc_white"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/otpContainer" />
+
+                    <com.google.android.material.progressindicator.CircularProgressIndicator
+                        android:id="@+id/cirProgressIndicator"
+                        android:layout_width="32dp"
+                        android:layout_height="32dp"
+                        android:layout_gravity="center_horizontal"
+                        android:indeterminate="true"
+                        android:stcShowWhenLoading="@{viewModel.status}"
+                        app:layout_constraintBottom_toBottomOf="@+id/verifyButton"
+                        app:layout_constraintEnd_toEndOf="@+id/verifyButton"
+                        app:layout_constraintStart_toStartOf="parent" />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/stcpayLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginVertical="15dp"
+                android:gravity="top"
+                android:orientation="vertical"
+                android:visibility="@{viewModel.handleStcLayoutVisibility}"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/constraintLayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+
+                    <TextView
+                        android:id="@+id/amount"
+                        android:layout_width="match_parent"
+                        android:layout_height="145dp"
+                        android:background="@color/stc_purple"
+                        android:gravity="center_horizontal"
+                        android:paddingTop="58dp"
+                        android:text="@{viewModel.amountLabel}"
+                        android:textAlignment="center"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Large"
+                        android:textColor="@android:color/white"
+                        android:textSize="42sp"
+                        android:textStyle="bold"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintHorizontal_bias="1.0"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <TextView
+                        android:id="@+id/totalToPayTextView"
+                        android:layout_width="120dp"
+                        android:layout_height="21dp"
+                        android:gravity="center_horizontal"
+                        android:justificationMode="inter_word"
+                        android:text="Total to Pay"
+                        android:textAlignment="center"
+                        android:textColor="@android:color/white"
+                        android:textDirection="ltr"
+                        android:textSize="18sp"
+                        app:layout_constraintBottom_toBottomOf="@+id/amount"
+                        app:layout_constraintEnd_toEndOf="@+id/amount"
+                        app:layout_constraintHorizontal_bias="0.498"
+                        app:layout_constraintStart_toStartOf="@+id/amount"
+                        app:layout_constraintTop_toTopOf="@+id/amount"
+                        app:layout_constraintVertical_bias="0.161" />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
 
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/phoneNumberInput"
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginBottom="5dp"
                     android:hint="@string/phoneNumber"
                     android:stcDisableWhenLoading="@{viewModel.status}"
                     app:error="@{viewModel.numberValidator.error}"
@@ -105,32 +223,33 @@
 
                 </com.google.android.material.textfield.TextInputLayout>
 
+                <Button
+                    android:id="@+id/payButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:backgroundTint="@color/stc_oasis"
+                    android:onClick="@{() -> viewModel.submit()}"
+                    android:stcDisableWhenLoading="@{viewModel.status}"
+                    android:stcShowWhenReset="@{viewModel.status}"
+                    android:text="@{viewModel.payLabel}"
+                    android:textColor="@color/stc_white"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/stcpayLayout" />
+
+                <com.google.android.material.progressindicator.CircularProgressIndicator
+                    android:id="@+id/circularProgressIndicator"
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:layout_gravity="center_horizontal"
+                    android:indeterminate="true"
+                    android:stcShowWhenLoading="@{viewModel.status}"
+                    app:layout_constraintBottom_toBottomOf="@+id/payButton"
+                    app:layout_constraintEnd_toEndOf="@+id/payButton"
+                    app:layout_constraintStart_toStartOf="parent" />
             </LinearLayout>
 
-            <Button
-                android:id="@+id/payButton"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:backgroundTint="@color/stc_oasis"
-                android:onClick="@{() -> viewModel.submit()}"
-                android:stcDisableWhenLoading="@{viewModel.status}"
-                android:stcShowWhenReset="@{viewModel.status}"
-                android:text="@{viewModel.payLabel}"
-                android:textColor="@color/stc_white"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent" />
-
-            <com.google.android.material.progressindicator.CircularProgressIndicator
-                android:id="@+id/circularProgressIndicator"
-                android:layout_width="32dp"
-                android:layout_height="32dp"
-                android:indeterminate="true"
-                android:stcShowWhenLoading="@{viewModel.status}"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/linea" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>

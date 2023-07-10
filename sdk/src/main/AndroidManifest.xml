@@ -2,20 +2,23 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
     <application>
+
         <activity
             android:name=".ui.OtpAuthActivity"
-            android:exported="false" />
-<!--        <activity-->
-<!--            android:name=".ui.PaymentAuthActivity"-->
-<!--            android:exported="true" />-->
-<!--        <activity-->
-<!--            android:name=".ui.PaymentSheetActivity"-->
-<!--            android:exported="true"-->
-<!--            android:windowSoftInputMode="adjustResize" />-->
+            android:exported="false" /> <!-- <activity -->
+        <!-- android:name=".ui.PaymentAuthActivity" -->
+        <!-- android:exported="true" /> -->
+        <!-- <activity -->
+        <!-- android:name=".ui.PaymentSheetActivity" -->
+        <!-- android:exported="true" -->
+        <!-- android:windowSoftInputMode="adjustResize" /> -->
         <activity
             android:name=".ui.StcPaySheetActivity"
             android:exported="true"
             android:windowSoftInputMode="adjustResize" />
+        <meta-data
+            android:name="preloaded_fonts"
+            android:resource="@array/preloaded_fonts" />
     </application>
 
 </manifest>

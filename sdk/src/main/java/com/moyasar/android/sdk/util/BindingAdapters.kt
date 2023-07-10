@@ -4,6 +4,7 @@ import android.view.View
 import androidx.databinding.BindingAdapter
 import com.moyasar.android.sdk.data.PaymentSheetViewModel
 import com.moyasar.android.sdk.data.StcPaySheetViewModel
+import com.moyasar.android.sdk.payment.models.Payment
 
 @BindingAdapter("android:showWhenLoading")
 fun showWhenLoading(view: View, oldValue: PaymentSheetViewModel.Status?, newValue: PaymentSheetViewModel.Status) {
@@ -18,7 +19,8 @@ fun showWhenLoading(view: View, oldValue: PaymentSheetViewModel.Status?, newValu
 fun stcShowWhenLoading(view: View, oldValue: StcPaySheetViewModel.Status?, newValue: StcPaySheetViewModel.Status) {
     if (oldValue != newValue) {
         view.visibility = when (newValue) {
-            StcPaySheetViewModel.Status.Reset -> View.INVISIBLE
+            StcPaySheetViewModel.Status.Reset,
+            is StcPaySheetViewModel.Status.PaymentOtpSecure -> View.INVISIBLE
             else -> View.VISIBLE
         }
     }
@@ -38,6 +40,7 @@ fun stcShowWhenReset(view: View, oldValue: StcPaySheetViewModel.Status?, newValu
     if (oldValue != newValue) {
         view.visibility = when (newValue) {
             StcPaySheetViewModel.Status.Reset -> View.VISIBLE
+            is StcPaySheetViewModel.Status.PaymentOtpSecure-> View.VISIBLE
             else -> View.INVISIBLE
         }
     }
@@ -56,7 +59,7 @@ fun disableWhenLoading(view: View, oldValue: PaymentSheetViewModel.Status?, newV
 fun stcDisableWhenLoading(view: View, oldValue: StcPaySheetViewModel.Status?, newValue: StcPaySheetViewModel.Status) {
     if (oldValue != newValue) {
         view.isEnabled = when (newValue) {
-            StcPaySheetViewModel.Status.Reset -> true
+            StcPaySheetViewModel.Status.Reset, is StcPaySheetViewModel.Status.PaymentOtpSecure-> true
             else -> false
         }
     }

@@ -3,80 +3,41 @@ package com.moyasar.android.sdk.ui
 import android.app.Activity
 import android.content.Intent
 import android.net.Uri
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.os.Parcelable
 import android.view.View
+import android.widget.EditText
+import androidx.activity.viewModels
+import androidx.appcompat.app.AppCompatActivity
 import com.moyasar.android.sdk.R
+import com.moyasar.android.sdk.data.StcPaySheetViewModel
+import kotlinx.parcelize.Parcelize
 
 class OtpAuthActivity : AppCompatActivity() {
 
+    private val viewModel: StcPaySheetViewModel by viewModels()
+    private var otpEditText: EditText? = null
     private val authUrl: String? by lazy {
         intent.getStringExtra(OtpAuthContract.EXTRA_AUTH_URL)
     }
 
-    override fun onStart() {
-        super.onStart()
+    data class OtpRequest(val stcPayTransactionUrl: String?, val otp: String) {
 
-        if (authUrl.isNullOrBlank()) {
-            setResult(
-                Activity.RESULT_OK,
-                Intent().putExtra(
-                    OtpAuthContract.EXTRA_RESULT,
-                    PaymentAuthActivity.AuthResult.Failed("Missing OTP Auth URL.")
-                )
-            )
-            finish()
-            return
-        }
-
-//        webView.loadUrl(authUrl!!)
-    }
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_otp_auth)
-    }
-    override fun onBackPressed() {
-        super.onBackPressed()
-
-        setResult(
-            Activity.RESULT_OK,
-            Intent().putExtra(OtpAuthContract.EXTRA_RESULT, PaymentAuthActivity.AuthResult.Canceled)
-        )
-
-        finish()
-    }
-    fun shouldOverrideUrlLoading(url: Uri?): Boolean {
-        if (url?.host == PaymentAuthActivity.RETURN_HOST) {
-            val id = url.getQueryParameter("id") ?: ""
-            val status = url.getQueryParameter("status") ?: ""
-            val message = url.getQueryParameter("message") ?: ""
-
-            setResult(
-                Activity.RESULT_OK,
-                Intent().putExtra(
-                    PaymentAuthContract.EXTRA_RESULT,
-                    PaymentAuthActivity.AuthResult.Completed(id, status, message)
-                )
-            )
-
-            finish()
-            return true;
-        }
-
-        return false;
-    }
-    fun onReceivedError(error: String?) {
-        setResult(
-            Activity.RESULT_OK,
-            Intent().putExtra(OtpAuthContract.EXTRA_RESULT, PaymentAuthActivity.AuthResult.Failed(error))
-        )
-        finish()
     }
 
-
-    fun verifyOTP(view: View) {}
     companion object {
         val RETURN_HOST = "sdk.moyasar.com";
         val RETURN_URL = "https://${RETURN_HOST}/payments"
+    }
+
+    sealed class AuthResult : Parcelable {
+        @Parcelize
+        data class Completed(val id: String, val status: String, val message: String) : AuthResult()
+
+        @Parcelize
+        data class Failed(val error: String? = null) : AuthResult()
+
+        @Parcelize
+        object Canceled : AuthResult()
     }
 }

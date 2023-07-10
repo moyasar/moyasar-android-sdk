@@ -9,7 +9,7 @@ data class PaymentConfig(
     val currency: String = "SAR",
     val description: String,
     val apiKey: String,
-    val baseUrl: String = "https://api.moyasar.com/",
+    val baseUrl: String,
     val metadata: Map<String, String>? = null,
 ) : Parcelable {
     fun validate(): Array<String> {

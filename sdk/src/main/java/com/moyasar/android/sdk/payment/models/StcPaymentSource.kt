@@ -1,6 +1,6 @@
 package com.moyasar.android.sdk.payment.models
 
 data class StcPaymentSource(
-    val number: String,
+    val mobile: String,
     val type: String = "stcpay",
 ) : PaymentSource

@@ -33,9 +33,26 @@ class PaymentService(
 
         gson.fromJson(response.text, Payment::class.java)
     }
+    suspend fun getResponse(url: String, otp: String): Payment = withContext(Dispatchers.IO) {
+        val body = mapOf(
+            "otp_value" to otp
+        )
+
+        val client = URL(url).openConnection() as HttpURLConnection
+        client.setBasicAuth(apiKey, "")
+        val response = client.postJson(body)
+
+        if (response.statusCode !in 200..299) {
+            throw ApiException(
+                gson.fromJson(response.text, ErrorResponse::class.java)
+            )
+        }
+
+        gson.fromJson(response.text, Payment::class.java)
+    }
 
     private fun getResourceUrl(url: String): String {
         return baseUrl.trimEnd('/').trimEnd() + "/" +
-            url.trimStart('/').trimStart()
+                url.trimStart('/').trimStart()
     }
 }
