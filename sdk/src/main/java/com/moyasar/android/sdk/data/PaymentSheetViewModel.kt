@@ -144,12 +144,23 @@ class PaymentSheetViewModel(
 
         _status.value = Status.SubmittingPayment
 
+        val manual = if (paymentConfig.manual) "true" else "false"
+        val saveCard = if (paymentConfig.saveCard) "true" else "false"
+
         val request = PaymentRequest(
             paymentConfig.amount,
             paymentConfig.currency,
             paymentConfig.description,
             PaymentAuthActivity.RETURN_URL,
-            CardPaymentSource(name.value!!, cleanCardNumber, expiryMonth, expiryYear, cvc.value!!),
+            CardPaymentSource(
+                name.value!!,
+                cleanCardNumber,
+                expiryMonth,
+                expiryYear,
+                cvc.value!!,
+                manual,
+                saveCard,
+            ),
             paymentConfig.metadata ?: HashMap()
         )
 
