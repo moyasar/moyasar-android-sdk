@@ -20,6 +20,7 @@ class CheckoutViewModel : ViewModel() {
 //        apiKey = "pk_live_TH6rVePGHRwuJaAtoJ1LsRfeKYovZgC1uddh7NdX",
         apiKey = "pk_test_vcFUHJDBwiyRu4Bd3hFuPpTnRPY4gp2ssYdNJMY3",
         baseUrl = "https://api.moyasar.com",
+        manual = true,
         metadata = mapOf(
             "order_id" to "order_123"
         )
