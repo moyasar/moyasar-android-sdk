@@ -11,6 +11,8 @@ data class PaymentConfig(
     val apiKey: String,
     val baseUrl: String = "https://api.moyasar.com/",
     val metadata: Map<String, String>? = null,
+    val manual: Boolean = false,
+    val saveCard: Boolean = false,
 ) : Parcelable {
     fun validate(): Array<String> {
         val errors = ArrayList<String>()
