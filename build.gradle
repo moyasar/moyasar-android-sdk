@@ -1,7 +1,7 @@
 buildscript {
     ext {
         appcompact_version = '1.6.0'
-        lifecycle_version = '2.5.0'
+        lifecycle_version = '2.6.1'
         arch_version = '2.2.0'
     }
     ext.kotlin_version = '1.8.10'
