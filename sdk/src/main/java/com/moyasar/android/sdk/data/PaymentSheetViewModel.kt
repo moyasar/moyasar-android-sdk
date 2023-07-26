@@ -109,7 +109,7 @@ class PaymentSheetViewModel(
             val label = resources.getString(R.string.payBtnLabel)
 
             val amount = formatter.format(
-                100 / (Math.pow(
+                paymentConfig.amount / (Math.pow(
                     10.0,
                     formatter.currency!!.defaultFractionDigits.toDouble()
                 ))
@@ -126,7 +126,7 @@ class PaymentSheetViewModel(
             formatter.minimumFractionDigits = currency.defaultFractionDigits
 
             return formatter.format(
-                100 / (Math.pow(
+                paymentConfig.amount / (Math.pow(
                     10.0,
                     formatter.currency!!.defaultFractionDigits.toDouble()
                 ))
