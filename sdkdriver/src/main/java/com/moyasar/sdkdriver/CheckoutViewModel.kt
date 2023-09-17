@@ -23,7 +23,8 @@ class CheckoutViewModel : ViewModel() {
         manual = true,
         metadata = mapOf(
             "order_id" to "order_123"
-        )
+        ),
+        createSaveOnlyToken = true
     )
 
     fun registerForActivity(activity: CheckoutActivity) {
@@ -49,6 +50,9 @@ class CheckoutViewModel : ViewModel() {
                     "paid", "authorized" -> status.value = Status.Success
                     else -> status.value = Status.Success
                 }
+            }
+            is PaymentResult.CompletedToken -> {
+                print("Got newly created token ${result.token.id}")
             }
         }
     }

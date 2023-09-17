@@ -13,6 +13,7 @@ import com.moyasar.android.sdk.payment.PaymentService
 import com.moyasar.android.sdk.payment.models.CardPaymentSource
 import com.moyasar.android.sdk.payment.models.Payment
 import com.moyasar.android.sdk.payment.models.PaymentRequest
+import com.moyasar.android.sdk.payment.models.TokenRequest
 import com.moyasar.android.sdk.ui.PaymentAuthActivity
 import com.moyasar.android.sdk.util.CreditCardNetwork
 import com.moyasar.android.sdk.util.getNetwork
@@ -41,9 +42,7 @@ class PaymentSheetViewModel(
 
     val status: LiveData<Status> = _status
     internal val payment: LiveData<Payment?> = _payment
-    internal val sheetResult: LiveData<PaymentResult?> =
-        _sheetResult.distinctUntilChanged()//changed in lifecycle 2.6.0
-        //Transformations.distinctUntilChanged(_sheetResult)
+    internal val sheetResult: LiveData<PaymentResult?> = _sheetResult.distinctUntilChanged()
 
     val name = MutableLiveData("")
     val number = MutableLiveData("")
@@ -144,9 +143,14 @@ class PaymentSheetViewModel(
 
         _status.value = Status.SubmittingPayment
 
-        val manual = if (paymentConfig.manual) "true" else "false"
-        val saveCard = if (paymentConfig.saveCard) "true" else "false"
+        if (paymentConfig.createSaveOnlyToken) {
+            createSaveOnlyToken()
+        } else {
+            createPayment()
+        }
+    }
 
+    private fun createPayment() {
         val request = PaymentRequest(
             paymentConfig.amount,
             paymentConfig.currency,
@@ -158,8 +162,8 @@ class PaymentSheetViewModel(
                 expiryMonth,
                 expiryYear,
                 cvc.value!!,
-                manual,
-                saveCard,
+                if (paymentConfig.manual) "true" else "false",
+                if (paymentConfig.saveCard) "true" else "false",
             ),
             paymentConfig.metadata ?: HashMap()
         )
@@ -198,6 +202,28 @@ class PaymentSheetViewModel(
                     }
                 }
             }
+    }
+
+    private fun createSaveOnlyToken() {
+        val request = TokenRequest(
+            name.value!!,
+            cleanCardNumber,
+            cvc.value!!,
+            expiryMonth,
+            expiryYear,
+            true,
+            "https://sdk.moyasar.com"
+        )
+
+        CoroutineScope(Job() + Dispatchers.Main).launch {
+            _sheetResult.value = try {
+                PaymentResult.CompletedToken(_paymentService.createToken(request))
+            } catch (e: ApiException) {
+                PaymentResult.Failed(e)
+            } catch (e: Exception) {
+                PaymentResult.Failed(e)
+            }
+        }
     }
 
     fun onPaymentAuthReturn(result: PaymentAuthActivity.AuthResult) {

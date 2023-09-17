@@ -49,37 +49,37 @@ android {
 }
 
 dependencies {
-//    implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
-    implementation 'androidx.core:core-ktx:1.10.1'
+    implementation 'androidx.core:core-ktx:1.10.0'
     implementation "androidx.appcompat:appcompat:1.6.1"
-    //constraint layout
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
-    //fragment
-    implementation 'androidx.fragment:fragment-ktx:1.5.7'
-    //webkit
+    implementation 'androidx.fragment:fragment-ktx:1.6.1'
     implementation 'androidx.webkit:webkit:1.7.0'
-    //lifecycle
-    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycle_version"
-    implementation "androidx.lifecycle:lifecycle-runtime-ktx:$lifecycle_version"
-    implementation "androidx.lifecycle:lifecycle-livedata-ktx:$lifecycle_version"
-    //kotlin coroutines
+
+    // Lifecycle
+    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.2"
+    implementation "androidx.lifecycle:lifecycle-runtime-ktx:2.6.2"
+    implementation "androidx.lifecycle:lifecycle-livedata-ktx:2.6.2"
+
+    // Kotlin Coroutines
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.1'
-    //Google material
+
+    // Google Material
     implementation 'com.google.android.material:material:1.9.0'
     implementation 'androidx.appcompat:appcompat:1.6.1'
-    //Gson
+
+    // Gson
     implementation 'com.google.code.gson:gson:2.10.1'
     api 'com.google.android.material:material:1.9.0'
 
-    // test implementation
-    testImplementation 'junit:junit:4.+'
+    // Test Implementation
+    testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.5'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
 }
 
 ext {
     PUBLISH_GROUP_ID = 'com.moyasar'
-    PUBLISH_VERSION = '0.4.6'
+    PUBLISH_VERSION = '0.5.0'
     PUBLISH_ARTIFACT_ID = 'android-sdk'
 }
 
