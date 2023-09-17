@@ -7,6 +7,8 @@ import com.moyasar.android.sdk.extensions.setBasicAuth
 import com.moyasar.android.sdk.payment.models.ErrorResponse
 import com.moyasar.android.sdk.payment.models.Payment
 import com.moyasar.android.sdk.payment.models.PaymentRequest
+import com.moyasar.android.sdk.payment.models.Token
+import com.moyasar.android.sdk.payment.models.TokenRequest
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.net.HttpURLConnection
@@ -32,6 +34,22 @@ class PaymentService(
         }
 
         gson.fromJson(response.text, Payment::class.java)
+    }
+
+    suspend fun createToken(request: TokenRequest): Token = withContext(Dispatchers.IO) {
+        val createUrl = getResourceUrl("v1/tokens")
+        val client = URL(createUrl).openConnection() as HttpURLConnection
+
+        client.setBasicAuth(apiKey, "")
+        val response = client.postJson(request)
+
+        if (response.statusCode !in 200..299) {
+            throw ApiException(
+                gson.fromJson(response.text, ErrorResponse::class.java)
+            )
+        }
+
+        gson.fromJson(response.text, Token::class.java)
     }
 
     private fun getResourceUrl(url: String): String {
