@@ -13,6 +13,7 @@ data class PaymentConfig(
     val metadata: Map<String, String>? = null,
     val manual: Boolean = false,
     val saveCard: Boolean = false,
+    val createSaveOnlyToken: Boolean = false,
 ) : Parcelable {
     fun validate(): Array<String> {
         val errors = ArrayList<String>()
