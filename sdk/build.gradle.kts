@@ -1,6 +1,9 @@
 plugins {
     id("com.android.library")
     id("org.jetbrains.kotlin.android")
+    id ("kotlin-android")
+    id ("kotlin-parcelize")
+    id ("kotlin-kapt")
 }
 
 android {
@@ -30,12 +33,17 @@ android {
     kotlinOptions {
         jvmTarget = "1.8"
     }
+
+    buildFeatures {
+        dataBinding = true
+    }
 }
 
 dependencies {
 
-    //noinspection GradleCompatible
-    implementation("com.android.support:appcompat-v7:28.0.0")
+    implementation("com.google.code.gson:gson:2.10.1")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.1")
+    implementation("android.arch.lifecycle:extensions:1.1.1")
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("com.android.support.test:runner:1.0.2")
     androidTestImplementation("com.android.support.test.espresso:espresso-core:3.0.2")
