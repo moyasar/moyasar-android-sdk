@@ -9,7 +9,7 @@ typealias Predicate = (value: String?) -> Boolean
 class LiveDataValidator(private val liveData: LiveData<String>) {
     private val rules = mutableListOf<ValidationRule>()
 
-    private val error = MutableLiveData<String?>()
+    val error = MutableLiveData<String?>()
 
     fun isValid(): Boolean {
         for (rule in rules) {

@@ -49,12 +49,12 @@ class PaymentSheetViewModel(
     internal val payment: LiveData<Payment?> = _payment
     internal val sheetResult: LiveData<PaymentResult?> = _sheetResult.distinctUntilChanged()
 
-    private val name = MutableLiveData<String>().default("")
-    private val number = MutableLiveData<String>().default("")
-    private val cvc = MutableLiveData<String>().default("")
-    private val expiry = MutableLiveData<String>().default("")
+    val name = MutableLiveData<String>().default("")
+    val number = MutableLiveData<String>().default("")
+    val cvc = MutableLiveData<String>().default("")
+    val expiry = MutableLiveData<String>().default("")
 
-    private val nameValidator = LiveDataValidator(name).apply {
+    val nameValidator = LiveDataValidator(name).apply {
         val latinRegex = Regex("^[a-zA-Z\\-\\s]+\$")
         val nameRegex = Regex("^[a-zA-Z\\-]+\\s+?([a-zA-Z\\-]+\\s?)+\$")
 
@@ -63,7 +63,7 @@ class PaymentSheetViewModel(
         addRule("Both first and last names are required") { !nameRegex.matches(it ?: "") }
     }
 
-    private val numberValidator = LiveDataValidator(number).apply {
+    val numberValidator = LiveDataValidator(number).apply {
         addRule("Credit card number is required") { it.isNullOrBlank() }
         addRule("Credit card number is invalid") { !isValidLuhnNumber(it ?: "") }
         addRule("Unsupported credit card network") {
@@ -73,7 +73,7 @@ class PaymentSheetViewModel(
         }
     }
 
-    private val cvcValidator = LiveDataValidator(cvc).apply {
+    val cvcValidator = LiveDataValidator(cvc).apply {
         addRule("Security code is required") { it.isNullOrBlank() }
         addRule("Invalid security code") {
             when (getNetwork(number.value ?: "")) {
@@ -83,7 +83,7 @@ class PaymentSheetViewModel(
         }
     }
 
-    private val expiryValidator = LiveDataValidator(expiry).apply {
+    val expiryValidator = LiveDataValidator(expiry).apply {
         addRule("Expiry date is required") { it.isNullOrBlank() }
         addRule("Invalid date") { parseExpiry(it ?: "")?.isInvalid() ?: true }
         addRule("Expired card") { parseExpiry(it ?: "")?.expired() ?: false }

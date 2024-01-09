@@ -41,9 +41,12 @@ android {
 
 dependencies {
 
+    //noinspection GradleCompatible
+    api("com.android.support:design:28.0.0")
     implementation("com.google.code.gson:gson:2.10.1")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.1")
     implementation("android.arch.lifecycle:extensions:1.1.1")
+    implementation("com.android.support.constraint:constraint-layout:2.0.4")
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("com.android.support.test:runner:1.0.2")
     androidTestImplementation("com.android.support.test.espresso:espresso-core:3.0.2")
