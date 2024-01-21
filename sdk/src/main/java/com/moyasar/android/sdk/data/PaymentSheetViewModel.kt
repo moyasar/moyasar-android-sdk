@@ -6,6 +6,7 @@ import android.arch.lifecycle.MutableLiveData
 import android.arch.lifecycle.ViewModel
 import android.content.res.Resources
 import android.os.Parcelable
+import android.support.annotation.Keep
 import android.text.Editable
 import com.moyasar.android.sdk.PaymentConfig
 import com.moyasar.android.sdk.PaymentResult
@@ -19,20 +20,23 @@ import com.moyasar.android.sdk.payment.models.CardPaymentSource
 import com.moyasar.android.sdk.payment.models.Payment
 import com.moyasar.android.sdk.payment.models.PaymentRequest
 import com.moyasar.android.sdk.payment.models.TokenRequest
+import com.moyasar.android.sdk.ui.PaymentAuthActivity
 import com.moyasar.android.sdk.util.CreditCardNetwork
 import com.moyasar.android.sdk.util.getNetwork
 import com.moyasar.android.sdk.util.isValidLuhnNumber
 import com.moyasar.android.sdk.util.parseExpiry
 import kotlinx.coroutines.*
 import kotlinx.parcelize.Parcelize
+import java.io.Serializable
 import java.text.NumberFormat
 import java.util.*
 import kotlin.math.pow
 
+@Keep
 class PaymentSheetViewModel(
     private val paymentConfig: PaymentConfig,
     private val resources: Resources
-) : ViewModel() {
+) : ViewModel(), Serializable {
     private val _paymentService: PaymentService by lazy {
         PaymentService(paymentConfig.apiKey, paymentConfig.baseUrl)
     }
@@ -154,7 +158,7 @@ class PaymentSheetViewModel(
             paymentConfig.amount,
             paymentConfig.currency,
             paymentConfig.description,
-            PaymentService.RETURN_URL,
+            PaymentAuthActivity.RETURN_URL,
             CardPaymentSource(
                 name.value!!,
                 cleanCardNumber,
@@ -225,9 +229,9 @@ class PaymentSheetViewModel(
         }
     }
 
-    fun onPaymentAuthReturn(result: PaymentService.WebViewAuthResult) {
+    internal fun onPaymentAuthReturn(result: PaymentAuthActivity.AuthResult) {
         when (result) {
-            is PaymentService.WebViewAuthResult.Completed -> {
+            is PaymentAuthActivity.AuthResult.Completed -> {
                 if (result.id != _payment.value?.id) {
                     throw Exception("Got different ID from auth process ${result.id} instead of ${_payment.value?.id}")
                 }
@@ -241,11 +245,11 @@ class PaymentSheetViewModel(
                 _sheetResult.value = PaymentResult.Completed(payment)
             }
 
-            is PaymentService.WebViewAuthResult.Failed -> {
+            is PaymentAuthActivity.AuthResult.Failed -> {
                 _sheetResult.value = PaymentResult.Failed(PaymentSheetException(result.error))
             }
 
-            is PaymentService.WebViewAuthResult.Canceled -> {
+            is PaymentAuthActivity.AuthResult.Canceled -> {
                 _sheetResult.value = PaymentResult.Canceled
             }
         }

@@ -25,12 +25,12 @@ fun isValidLuhnNumber(number: String): Boolean {
 }
 
 fun getNetwork(number: String): CreditCardNetwork {
-    val number = number.replace(" ", "")
+    val strippedNumber = number.replace(" ", "")
     return when {
-        amexRangeRegex.containsMatchIn(number) -> CreditCardNetwork.Amex
-        inMadaRange(number) -> CreditCardNetwork.Mada
-        visaRangeRegex.containsMatchIn(number) -> CreditCardNetwork.Visa
-        masterCardRangeRegex.containsMatchIn(number) -> CreditCardNetwork.Mastercard
+        amexRangeRegex.containsMatchIn(strippedNumber) -> CreditCardNetwork.Amex
+        inMadaRange(strippedNumber) -> CreditCardNetwork.Mada
+        visaRangeRegex.containsMatchIn(strippedNumber) -> CreditCardNetwork.Visa
+        masterCardRangeRegex.containsMatchIn(strippedNumber) -> CreditCardNetwork.Mastercard
         else -> CreditCardNetwork.Unknown
     }
 }

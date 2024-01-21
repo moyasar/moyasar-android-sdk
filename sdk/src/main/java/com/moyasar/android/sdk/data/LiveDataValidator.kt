@@ -2,7 +2,6 @@ package com.moyasar.android.sdk.data
 
 import android.arch.lifecycle.LiveData
 import android.arch.lifecycle.MutableLiveData
-import android.view.View
 
 typealias Predicate = (value: String?) -> Boolean
 
@@ -27,7 +26,7 @@ class LiveDataValidator(private val liveData: LiveData<String>) {
         rules.add(ValidationRule(predicate, message))
     }
 
-    fun onFieldFocusChange(view: View, hasFocus: Boolean) {
+    fun onFieldFocusChange(hasFocus: Boolean) {
         when (hasFocus) {
             true -> error.value = null
             false -> isValid()

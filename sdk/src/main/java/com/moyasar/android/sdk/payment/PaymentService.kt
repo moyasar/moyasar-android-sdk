@@ -1,6 +1,5 @@
 package com.moyasar.android.sdk.payment
 
-import android.os.Parcelable
 import com.google.gson.Gson
 import com.moyasar.android.sdk.exceptions.ApiException
 import com.moyasar.android.sdk.extensions.postJson
@@ -12,7 +11,6 @@ import com.moyasar.android.sdk.payment.models.Token
 import com.moyasar.android.sdk.payment.models.TokenRequest
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import kotlinx.parcelize.Parcelize
 import java.net.HttpURLConnection
 import java.net.URL
 
@@ -57,21 +55,5 @@ class PaymentService(
     private fun getResourceUrl(url: String): String {
         return baseUrl.trimEnd('/').trimEnd() + "/" +
             url.trimStart('/').trimStart()
-    }
-
-    companion object {
-        val RETURN_HOST = "sdk.moyasar.com";
-        val RETURN_URL = "https://${RETURN_HOST}/payment/return"
-    }
-
-    sealed class WebViewAuthResult : Parcelable {
-        @Parcelize
-        data class Completed(val id: String, val status: String, val message: String) : WebViewAuthResult()
-
-        @Parcelize
-        data class Failed(val error: String? = null) : WebViewAuthResult()
-
-        @Parcelize
-        object Canceled : WebViewAuthResult()
     }
 }
