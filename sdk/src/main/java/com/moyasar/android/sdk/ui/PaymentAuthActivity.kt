@@ -3,15 +3,16 @@ package com.moyasar.android.sdk.ui
 import android.annotation.SuppressLint
 import android.net.Uri
 import android.os.Build
-import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Parcelable
 import android.support.annotation.RequiresApi
+import android.support.v7.app.AppCompatActivity
 import android.webkit.WebResourceError
 import android.webkit.WebResourceRequest
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import com.moyasar.android.sdk.data.PaymentSheetViewModel
+import com.moyasar.android.sdk.data.SharedPaymentViewModelHolder
 import kotlinx.parcelize.Parcelize
 
 @SuppressLint("SetJavaScriptEnabled")
@@ -65,10 +66,7 @@ internal class PaymentAuthActivity : AppCompatActivity() {
         intent.getStringExtra(EXTRA_AUTH_URL)
     }
 
-    private val viewModel: PaymentSheetViewModel by lazy {
-        @Suppress("DEPRECATION")
-        intent.getSerializableExtra(EXTRA_AUTH_VIEW_MODEL) as PaymentSheetViewModel
-    }
+    private val viewModel: PaymentSheetViewModel = SharedPaymentViewModelHolder.sharedViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -125,13 +123,12 @@ internal class PaymentAuthActivity : AppCompatActivity() {
         data class Failed(val error: String? = null) : AuthResult()
 
         @Parcelize
-        object Canceled : AuthResult()
+        data object Canceled : AuthResult()
     }
 
     companion object {
         const val RETURN_HOST = "sdk.moyasar.com";
         const val RETURN_URL = "https://${RETURN_HOST}/payment/return"
         internal const val EXTRA_AUTH_URL = "com.moyasar.android.sdk.ui.PaymentAuthorizationActivityResultContract.auth_url"
-        internal const val EXTRA_AUTH_VIEW_MODEL = "com.moyasar.android.sdk.ui.PaymentAuthorizationActivityResultContract.view_model"
     }
 }

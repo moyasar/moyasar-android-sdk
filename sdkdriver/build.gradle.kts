@@ -1,23 +1,23 @@
 plugins {
     id("com.android.application")
+    id("kotlin-android")
+    id("kotlin-kapt")
+    id("kotlin-parcelize")
     id("org.jetbrains.kotlin.android")
 }
 
 android {
-    namespace = "com.example.moyasarandroidsdk"
+    namespace = "com.moyasar.android.sdkdriver"
     compileSdk = 34
 
     defaultConfig {
-        applicationId = "com.example.moyasarandroidsdk"
+        applicationId = "com.moyasar.android.sdkdriver"
         minSdk = 21
         targetSdk = 34
         versionCode = 1
         versionName = "1.0"
 
-        testInstrumentationRunner = "android.support.test.runner.AndroidJUnitRunner"
-        vectorDrawables {
-            useSupportLibrary = true
-        }
+        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
     buildTypes {
@@ -33,20 +33,20 @@ android {
     kotlinOptions {
         jvmTarget = "1.8"
     }
+
     buildFeatures {
-        compose = false
-    }
-    packaging {
-        resources {
-            excludes += "/META-INF/{AL2.0,LGPL2.1}"
-        }
+        dataBinding = true
     }
 }
 
 dependencies {
-
     //noinspection GradleCompatible
-    implementation("com.android.support:appcompat-v7:28.0.0")
+    implementation("com.android.support:design:28.0.0")
+    //noinspection GradleCompatible
+    implementation("com.android.support:support-fragment:28.0.0")
+    implementation("android.arch.lifecycle:extensions:1.1.1")
+    implementation("com.android.support.constraint:constraint-layout:2.0.4")
+    implementation(project(":sdk"))
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("com.android.support.test:runner:1.0.2")
     androidTestImplementation("com.android.support.test.espresso:espresso-core:3.0.2")

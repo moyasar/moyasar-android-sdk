@@ -1,6 +1,6 @@
 package com.moyasar.android.sdk.util
 
-import java.util.*
+import java.util.Calendar
 
 val amexRangeRegex = Regex("^3[47]")
 val visaRangeRegex = Regex("^4")
@@ -68,8 +68,14 @@ enum class CreditCardNetwork {
 }
 
 data class ExpiryDate(val month: Int, val year: Int) {
-    fun isValid(): Boolean {
+    private fun isValid(): Boolean {
         return month in 1..12 && year > 1900
+    }
+
+    private fun expiryDate(): Calendar {
+        return Calendar.getInstance().apply {
+            set(year, month, 1)
+        }
     }
 
     fun isInvalid(): Boolean {
@@ -78,11 +84,5 @@ data class ExpiryDate(val month: Int, val year: Int) {
 
     fun expired(): Boolean {
         return Calendar.getInstance().after(expiryDate())
-    }
-
-    fun expiryDate(): Calendar {
-        return Calendar.getInstance().apply {
-            set(year, month, 1)
-        }
     }
 }

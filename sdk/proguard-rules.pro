@@ -21,3 +21,4 @@
 #-renamesourcefileattribute SourceFile
 
 -keep class com.moyasar.android.sdk.** { *; }
+-keep class android.databinding.** { *; }

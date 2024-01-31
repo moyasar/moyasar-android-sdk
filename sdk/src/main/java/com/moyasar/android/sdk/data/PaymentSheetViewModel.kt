@@ -4,13 +4,11 @@ import android.arch.lifecycle.LiveData
 import android.arch.lifecycle.MediatorLiveData
 import android.arch.lifecycle.MutableLiveData
 import android.arch.lifecycle.ViewModel
-import android.content.res.Resources
 import android.os.Parcelable
-import android.support.annotation.Keep
 import android.text.Editable
 import com.moyasar.android.sdk.PaymentConfig
 import com.moyasar.android.sdk.PaymentResult
-import com.moyasar.android.sdk.R
+import com.moyasar.android.sdk.PaymentSheetResultCallback
 import com.moyasar.android.sdk.exceptions.ApiException
 import com.moyasar.android.sdk.exceptions.PaymentSheetException
 import com.moyasar.android.sdk.extensions.default
@@ -25,18 +23,20 @@ import com.moyasar.android.sdk.util.CreditCardNetwork
 import com.moyasar.android.sdk.util.getNetwork
 import com.moyasar.android.sdk.util.isValidLuhnNumber
 import com.moyasar.android.sdk.util.parseExpiry
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import kotlinx.parcelize.Parcelize
-import java.io.Serializable
 import java.text.NumberFormat
-import java.util.*
+import java.util.Currency
 import kotlin.math.pow
 
-@Keep
 class PaymentSheetViewModel(
     private val paymentConfig: PaymentConfig,
-    private val resources: Resources
-) : ViewModel(), Serializable {
+    private val callback: PaymentSheetResultCallback,
+) : ViewModel() {
     private val _paymentService: PaymentService by lazy {
         PaymentService(paymentConfig.apiKey, paymentConfig.baseUrl)
     }
@@ -49,9 +49,9 @@ class PaymentSheetViewModel(
     private val _sheetResult = MutableLiveData<PaymentResult?>()
     private val _isFormValid = MediatorLiveData<Boolean>()
 
-    val status: LiveData<Status> = _status
     internal val payment: LiveData<Payment?> = _payment
     internal val sheetResult: LiveData<PaymentResult?> = _sheetResult.distinctUntilChanged()
+    val status: LiveData<Status> = _status
 
     val name = MutableLiveData<String>().default("")
     val number = MutableLiveData<String>().default("")
@@ -107,22 +107,6 @@ class PaymentSheetViewModel(
     private val expiryYear: String
         get() = parseExpiry(expiry.value ?: "")?.year.toString()
 
-    val payLabel: String
-        get() {
-            val currency = Currency.getInstance(paymentConfig.currency)
-            val formatter = NumberFormat.getCurrencyInstance()
-            formatter.currency = currency
-            formatter.minimumFractionDigits = currency.defaultFractionDigits
-
-            val label = resources.getString(R.string.payBtnLabel)
-
-            val amount = formatter.format(
-                paymentConfig.amount / (10.0.pow(formatter.currency!!.defaultFractionDigits.toDouble()))
-            )
-
-            return "$label $amount"
-        }
-
     val amountLabel: String
         get() {
             val currency = Currency.getInstance(paymentConfig.currency)
@@ -135,22 +119,9 @@ class PaymentSheetViewModel(
             )
         }
 
-    fun submit() {
-        if (!validateForm()) {
-            return
-        }
-
-        if (_status.value != Status.Reset) {
-            return
-        }
-
-        _status.value = Status.SubmittingPayment
-
-        if (paymentConfig.createSaveOnlyToken) {
-            createSaveOnlyToken()
-        } else {
-            createPayment()
-        }
+    private fun notifyPaymentResult(paymentResult: PaymentResult) {
+        callback.onResult(paymentResult)
+        _sheetResult.value = paymentResult
     }
 
     private fun createPayment() {
@@ -195,13 +166,13 @@ class PaymentSheetViewModel(
                             }
 
                             else -> {
-                                _sheetResult.value = PaymentResult.Completed(result.payment)
+                                notifyPaymentResult(PaymentResult.Completed(result.payment))
                             }
                         }
                     }
 
                     is RequestResult.Failure -> {
-                        _sheetResult.value = PaymentResult.Failed(result.e)
+                        notifyPaymentResult(PaymentResult.Failed(result.e))
                     }
                 }
             }
@@ -219,13 +190,13 @@ class PaymentSheetViewModel(
         )
 
         CoroutineScope(Job() + Dispatchers.Main).launch {
-            _sheetResult.value = try {
+            notifyPaymentResult( try {
                 PaymentResult.CompletedToken(_paymentService.createToken(request))
             } catch (e: ApiException) {
                 PaymentResult.Failed(e)
             } catch (e: Exception) {
                 PaymentResult.Failed(e)
-            }
+            })
         }
     }
 
@@ -242,16 +213,34 @@ class PaymentSheetViewModel(
                     source["message"] = result.message
                 }
 
-                _sheetResult.value = PaymentResult.Completed(payment)
+                notifyPaymentResult(PaymentResult.Completed(payment))
             }
 
             is PaymentAuthActivity.AuthResult.Failed -> {
-                _sheetResult.value = PaymentResult.Failed(PaymentSheetException(result.error))
+                notifyPaymentResult(PaymentResult.Failed(PaymentSheetException(result.error)))
             }
 
             is PaymentAuthActivity.AuthResult.Canceled -> {
-                _sheetResult.value = PaymentResult.Canceled
+                notifyPaymentResult(PaymentResult.Canceled)
             }
+        }
+    }
+
+    fun submit() {
+        if (!validateForm()) {
+            return
+        }
+
+        if (_status.value != Status.Reset) {
+            return
+        }
+
+        _status.value = Status.SubmittingPayment
+
+        if (paymentConfig.createSaveOnlyToken) {
+            createSaveOnlyToken()
+        } else {
+            createPayment()
         }
     }
 
@@ -321,9 +310,6 @@ class PaymentSheetViewModel(
 
         @Parcelize
         data class PaymentAuth3dSecure(val url: String) : Status()
-
-        @Parcelize
-        data class Failure(val e: Throwable) : Status()
     }
 
     internal sealed class RequestResult {
