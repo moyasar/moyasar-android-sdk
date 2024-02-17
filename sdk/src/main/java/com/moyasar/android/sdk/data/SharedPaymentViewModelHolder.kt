@@ -1,5 +1,5 @@
 package com.moyasar.android.sdk.data
 
-object SharedPaymentViewModelHolder {
+internal object SharedPaymentViewModelHolder {
     lateinit var sharedViewModel: PaymentSheetViewModel
 }

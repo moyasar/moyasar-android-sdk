@@ -15,7 +15,7 @@ class CheckoutViewModel : ViewModel() {
     private val payment = MutableLiveData<Payment?>()
     private lateinit var paymentSheet: PaymentSheet
     private val config = PaymentConfig(
-        amount = 100,
+        amount = 100000,
         currency = "SAR",
         description = "Sample Android SDK Payment",
         apiKey = "pk_test_vcFUHJDBwiyRu4Bd3hFuPpTnRPY4gp2ssYdNJMY3",

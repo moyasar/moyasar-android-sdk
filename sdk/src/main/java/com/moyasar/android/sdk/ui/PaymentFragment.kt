@@ -11,7 +11,7 @@ import com.moyasar.android.sdk.data.PaymentSheetViewModel
 import com.moyasar.android.sdk.data.SharedPaymentViewModelHolder
 import com.moyasar.android.sdk.databinding.FragmentPaymentBinding
 
-internal class PaymentFragment: Fragment() {
+internal class PaymentFragment : Fragment() {
 
     private val viewModel: PaymentSheetViewModel = SharedPaymentViewModelHolder.sharedViewModel
 
@@ -56,7 +56,8 @@ internal class PaymentFragment: Fragment() {
         viewModel.sheetResult.observe(viewLifecycleOwner) {
             parentActivity.runOnUiThread {
                 if (it != null) {
-                    parentActivity.supportFragmentManager?.beginTransaction()?.remove(this)?.commit()
+                    parentActivity.supportFragmentManager?.beginTransaction()?.remove(this)
+                        ?.commit()
                 }
             }
         }

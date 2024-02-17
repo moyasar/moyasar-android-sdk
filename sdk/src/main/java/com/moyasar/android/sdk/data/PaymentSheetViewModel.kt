@@ -29,8 +29,9 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import kotlinx.parcelize.Parcelize
-import java.text.NumberFormat
+import java.text.DecimalFormat
 import java.util.Currency
+import java.util.Locale
 import kotlin.math.pow
 
 class PaymentSheetViewModel(
@@ -47,11 +48,12 @@ class PaymentSheetViewModel(
     private val _status = MutableLiveData<Status>().default(Status.Reset)
     private val _payment = MutableLiveData<Payment?>()
     private val _sheetResult = MutableLiveData<PaymentResult?>()
-    private val _isFormValid = MediatorLiveData<Boolean>()
+    private val _isFormValid = MediatorLiveData<Boolean>().default(false)
 
     internal val payment: LiveData<Payment?> = _payment
     internal val sheetResult: LiveData<PaymentResult?> = _sheetResult.distinctUntilChanged()
     val status: LiveData<Status> = _status
+    val isFormValid: LiveData<Boolean> = _isFormValid.distinctUntilChanged()
 
     val name = MutableLiveData<String>().default("")
     val number = MutableLiveData<String>().default("")
@@ -93,11 +95,6 @@ class PaymentSheetViewModel(
         addRule("Expired card") { parseExpiry(it ?: "")?.expired() ?: false }
     }
 
-    private fun validateForm(): Boolean {
-        val validators = listOf(nameValidator, numberValidator, cvcValidator, expiryValidator)
-        return validators.all { it.isValid() }.also { _isFormValid.value = it }
-    }
-
     private val cleanCardNumber: String
         get() = number.value!!.replace(" ", "")
 
@@ -107,17 +104,41 @@ class PaymentSheetViewModel(
     private val expiryYear: String
         get() = parseExpiry(expiry.value ?: "")?.year.toString()
 
+    // Done logic like this to replicate iOS SDK's behavior
     val amountLabel: String
         get() {
-            val currency = Currency.getInstance(paymentConfig.currency)
-            val formatter = NumberFormat.getCurrencyInstance()
-            formatter.currency = currency
-            formatter.minimumFractionDigits = currency.defaultFractionDigits
+            val currentLocale = Locale.getDefault()
+            val paymentCurrency = Currency.getInstance(paymentConfig.currency)
 
-            return formatter.format(
-                paymentConfig.amount / (10.0.pow(formatter.currency!!.defaultFractionDigits.toDouble()))
-            )
+            val numberFormatter = DecimalFormat.getNumberInstance(Locale.US).apply {
+                minimumFractionDigits = paymentCurrency.defaultFractionDigits
+                isGroupingUsed = true
+            }
+
+            val currencyFormatter = DecimalFormat.getCurrencyInstance(currentLocale).apply {
+                currency = paymentCurrency
+            }
+
+            val amount =
+                paymentConfig.amount / (10.0.pow(currencyFormatter.currency!!.defaultFractionDigits.toDouble()))
+            val formattedNumber = numberFormatter.format(amount)
+            val currencySymbol = currencyFormatter.currency!!.symbol
+
+            return if (currentLocale.language == "ar") {
+                "$formattedNumber $currencySymbol"
+            } else {
+                "$currencySymbol $formattedNumber"
+            }
         }
+
+    private fun validateForm(isShowError: Boolean = true): Boolean {
+        val validators = listOf(nameValidator, numberValidator, cvcValidator, expiryValidator)
+        return if (isShowError) {
+            validators.all { it.isValid() }.also { _isFormValid.value = it }
+        } else {
+            validators.all { it.isValidWithoutErrorMessage() }.also { _isFormValid.value = it }
+        }
+    }
 
     private fun notifyPaymentResult(paymentResult: PaymentResult) {
         callback.onResult(paymentResult)
@@ -190,13 +211,15 @@ class PaymentSheetViewModel(
         )
 
         CoroutineScope(Job() + Dispatchers.Main).launch {
-            notifyPaymentResult( try {
-                PaymentResult.CompletedToken(_paymentService.createToken(request))
-            } catch (e: ApiException) {
-                PaymentResult.Failed(e)
-            } catch (e: Exception) {
-                PaymentResult.Failed(e)
-            })
+            notifyPaymentResult(
+                try {
+                    PaymentResult.CompletedToken(_paymentService.createToken(request))
+                } catch (e: ApiException) {
+                    PaymentResult.Failed(e)
+                } catch (e: Exception) {
+                    PaymentResult.Failed(e)
+                }
+            )
         }
     }
 
@@ -226,6 +249,15 @@ class PaymentSheetViewModel(
         }
     }
 
+    fun validateField(fieldType: FieldValidation, hasFocus: Boolean) {
+        when (fieldType) {
+            FieldValidation.Name -> nameValidator.onFieldFocusChange(hasFocus)
+            FieldValidation.Number -> numberValidator.onFieldFocusChange(hasFocus)
+            FieldValidation.Cvc -> cvcValidator.onFieldFocusChange(hasFocus)
+            FieldValidation.Expiry -> expiryValidator.onFieldFocusChange(hasFocus)
+        }
+    }
+
     fun submit() {
         if (!validateForm()) {
             return
@@ -244,7 +276,11 @@ class PaymentSheetViewModel(
         }
     }
 
-    fun creditCardTextChanged(textEdit: Editable) {
+    fun creditCardNameChanged() {
+        validateForm(false)
+    }
+
+    fun creditCardNumberChanged(textEdit: Editable) {
         if (ccOnChangeLocked) {
             return
         }
@@ -268,10 +304,12 @@ class PaymentSheetViewModel(
 
         textEdit.replace(0, textEdit.length, formatted.toString())
 
+        validateForm(false)
+
         ccOnChangeLocked = false
     }
 
-    fun expiryChanged(textEdit: Editable) {
+    fun creditCardExpiryChanged(textEdit: Editable) {
         if (ccExpiryOnChangeLocked) {
             return
         }
@@ -298,7 +336,13 @@ class PaymentSheetViewModel(
 
         textEdit.replace(0, textEdit.length, formatted.toString())
 
+        validateForm(false)
+
         ccExpiryOnChangeLocked = false
+    }
+
+    fun creditCardCvcChanged() {
+        validateForm(false)
     }
 
     sealed class Status : Parcelable {
@@ -315,5 +359,12 @@ class PaymentSheetViewModel(
     internal sealed class RequestResult {
         data class Success(val payment: Payment) : RequestResult()
         data class Failure(val e: Exception) : RequestResult()
+    }
+
+    enum class FieldValidation {
+        Name,
+        Number,
+        Expiry,
+        Cvc
     }
 }

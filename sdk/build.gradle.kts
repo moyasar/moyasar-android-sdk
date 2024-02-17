@@ -11,10 +11,14 @@ android {
     compileSdk = 34
 
     defaultConfig {
-        minSdk = 16
+        minSdk = 17
 
         testInstrumentationRunner = "android.support.test.runner.AndroidJUnitRunner"
         consumerProguardFiles("consumer-rules.pro")
+
+        vectorDrawables {
+            useSupportLibrary = true
+        }
     }
 
     buildTypes {

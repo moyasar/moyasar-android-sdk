@@ -22,6 +22,16 @@ class LiveDataValidator(private val liveData: LiveData<String>) {
         return true
     }
 
+    fun isValidWithoutErrorMessage(): Boolean {
+        for (rule in rules) {
+            if (rule.predicate(liveData.value)) {
+                return false
+            }
+        }
+
+        return true
+    }
+
     fun addRule(message: String, predicate: Predicate) {
         rules.add(ValidationRule(predicate, message))
     }
