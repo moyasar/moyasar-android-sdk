@@ -1,8 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="credit_card_label">رقم البطاقة</string>
     <string name="name_on_card_label">الاسم على البطاقة</string>
+    <string name="credit_card_label">رقم البطاقة</string>
     <string name="expiration_date_label">تاريخ الانتهاء</string>
     <string name="security_code_label">رمز الأمان</string>
+    <string name="card_number_required">رقم البطاقة مطلوب</string>
+    <string name="invalid_card_number">رقم البطاقة غير صحيح</string>
+    <string name="unsupported_network">شبكة البطاقة غير مدعومة</string>
+    <string name="expiry_is_required">تاريخ الإنتهاء مطلوب</string>
+    <string name="invalid_expiry">تاريخ الإنتهاء غير صحيح</string>
+    <string name="expired_card">البطاقة منتهية</string>
+    <string name="name_is_required">الاسم مطلوب</string>
+    <string name="both_names_required">الاسم الأول والثاني مطلوب</string>
+    <string name="only_english_alpha">يجب أن يحتوي الاسم على حروف إنجليزية فقط</string>
+    <string name="cvc_required">رمز التحقق مطلوب</string>
+    <string name="invalid_cvc">رمز تحقق غير صحيح</string>
     <string name="payBtnLabel">ادفع</string>
 </resources>

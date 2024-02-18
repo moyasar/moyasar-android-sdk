@@ -20,7 +20,7 @@ class PaymentSheet(
         }
 
         // TODO: Consider clearing the view model after finishing the payment (onDestroy or sheetResult in fragment?)
-        SharedPaymentViewModelHolder.sharedViewModel = PaymentSheetViewModel(config, callback)
+        SharedPaymentViewModelHolder.sharedViewModel = PaymentSheetViewModel(context.application, config, callback)
 
         context.supportFragmentManager.beginTransaction().apply {
             replace(fragmentResourceId, PaymentFragment.newInstance())

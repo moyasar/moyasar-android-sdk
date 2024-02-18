@@ -1,14 +1,16 @@
 package com.moyasar.android.sdk.data
 
+import android.app.Application
+import android.arch.lifecycle.AndroidViewModel
 import android.arch.lifecycle.LiveData
 import android.arch.lifecycle.MediatorLiveData
 import android.arch.lifecycle.MutableLiveData
-import android.arch.lifecycle.ViewModel
 import android.os.Parcelable
 import android.text.Editable
 import com.moyasar.android.sdk.PaymentConfig
 import com.moyasar.android.sdk.PaymentResult
 import com.moyasar.android.sdk.PaymentSheetResultCallback
+import com.moyasar.android.sdk.R
 import com.moyasar.android.sdk.exceptions.ApiException
 import com.moyasar.android.sdk.exceptions.PaymentSheetException
 import com.moyasar.android.sdk.extensions.default
@@ -35,9 +37,10 @@ import java.util.Locale
 import kotlin.math.pow
 
 class PaymentSheetViewModel(
+    application: Application,
     private val paymentConfig: PaymentConfig,
     private val callback: PaymentSheetResultCallback,
-) : ViewModel() {
+) : AndroidViewModel(application) {
     private val _paymentService: PaymentService by lazy {
         PaymentService(paymentConfig.apiKey, paymentConfig.baseUrl)
     }
@@ -64,15 +67,15 @@ class PaymentSheetViewModel(
         val latinRegex = Regex("^[a-zA-Z\\-\\s]+\$")
         val nameRegex = Regex("^[a-zA-Z\\-]+\\s+?([a-zA-Z\\-]+\\s?)+\$")
 
-        addRule("Name is required") { it.isNullOrBlank() }
-        addRule("Name should only contain English alphabet") { !latinRegex.matches(it ?: "") }
-        addRule("Both first and last names are required") { !nameRegex.matches(it ?: "") }
+        addRule(application.getString(R.string.name_is_required)) { it.isNullOrBlank() }
+        addRule(application.getString(R.string.only_english_alpha)) { !latinRegex.matches(it ?: "") }
+        addRule(application.getString(R.string.both_names_required)) { !nameRegex.matches(it ?: "") }
     }
 
     val numberValidator = LiveDataValidator(number).apply {
-        addRule("Credit card number is required") { it.isNullOrBlank() }
-        addRule("Credit card number is invalid") { !isValidLuhnNumber(it ?: "") }
-        addRule("Unsupported credit card network") {
+        addRule(application.getString(R.string.card_number_required)) { it.isNullOrBlank() }
+        addRule(application.getString(R.string.invalid_card_number)) { !isValidLuhnNumber(it ?: "") }
+        addRule(application.getString(R.string.unsupported_network)) {
             getNetwork(
                 it ?: ""
             ) == CreditCardNetwork.Unknown
@@ -80,8 +83,8 @@ class PaymentSheetViewModel(
     }
 
     val cvcValidator = LiveDataValidator(cvc).apply {
-        addRule("Security code is required") { it.isNullOrBlank() }
-        addRule("Invalid security code") {
+        addRule(application.getString(R.string.cvc_required)) { it.isNullOrBlank() }
+        addRule(application.getString(R.string.invalid_cvc)) {
             when (getNetwork(number.value ?: "")) {
                 CreditCardNetwork.Amex -> (it?.length ?: 0) < 4
                 else -> (it?.length ?: 0) < 3
@@ -90,9 +93,9 @@ class PaymentSheetViewModel(
     }
 
     val expiryValidator = LiveDataValidator(expiry).apply {
-        addRule("Expiry date is required") { it.isNullOrBlank() }
-        addRule("Invalid date") { parseExpiry(it ?: "")?.isInvalid() ?: true }
-        addRule("Expired card") { parseExpiry(it ?: "")?.expired() ?: false }
+        addRule(application.getString(R.string.expiry_is_required)) { it.isNullOrBlank() }
+        addRule(application.getString(R.string.invalid_expiry)) { parseExpiry(it ?: "")?.isInvalid() ?: true }
+        addRule(application.getString(R.string.expired_card)) { parseExpiry(it ?: "")?.expired() ?: false }
     }
 
     private val cleanCardNumber: String
