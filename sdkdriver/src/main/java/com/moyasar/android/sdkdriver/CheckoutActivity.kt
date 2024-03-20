@@ -31,11 +31,9 @@ class CheckoutActivity : AppCompatActivity() {
         binding.lifecycleOwner = this
         binding.viewModel = viewModel
 
-        viewModel.registerForActivity(this)
-
         val donateBtn = findViewById<Button>(R.id.button2)
         donateBtn.setOnClickListener {
-            viewModel.beginDonation(R.id.paymentSheetFragment)
+            viewModel.beginDonation(this, R.id.paymentSheetFragment)
         }
     }
 }

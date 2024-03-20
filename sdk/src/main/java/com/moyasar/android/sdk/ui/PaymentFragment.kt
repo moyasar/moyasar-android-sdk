@@ -1,5 +1,6 @@
 package com.moyasar.android.sdk.ui
 
+import android.app.Application
 import android.content.Intent
 import android.os.Bundle
 import android.support.v4.app.Fragment
@@ -7,18 +8,21 @@ import android.support.v4.app.FragmentActivity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.moyasar.android.sdk.PaymentConfig
+import com.moyasar.android.sdk.PaymentResult
 import com.moyasar.android.sdk.data.PaymentSheetViewModel
 import com.moyasar.android.sdk.data.SharedPaymentViewModelHolder
 import com.moyasar.android.sdk.databinding.FragmentPaymentBinding
 
-internal class PaymentFragment : Fragment() {
+class PaymentFragment : Fragment() {
 
     private val viewModel: PaymentSheetViewModel = SharedPaymentViewModelHolder.sharedViewModel
 
     private lateinit var parentActivity: FragmentActivity
 
     companion object {
-        fun newInstance(): PaymentFragment {
+        fun newInstance(application: Application, config: PaymentConfig, callback: (PaymentResult) -> Unit): PaymentFragment {
+            SharedPaymentViewModelHolder.sharedViewModel = PaymentSheetViewModel(application, config, callback)
             return PaymentFragment()
         }
     }
@@ -29,6 +33,8 @@ internal class PaymentFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         super.onCreateView(inflater, container, savedInstanceState)
+
+        parentActivity = requireActivity()
 
         val binding = FragmentPaymentBinding.inflate(inflater, container, false)
 
@@ -63,11 +69,5 @@ internal class PaymentFragment : Fragment() {
         }
 
         return binding.root
-    }
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-        parentActivity = requireActivity()
     }
 }

@@ -39,7 +39,7 @@ import kotlin.math.pow
 class PaymentSheetViewModel(
     application: Application,
     private val paymentConfig: PaymentConfig,
-    private val callback: PaymentSheetResultCallback,
+    private val callback: (PaymentResult) -> Unit,
 ) : AndroidViewModel(application) {
     private val _paymentService: PaymentService by lazy {
         PaymentService(paymentConfig.apiKey, paymentConfig.baseUrl)
@@ -144,7 +144,7 @@ class PaymentSheetViewModel(
     }
 
     private fun notifyPaymentResult(paymentResult: PaymentResult) {
-        callback.onResult(paymentResult)
+        callback(paymentResult)
         _sheetResult.value = paymentResult
     }
 

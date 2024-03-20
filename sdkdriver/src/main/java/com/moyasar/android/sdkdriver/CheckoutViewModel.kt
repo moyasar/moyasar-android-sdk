@@ -5,15 +5,14 @@ import android.arch.lifecycle.ViewModel
 import android.os.Parcelable
 import com.moyasar.android.sdk.PaymentConfig
 import com.moyasar.android.sdk.PaymentResult
-import com.moyasar.android.sdk.PaymentSheet
 import com.moyasar.android.sdk.extensions.default
 import com.moyasar.android.sdk.payment.models.Payment
+import com.moyasar.android.sdk.ui.PaymentFragment
 import kotlinx.parcelize.Parcelize
 
 class CheckoutViewModel : ViewModel() {
     val status = MutableLiveData<Status>().default(Status.Idle)
     private val payment = MutableLiveData<Payment?>()
-    private lateinit var paymentSheet: PaymentSheet
     private val config = PaymentConfig(
         amount = 100000,
         currency = "SAR",
@@ -55,12 +54,13 @@ class CheckoutViewModel : ViewModel() {
         }
     }
 
-    fun registerForActivity(activity: CheckoutActivity) {
-        paymentSheet = PaymentSheet(activity, { this.onPaymentSheetResult(it) }, config)
-    }
+    fun beginDonation(activity: CheckoutActivity, id: Int) {
+        val paymentFragment = PaymentFragment.newInstance(activity.application, config) { this.onPaymentSheetResult(it) }
 
-    fun beginDonation(id: Int) {
-        paymentSheet.present(id)
+        activity.supportFragmentManager.beginTransaction().apply {
+            replace(id, paymentFragment)
+            commit()
+        }
     }
 
     sealed class Status : Parcelable {
