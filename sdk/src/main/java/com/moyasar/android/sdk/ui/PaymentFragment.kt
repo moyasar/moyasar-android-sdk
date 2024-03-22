@@ -1,7 +1,6 @@
 package com.moyasar.android.sdk.ui
 
 import android.app.Application
-import android.content.Intent
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentActivity
@@ -45,29 +44,16 @@ class PaymentFragment : Fragment() {
             parentActivity.runOnUiThread {
                 when (it) {
                     is PaymentSheetViewModel.Status.PaymentAuth3dSecure -> {
-                        startActivity(
-                            Intent(
-                                parentActivity,
-                                PaymentAuthActivity::class.java
-                            ).apply {
-                                putExtra(PaymentAuthActivity.EXTRA_AUTH_URL, it.url)
-                            })
+                        parentActivity.supportFragmentManager?.beginTransaction()?.apply {
+                            replace(id, PaymentAuthFragment())
+                            commit()
+                        }
                     }
 
                     else -> {}
                 }
             }
         }
-
-        viewModel.sheetResult.observe(viewLifecycleOwner) {
-            parentActivity.runOnUiThread {
-                if (it != null) {
-                    parentActivity.supportFragmentManager?.beginTransaction()?.remove(this)
-                        ?.commit()
-                }
-            }
-        }
-
         return binding.root
     }
 }

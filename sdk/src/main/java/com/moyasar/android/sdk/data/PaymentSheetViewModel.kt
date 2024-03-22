@@ -9,7 +9,6 @@ import android.os.Parcelable
 import android.text.Editable
 import com.moyasar.android.sdk.PaymentConfig
 import com.moyasar.android.sdk.PaymentResult
-import com.moyasar.android.sdk.PaymentSheetResultCallback
 import com.moyasar.android.sdk.R
 import com.moyasar.android.sdk.exceptions.ApiException
 import com.moyasar.android.sdk.exceptions.PaymentSheetException
@@ -20,7 +19,7 @@ import com.moyasar.android.sdk.payment.models.CardPaymentSource
 import com.moyasar.android.sdk.payment.models.Payment
 import com.moyasar.android.sdk.payment.models.PaymentRequest
 import com.moyasar.android.sdk.payment.models.TokenRequest
-import com.moyasar.android.sdk.ui.PaymentAuthActivity
+import com.moyasar.android.sdk.ui.PaymentAuthFragment
 import com.moyasar.android.sdk.util.CreditCardNetwork
 import com.moyasar.android.sdk.util.getNetwork
 import com.moyasar.android.sdk.util.isValidLuhnNumber
@@ -37,7 +36,7 @@ import java.util.Locale
 import kotlin.math.pow
 
 class PaymentSheetViewModel(
-    application: Application,
+    private val application: Application,
     private val paymentConfig: PaymentConfig,
     private val callback: (PaymentResult) -> Unit,
 ) : AndroidViewModel(application) {
@@ -153,7 +152,7 @@ class PaymentSheetViewModel(
             paymentConfig.amount,
             paymentConfig.currency,
             paymentConfig.description,
-            PaymentAuthActivity.RETURN_URL,
+            PaymentAuthFragment.RETURN_URL,
             CardPaymentSource(
                 name.value!!,
                 cleanCardNumber,
@@ -226,9 +225,9 @@ class PaymentSheetViewModel(
         }
     }
 
-    internal fun onPaymentAuthReturn(result: PaymentAuthActivity.AuthResult) {
+    internal fun onPaymentAuthReturn(result: PaymentAuthFragment.AuthResult) {
         when (result) {
-            is PaymentAuthActivity.AuthResult.Completed -> {
+            is PaymentAuthFragment.AuthResult.Completed -> {
                 if (result.id != _payment.value?.id) {
                     throw Exception("Got different ID from auth process ${result.id} instead of ${_payment.value?.id}")
                 }
@@ -242,11 +241,11 @@ class PaymentSheetViewModel(
                 notifyPaymentResult(PaymentResult.Completed(payment))
             }
 
-            is PaymentAuthActivity.AuthResult.Failed -> {
+            is PaymentAuthFragment.AuthResult.Failed -> {
                 notifyPaymentResult(PaymentResult.Failed(PaymentSheetException(result.error)))
             }
 
-            is PaymentAuthActivity.AuthResult.Canceled -> {
+            is PaymentAuthFragment.AuthResult.Canceled -> {
                 notifyPaymentResult(PaymentResult.Canceled)
             }
         }
