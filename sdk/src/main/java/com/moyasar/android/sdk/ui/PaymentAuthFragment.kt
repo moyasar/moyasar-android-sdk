@@ -4,10 +4,8 @@ import android.annotation.SuppressLint
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
-import android.os.Parcelable
 import android.support.annotation.RequiresApi
 import android.support.v4.app.Fragment
-import android.support.v4.app.FragmentActivity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -15,18 +13,19 @@ import android.webkit.WebResourceError
 import android.webkit.WebResourceRequest
 import android.webkit.WebView
 import android.webkit.WebViewClient
+import android.widget.ProgressBar
+import com.moyasar.android.sdk.R
 import com.moyasar.android.sdk.data.PaymentSheetViewModel
 import com.moyasar.android.sdk.data.SharedPaymentViewModelHolder
 import com.moyasar.android.sdk.databinding.FragmentPaymentAuthBinding
-import kotlinx.parcelize.Parcelize
 
 @SuppressLint("SetJavaScriptEnabled")
 internal class PaymentAuthFragment : Fragment() {
 
     private val viewModel: PaymentSheetViewModel = SharedPaymentViewModelHolder.sharedViewModel
 
-    private lateinit var parentActivity: FragmentActivity
     private lateinit var webView: WebView
+    private lateinit var progressBar: ProgressBar
 
     private val authUrl: String? by lazy {
         viewModel.payment.value?.getCardTransactionUrl()
@@ -45,6 +44,12 @@ internal class PaymentAuthFragment : Fragment() {
 
             override fun shouldOverrideUrlLoading(view: WebView?, url: String?): Boolean {
                 return shouldOverrideUrlLoading(if (url != null) Uri.parse(url) else null)
+            }
+
+            override fun onPageFinished(view: WebView?, url: String?) {
+                super.onPageFinished(view, url)
+
+                progressBar.visibility = View.GONE
             }
 
             @RequiresApi(Build.VERSION_CODES.M)
@@ -75,8 +80,6 @@ internal class PaymentAuthFragment : Fragment() {
     ): View {
         super.onCreateView(inflater, container, savedInstanceState)
 
-        parentActivity = requireActivity()
-
         val binding = FragmentPaymentAuthBinding.inflate(inflater, container, false)
         binding.lifecycleOwner = viewLifecycleOwner
 
@@ -85,16 +88,13 @@ internal class PaymentAuthFragment : Fragment() {
         webView.settings.javaScriptEnabled = true
         webView.webViewClient = webViewClient
 
-        viewModel.sheetResult.observe(viewLifecycleOwner) {
-            parentActivity.runOnUiThread {
-                if (it != null) {
-                    parentActivity.supportFragmentManager?.beginTransaction()?.remove(this)
-                        ?.commit()
-                }
-            }
-        }
-
         return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        progressBar = view.findViewById(R.id.circularProgressIndicator)
     }
 
     override fun onStart() {
@@ -104,7 +104,6 @@ internal class PaymentAuthFragment : Fragment() {
 
         if (url.isNullOrBlank()) {
             viewModel.onPaymentAuthReturn(AuthResult.Failed("Missing Payment 3DS Auth URL."))
-
             return
         }
 
@@ -129,14 +128,11 @@ internal class PaymentAuthFragment : Fragment() {
         viewModel.onPaymentAuthReturn(AuthResult.Failed(error))
     }
 
-    sealed class AuthResult : Parcelable {
-        @Parcelize
+    sealed class AuthResult {
         data class Completed(val id: String, val status: String, val message: String) : AuthResult()
 
-        @Parcelize
         data class Failed(val error: String? = null) : AuthResult()
 
-        @Parcelize
         data object Canceled : AuthResult()
     }
 

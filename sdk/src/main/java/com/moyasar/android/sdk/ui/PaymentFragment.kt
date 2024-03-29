@@ -9,6 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import com.moyasar.android.sdk.PaymentConfig
 import com.moyasar.android.sdk.PaymentResult
+import com.moyasar.android.sdk.R
 import com.moyasar.android.sdk.data.PaymentSheetViewModel
 import com.moyasar.android.sdk.data.SharedPaymentViewModelHolder
 import com.moyasar.android.sdk.databinding.FragmentPaymentBinding
@@ -36,7 +37,6 @@ class PaymentFragment : Fragment() {
         parentActivity = requireActivity()
 
         val binding = FragmentPaymentBinding.inflate(inflater, container, false)
-
         binding.lifecycleOwner = viewLifecycleOwner
         binding.viewModel = viewModel
 
@@ -44,8 +44,8 @@ class PaymentFragment : Fragment() {
             parentActivity.runOnUiThread {
                 when (it) {
                     is PaymentSheetViewModel.Status.PaymentAuth3dSecure -> {
-                        parentActivity.supportFragmentManager?.beginTransaction()?.apply {
-                            replace(id, PaymentAuthFragment())
+                        childFragmentManager.beginTransaction().apply {
+                            replace(R.id.payment_fragment_container, PaymentAuthFragment())
                             commit()
                         }
                     }
@@ -54,6 +54,15 @@ class PaymentFragment : Fragment() {
                 }
             }
         }
+
+        viewModel.sheetResult.observe(viewLifecycleOwner) {
+            parentActivity.runOnUiThread {
+                if (it != null) {
+                    childFragmentManager.beginTransaction().remove(this).commit()
+                }
+            }
+        }
+
         return binding.root
     }
 }
