@@ -4,6 +4,7 @@ plugins {
     id ("kotlin-android")
     id ("kotlin-parcelize")
     id ("kotlin-kapt")
+    id("maven-publish")
 }
 
 android {
