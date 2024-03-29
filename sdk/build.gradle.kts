@@ -11,6 +11,7 @@ android {
     namespace = "com.moyasar.android.sdk"
     compileSdk = 34
     buildToolsVersion = "34.0.0"
+    group = "com.github.AbdulazizAlrabiah"
 
     defaultConfig {
         minSdk = 17
