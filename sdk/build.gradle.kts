@@ -7,12 +7,23 @@ plugins {
     id("maven-publish")
 }
 
+publishing {
+    publications {
+        create<MavenPublication>("MavenPublication") {
+            groupId = "com.moyasar"
+            artifactId = "android-sdk"
+            version = "1.0.22"
+            afterEvaluate {
+                from(components["release"])
+            }
+        }
+    }
+}
+
 android {
     namespace = "com.moyasar.android.sdk"
     compileSdk = 34
     buildToolsVersion = "34.0.0"
-    version = "1.0.0"
-    group = "com.github.AbdulazizAlrabiah"
 
     defaultConfig {
         minSdk = 17
