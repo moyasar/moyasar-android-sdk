@@ -17,5 +17,5 @@ dependencyResolutionManagement {
 }
 
 rootProject.name = "Moyasar Android SDK"
-include("sdkdriver")
-include("sdk")
+include(":sdkdriver")
+include(":sdk")
