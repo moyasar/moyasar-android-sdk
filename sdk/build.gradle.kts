@@ -4,6 +4,20 @@ plugins {
     id ("kotlin-android")
     id ("kotlin-parcelize")
     id ("kotlin-kapt")
+    id("maven-publish")
+}
+
+publishing {
+    publications {
+        create<MavenPublication>("MavenPublication") {
+            groupId = "com.moyasar"
+            artifactId = "android-sdk"
+            version = "1.0.0"
+            afterEvaluate {
+                from(components["release"])
+            }
+        }
+    }
 }
 
 android {
