@@ -7,6 +7,7 @@ import android.support.v4.app.FragmentActivity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.moyasar.android.sdk.InvalidConfigException
 import com.moyasar.android.sdk.PaymentConfig
 import com.moyasar.android.sdk.PaymentResult
 import com.moyasar.android.sdk.R
@@ -22,6 +23,11 @@ class PaymentFragment : Fragment() {
 
     companion object {
         fun newInstance(application: Application, config: PaymentConfig, callback: (PaymentResult) -> Unit): PaymentFragment {
+            val configError = config.validate()
+            if (configError.any()) {
+                throw InvalidConfigException(configError)
+            }
+
             SharedPaymentViewModelHolder.sharedViewModel = PaymentSheetViewModel(application, config, callback)
             return PaymentFragment()
         }
