@@ -1,4 +1,4 @@
-package com.moyasar.android.sdk
+package com.example.sdk
 
 import org.junit.Test
 

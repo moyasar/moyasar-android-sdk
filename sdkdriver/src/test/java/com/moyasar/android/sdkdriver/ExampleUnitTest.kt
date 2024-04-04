@@ -1,4 +1,4 @@
-package com.moyasar.sdkdriver
+package com.example.moyasarandroidsdk
 
 import org.junit.Test
 

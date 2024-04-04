@@ -1,33 +1,45 @@
 package com.moyasar.android.sdk.data
 
-import android.content.res.Resources
+import android.app.Application
+import android.arch.lifecycle.AndroidViewModel
+import android.arch.lifecycle.LiveData
+import android.arch.lifecycle.MediatorLiveData
+import android.arch.lifecycle.MutableLiveData
 import android.os.Parcelable
 import android.text.Editable
-import androidx.lifecycle.*
 import com.moyasar.android.sdk.PaymentConfig
 import com.moyasar.android.sdk.PaymentResult
 import com.moyasar.android.sdk.R
 import com.moyasar.android.sdk.exceptions.ApiException
 import com.moyasar.android.sdk.exceptions.PaymentSheetException
+import com.moyasar.android.sdk.extensions.default
+import com.moyasar.android.sdk.extensions.distinctUntilChanged
 import com.moyasar.android.sdk.payment.PaymentService
 import com.moyasar.android.sdk.payment.models.CardPaymentSource
 import com.moyasar.android.sdk.payment.models.Payment
 import com.moyasar.android.sdk.payment.models.PaymentRequest
 import com.moyasar.android.sdk.payment.models.TokenRequest
-import com.moyasar.android.sdk.ui.PaymentAuthActivity
+import com.moyasar.android.sdk.ui.PaymentAuthFragment
 import com.moyasar.android.sdk.util.CreditCardNetwork
 import com.moyasar.android.sdk.util.getNetwork
 import com.moyasar.android.sdk.util.isValidLuhnNumber
 import com.moyasar.android.sdk.util.parseExpiry
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import kotlinx.parcelize.Parcelize
-import java.text.NumberFormat
-import java.util.*
+import java.text.DecimalFormat
+import java.util.Currency
+import java.util.Locale
+import kotlin.math.pow
 
 class PaymentSheetViewModel(
+    private val application: Application,
     private val paymentConfig: PaymentConfig,
-    private val resources: Resources
-) : ViewModel() {
+    private val callback: (PaymentResult) -> Unit,
+) : AndroidViewModel(application) {
     private val _paymentService: PaymentService by lazy {
         PaymentService(paymentConfig.apiKey, paymentConfig.baseUrl)
     }
@@ -35,33 +47,34 @@ class PaymentSheetViewModel(
     private var ccOnChangeLocked = false
     private var ccExpiryOnChangeLocked = false
 
-    private val _status = MutableLiveData<Status>(Status.Reset)
-    private val _payment = MutableLiveData<Payment?>(null)
-    private val _sheetResult = MutableLiveData<PaymentResult?>(null)
-    private val _isFormValid = MediatorLiveData<Boolean>()
+    private val _status = MutableLiveData<Status>().default(Status.Reset)
+    private val _payment = MutableLiveData<Payment?>()
+    private val _sheetResult = MutableLiveData<PaymentResult?>()
+    private val _isFormValid = MediatorLiveData<Boolean>().default(false)
 
-    val status: LiveData<Status> = _status
     internal val payment: LiveData<Payment?> = _payment
     internal val sheetResult: LiveData<PaymentResult?> = _sheetResult.distinctUntilChanged()
+    val status: LiveData<Status> = _status
+    val isFormValid: LiveData<Boolean> = _isFormValid.distinctUntilChanged()
 
-    val name = MutableLiveData("")
-    val number = MutableLiveData("")
-    val cvc = MutableLiveData("")
-    val expiry = MutableLiveData("")
+    val name = MutableLiveData<String>().default("")
+    val number = MutableLiveData<String>().default("")
+    val cvc = MutableLiveData<String>().default("")
+    val expiry = MutableLiveData<String>().default("")
 
     val nameValidator = LiveDataValidator(name).apply {
         val latinRegex = Regex("^[a-zA-Z\\-\\s]+\$")
         val nameRegex = Regex("^[a-zA-Z\\-]+\\s+?([a-zA-Z\\-]+\\s?)+\$")
 
-        addRule("Name is required") { it.isNullOrBlank() }
-        addRule("Name should only contain English alphabet") { !latinRegex.matches(it ?: "") }
-        addRule("Both first and last names are required") { !nameRegex.matches(it ?: "") }
+        addRule(application.getString(R.string.name_is_required)) { it.isNullOrBlank() }
+        addRule(application.getString(R.string.only_english_alpha)) { !latinRegex.matches(it ?: "") }
+        addRule(application.getString(R.string.both_names_required)) { !nameRegex.matches(it ?: "") }
     }
 
     val numberValidator = LiveDataValidator(number).apply {
-        addRule("Credit card number is required") { it.isNullOrBlank() }
-        addRule("Credit card number is invalid") { !isValidLuhnNumber(it ?: "") }
-        addRule("Unsupported credit card network") {
+        addRule(application.getString(R.string.card_number_required)) { it.isNullOrBlank() }
+        addRule(application.getString(R.string.invalid_card_number)) { !isValidLuhnNumber(it ?: "") }
+        addRule(application.getString(R.string.unsupported_network)) {
             getNetwork(
                 it ?: ""
             ) == CreditCardNetwork.Unknown
@@ -69,8 +82,8 @@ class PaymentSheetViewModel(
     }
 
     val cvcValidator = LiveDataValidator(cvc).apply {
-        addRule("Security code is required") { it.isNullOrBlank() }
-        addRule("Invalid security code") {
+        addRule(application.getString(R.string.cvc_required)) { it.isNullOrBlank() }
+        addRule(application.getString(R.string.invalid_cvc)) {
             when (getNetwork(number.value ?: "")) {
                 CreditCardNetwork.Amex -> (it?.length ?: 0) < 4
                 else -> (it?.length ?: 0) < 3
@@ -79,75 +92,59 @@ class PaymentSheetViewModel(
     }
 
     val expiryValidator = LiveDataValidator(expiry).apply {
-        addRule("Expiry date is required") { it.isNullOrBlank() }
-        addRule("Invalid date") { parseExpiry(it ?: "")?.isInvalid() ?: true }
-        addRule("Expired card") { parseExpiry(it ?: "")?.expired() ?: false }
+        addRule(application.getString(R.string.expiry_is_required)) { it.isNullOrBlank() }
+        addRule(application.getString(R.string.invalid_expiry)) { parseExpiry(it ?: "")?.isInvalid() ?: true }
+        addRule(application.getString(R.string.expired_card)) { parseExpiry(it ?: "")?.expired() ?: false }
     }
 
-    fun validateForm(): Boolean {
-        val validators = listOf(nameValidator, numberValidator, cvcValidator, expiryValidator)
-        return validators.all { it.isValid() }.also { _isFormValid.value = it }
-    }
-
-    val cleanCardNumber: String
+    private val cleanCardNumber: String
         get() = number.value!!.replace(" ", "")
 
-    val expiryMonth: String
+    private val expiryMonth: String
         get() = parseExpiry(expiry.value ?: "")?.month.toString()
 
-    val expiryYear: String
+    private val expiryYear: String
         get() = parseExpiry(expiry.value ?: "")?.year.toString()
 
-    val payLabel: String
-        get() {
-            val currency = Currency.getInstance(paymentConfig.currency)
-            val formatter = NumberFormat.getCurrencyInstance()
-            formatter.currency = currency
-            formatter.minimumFractionDigits = currency.defaultFractionDigits
-
-            val label = resources.getString(R.string.payBtnLabel)
-
-            val amount = formatter.format(
-                paymentConfig.amount / (Math.pow(
-                    10.0,
-                    formatter.currency!!.defaultFractionDigits.toDouble()
-                ))
-            )
-
-            return "$label $amount"
-        }
-
+    // Done logic like this to replicate iOS SDK's behavior
     val amountLabel: String
         get() {
-            val currency = Currency.getInstance(paymentConfig.currency)
-            val formatter = NumberFormat.getCurrencyInstance()
-            formatter.currency = currency
-            formatter.minimumFractionDigits = currency.defaultFractionDigits
+            val currentLocale = Locale.getDefault()
+            val paymentCurrency = Currency.getInstance(paymentConfig.currency)
 
-            return formatter.format(
-                paymentConfig.amount / (Math.pow(
-                    10.0,
-                    formatter.currency!!.defaultFractionDigits.toDouble()
-                ))
-            )
+            val numberFormatter = DecimalFormat.getNumberInstance(Locale.US).apply {
+                minimumFractionDigits = paymentCurrency.defaultFractionDigits
+                isGroupingUsed = true
+            }
+
+            val currencyFormatter = DecimalFormat.getCurrencyInstance(currentLocale).apply {
+                currency = paymentCurrency
+            }
+
+            val amount =
+                paymentConfig.amount / (10.0.pow(currencyFormatter.currency!!.defaultFractionDigits.toDouble()))
+            val formattedNumber = numberFormatter.format(amount)
+            val currencySymbol = currencyFormatter.currency!!.symbol
+
+            return if (currentLocale.language == "ar") {
+                "$formattedNumber $currencySymbol"
+            } else {
+                "$currencySymbol $formattedNumber"
+            }
         }
 
-    fun submit() {
-        if (!validateForm()) {
-            return;
-        }
-
-        if (_status.value != Status.Reset) {
-            return
-        }
-
-        _status.value = Status.SubmittingPayment
-
-        if (paymentConfig.createSaveOnlyToken) {
-            createSaveOnlyToken()
+    private fun validateForm(isShowError: Boolean = true): Boolean {
+        val validators = listOf(nameValidator, numberValidator, cvcValidator, expiryValidator)
+        return if (isShowError) {
+            validators.all { it.isValid() }.also { _isFormValid.value = it }
         } else {
-            createPayment()
+            validators.all { it.isValidWithoutErrorMessage() }.also { _isFormValid.value = it }
         }
+    }
+
+    private fun notifyPaymentResult(paymentResult: PaymentResult) {
+        callback(paymentResult)
+        _sheetResult.value = paymentResult
     }
 
     private fun createPayment() {
@@ -155,7 +152,7 @@ class PaymentSheetViewModel(
             paymentConfig.amount,
             paymentConfig.currency,
             paymentConfig.description,
-            PaymentAuthActivity.RETURN_URL,
+            PaymentAuthFragment.RETURN_URL,
             CardPaymentSource(
                 name.value!!,
                 cleanCardNumber,
@@ -192,13 +189,13 @@ class PaymentSheetViewModel(
                             }
 
                             else -> {
-                                _sheetResult.value = PaymentResult.Completed(result.payment)
+                                notifyPaymentResult(PaymentResult.Completed(result.payment))
                             }
                         }
                     }
 
                     is RequestResult.Failure -> {
-                        _sheetResult.value = PaymentResult.Failed(result.e)
+                        notifyPaymentResult(PaymentResult.Failed(result.e))
                     }
                 }
             }
@@ -216,19 +213,21 @@ class PaymentSheetViewModel(
         )
 
         CoroutineScope(Job() + Dispatchers.Main).launch {
-            _sheetResult.value = try {
-                PaymentResult.CompletedToken(_paymentService.createToken(request))
-            } catch (e: ApiException) {
-                PaymentResult.Failed(e)
-            } catch (e: Exception) {
-                PaymentResult.Failed(e)
-            }
+            notifyPaymentResult(
+                try {
+                    PaymentResult.CompletedToken(_paymentService.createToken(request))
+                } catch (e: ApiException) {
+                    PaymentResult.Failed(e)
+                } catch (e: Exception) {
+                    PaymentResult.Failed(e)
+                }
+            )
         }
     }
 
-    fun onPaymentAuthReturn(result: PaymentAuthActivity.AuthResult) {
+    internal fun onPaymentAuthReturn(result: PaymentAuthFragment.AuthResult) {
         when (result) {
-            is PaymentAuthActivity.AuthResult.Completed -> {
+            is PaymentAuthFragment.AuthResult.Completed -> {
                 if (result.id != _payment.value?.id) {
                     throw Exception("Got different ID from auth process ${result.id} instead of ${_payment.value?.id}")
                 }
@@ -239,20 +238,51 @@ class PaymentSheetViewModel(
                     source["message"] = result.message
                 }
 
-                _sheetResult.value = PaymentResult.Completed(payment)
+                notifyPaymentResult(PaymentResult.Completed(payment))
             }
 
-            is PaymentAuthActivity.AuthResult.Failed -> {
-                _sheetResult.value = PaymentResult.Failed(PaymentSheetException(result.error))
+            is PaymentAuthFragment.AuthResult.Failed -> {
+                notifyPaymentResult(PaymentResult.Failed(PaymentSheetException(result.error)))
             }
 
-            is PaymentAuthActivity.AuthResult.Canceled -> {
-                _sheetResult.value = PaymentResult.Canceled
+            is PaymentAuthFragment.AuthResult.Canceled -> {
+                notifyPaymentResult(PaymentResult.Canceled)
             }
         }
     }
 
-    fun creditCardTextChanged(textEdit: Editable) {
+    fun validateField(fieldType: FieldValidation, hasFocus: Boolean) {
+        when (fieldType) {
+            FieldValidation.Name -> nameValidator.onFieldFocusChange(hasFocus)
+            FieldValidation.Number -> numberValidator.onFieldFocusChange(hasFocus)
+            FieldValidation.Cvc -> cvcValidator.onFieldFocusChange(hasFocus)
+            FieldValidation.Expiry -> expiryValidator.onFieldFocusChange(hasFocus)
+        }
+    }
+
+    fun submit() {
+        if (!validateForm()) {
+            return
+        }
+
+        if (_status.value != Status.Reset) {
+            return
+        }
+
+        _status.value = Status.SubmittingPayment
+
+        if (paymentConfig.createSaveOnlyToken) {
+            createSaveOnlyToken()
+        } else {
+            createPayment()
+        }
+    }
+
+    fun creditCardNameChanged() {
+        validateForm(false)
+    }
+
+    fun creditCardNumberChanged(textEdit: Editable) {
         if (ccOnChangeLocked) {
             return
         }
@@ -276,10 +306,12 @@ class PaymentSheetViewModel(
 
         textEdit.replace(0, textEdit.length, formatted.toString())
 
+        validateForm(false)
+
         ccOnChangeLocked = false
     }
 
-    fun expiryChanged(textEdit: Editable) {
+    fun creditCardExpiryChanged(textEdit: Editable) {
         if (ccExpiryOnChangeLocked) {
             return
         }
@@ -306,25 +338,35 @@ class PaymentSheetViewModel(
 
         textEdit.replace(0, textEdit.length, formatted.toString())
 
+        validateForm(false)
+
         ccExpiryOnChangeLocked = false
+    }
+
+    fun creditCardCvcChanged() {
+        validateForm(false)
     }
 
     sealed class Status : Parcelable {
         @Parcelize
-        object Reset : Status()
+        data object Reset : Status()
 
         @Parcelize
-        object SubmittingPayment : Status()
+        data object SubmittingPayment : Status()
 
         @Parcelize
         data class PaymentAuth3dSecure(val url: String) : Status()
-
-        @Parcelize
-        data class Failure(val e: Throwable) : Status()
     }
 
     internal sealed class RequestResult {
         data class Success(val payment: Payment) : RequestResult()
         data class Failure(val e: Exception) : RequestResult()
+    }
+
+    enum class FieldValidation {
+        Name,
+        Number,
+        Expiry,
+        Cvc
     }
 }

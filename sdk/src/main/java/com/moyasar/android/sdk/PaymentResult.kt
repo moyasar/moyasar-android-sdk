@@ -16,5 +16,5 @@ sealed class PaymentResult : Parcelable {
     data class Failed(val error: Throwable) : PaymentResult()
 
     @Parcelize
-    object Canceled : PaymentResult()
+    data object Canceled : PaymentResult()
 }

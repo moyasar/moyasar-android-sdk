@@ -1,13 +1,2 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android">
-
-    <application>
-        <activity
-            android:name=".ui.PaymentAuthActivity"
-            android:exported="true" />
-        <activity
-            android:name=".ui.PaymentSheetActivity"
-            android:exported="true" />
-    </application>
-
-</manifest>
+<manifest package="com.moyasar.android.sdk"/>

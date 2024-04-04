@@ -14,9 +14,21 @@
         <item>12</item>
     </string-array>
 
-    <string name="credit_card_label">Card Number</string>
     <string name="name_on_card_label">Name on Card</string>
-    <string name="expiration_date_label">Expiration</string>
+    <string name="credit_card_label">Card Number</string>
+    <string name="expiration_date_label">Expiry</string>
     <string name="security_code_label">CVC</string>
+    <string name="card_number_required">Card number is required</string>
+    <string name="invalid_card_number">Invalid card number</string>
+    <string name="unsupported_network">Unsupported Credit Card network</string>
+    <string name="expiry_is_required">Expiry date is required</string>
+    <string name="invalid_expiry">Invalid expiry date</string>
+    <string name="expired_card">Expired card</string>
+    <string name="name_is_required">Name is required</string>
+    <string name="both_names_required">Both first and last names are required</string>
+    <string name="only_english_alpha">Name may only contain english alphabets</string>
+    <string name="cvc_required">Security code is required</string>
+    <string name="invalid_cvc">Invalid security code</string>
     <string name="payBtnLabel">Pay</string>
+
 </resources>

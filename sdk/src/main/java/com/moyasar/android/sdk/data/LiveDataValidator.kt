@@ -1,13 +1,7 @@
 package com.moyasar.android.sdk.data
 
-import android.content.Context
-import android.content.ServiceConnection
-import android.view.View
-import android.view.inputmethod.InputMethodManager
-import androidx.core.content.ContextCompat.getSystemService
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import android.content.Context.INPUT_METHOD_SERVICE as INPUT_METHOD_SERVICE1
+import android.arch.lifecycle.LiveData
+import android.arch.lifecycle.MutableLiveData
 
 typealias Predicate = (value: String?) -> Boolean
 
@@ -28,11 +22,21 @@ class LiveDataValidator(private val liveData: LiveData<String>) {
         return true
     }
 
+    fun isValidWithoutErrorMessage(): Boolean {
+        for (rule in rules) {
+            if (rule.predicate(liveData.value)) {
+                return false
+            }
+        }
+
+        return true
+    }
+
     fun addRule(message: String, predicate: Predicate) {
         rules.add(ValidationRule(predicate, message))
     }
 
-    fun onFieldFocusChange(view: View, hasFocus: Boolean) {
+    fun onFieldFocusChange(hasFocus: Boolean) {
         when (hasFocus) {
             true -> error.value = null
             false -> isValid()
