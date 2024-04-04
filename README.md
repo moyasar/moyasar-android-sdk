@@ -4,11 +4,4 @@ Moyasar's official Android SDK
 
 ## Installation
 
-## Requirements
-
-// Internet Permissions
-// ViewModel support
-
-## Credit Card Basic Usage
-
-## Stc Pay Basic Usage
+To install and setup the SDK follow [this documentation](https://docs.moyasar.com/android-sdk).
