@@ -26,7 +26,15 @@ class CheckoutViewModel : ViewModel() {
         createSaveOnlyToken = false
     )
 
+    // For demo purposes only
+    private lateinit var activity: CheckoutActivity
+    private lateinit var paymentFragment: PaymentFragment
+
     private fun onPaymentSheetResult(result: PaymentResult) {
+        activity.runOnUiThread {
+            activity.supportFragmentManager.beginTransaction().remove(paymentFragment).commit()
+        }
+
         when (result) {
             PaymentResult.Canceled -> {
                 status.value = Status.Failed(Exception("User canceled"))
@@ -55,7 +63,9 @@ class CheckoutViewModel : ViewModel() {
     }
 
     fun beginDonation(activity: CheckoutActivity, id: Int) {
-        val paymentFragment = PaymentFragment.newInstance(activity.application, config) { this.onPaymentSheetResult(it) }
+        this.activity = activity
+
+        this.paymentFragment = PaymentFragment.newInstance(activity.application, config) { this.onPaymentSheetResult(it) }
 
         activity.supportFragmentManager.beginTransaction().apply {
             replace(id, paymentFragment)

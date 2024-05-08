@@ -61,14 +61,6 @@ class PaymentFragment : Fragment() {
             }
         }
 
-        viewModel.sheetResult.observe(viewLifecycleOwner) {
-            parentActivity.runOnUiThread {
-                if (it != null) {
-                    childFragmentManager.beginTransaction().remove(this).commit()
-                }
-            }
-        }
-
         return binding.root
     }
 }

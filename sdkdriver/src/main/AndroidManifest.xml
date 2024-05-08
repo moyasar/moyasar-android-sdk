@@ -18,7 +18,8 @@
         <activity
             android:name=".CheckoutActivity"
             android:exported="true"
-            android:theme="@style/Theme.AppCompat.DayNight">
+            android:theme="@style/Theme.AppCompat.DayNight"
+            android:windowSoftInputMode="adjustPan"> >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

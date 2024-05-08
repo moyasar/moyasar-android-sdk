@@ -32,7 +32,7 @@ fun showWhenReset(view: View, oldValue: PaymentSheetViewModel.Status?, newValue:
 fun shouldDisableButton(view: View, isFormValidNewValue: Boolean) {
         if (isFormValidNewValue) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                view.background = view.context.getDrawable(R.drawable.bt_enabled_background)
+                view.background = view.context.getDrawable(R.drawable.moyasar_bt_enabled_background)
             } else {
                 val color =
                     ContextCompat.getColor(view.context, R.color.light_blue_button_enabled)
@@ -40,7 +40,7 @@ fun shouldDisableButton(view: View, isFormValidNewValue: Boolean) {
             }
         } else {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                view.background = view.context.getDrawable(R.drawable.bt_disabled_background)
+                view.background = view.context.getDrawable(R.drawable.moyasar_bt_disabled_background)
             } else {
                 val color =
                     ContextCompat.getColor(view.context, R.color.light_blue_button_disabled)
