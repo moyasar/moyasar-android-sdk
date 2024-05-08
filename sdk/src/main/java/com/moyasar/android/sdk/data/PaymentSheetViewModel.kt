@@ -49,11 +49,9 @@ class PaymentSheetViewModel(
 
     private val _status = MutableLiveData<Status>().default(Status.Reset)
     private val _payment = MutableLiveData<Payment?>()
-    private val _sheetResult = MutableLiveData<PaymentResult?>()
     private val _isFormValid = MediatorLiveData<Boolean>().default(false)
 
     internal val payment: LiveData<Payment?> = _payment
-    internal val sheetResult: LiveData<PaymentResult?> = _sheetResult.distinctUntilChanged()
     val status: LiveData<Status> = _status
     val isFormValid: LiveData<Boolean> = _isFormValid.distinctUntilChanged()
 
@@ -144,7 +142,6 @@ class PaymentSheetViewModel(
 
     private fun notifyPaymentResult(paymentResult: PaymentResult) {
         callback(paymentResult)
-        _sheetResult.value = paymentResult
     }
 
     private fun createPayment() {
