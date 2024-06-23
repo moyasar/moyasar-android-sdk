@@ -81,7 +81,6 @@ internal class PaymentAuthFragment : Fragment() {
         super.onCreateView(inflater, container, savedInstanceState)
 
         val binding = FragmentPaymentAuthBinding.inflate(inflater, container, false)
-        binding.lifecycleOwner = viewLifecycleOwner
 
         webView = binding.webView
         webView.settings.domStorageEnabled = true
