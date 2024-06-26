@@ -1,18 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:appMoyasar="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools">
-
-    <data>
-        <variable
-            name="viewModel"
-            type="com.moyasar.android.sdk.data.PaymentSheetViewModel" />
-
-        <import type="com.moyasar.android.sdk.data.PaymentSheetViewModel" />
-    </data>
-
-    <FrameLayout
+<FrameLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
         android:id="@+id/payment_fragment_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
@@ -42,24 +31,21 @@
                         android:id="@+id/nameOnCardInput"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        app:error="@{viewModel.nameValidator.error}"
                         app:errorEnabled="true"
                         app:hintEnabled="false"
-                        appMoyasar:disableWhenLoading="@{viewModel.status}">
+                      >
 
                         <EditText
+                            android:id="@+id/etNameOnCardInput"
                             android:layout_width="match_parent"
                             android:layout_height="45dp"
-                            android:afterTextChanged="@{() -> viewModel.creditCardNameChanged()}"
                             android:background="@drawable/moyasar_et_background"
                             android:hint="@string/name_on_card_label"
                             android:inputType="textPersonName"
                             android:layoutDirection="ltr"
                             android:paddingStart="8dp"
                             android:paddingEnd="8dp"
-                            android:text="@={viewModel.name}"
-                            app:onFocusChangeListener="@{(v, hf) -> viewModel.validateField(PaymentSheetViewModel.FieldValidation.Name, hf)}"
-                            tools:ignore="TouchTargetSizeCheck,SpeakableTextPresentCheck" />
+                           />
                     </android.support.design.widget.TextInputLayout>
 
                     <android.support.design.widget.TextInputLayout
@@ -67,26 +53,21 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="4dp"
-                        app:error="@{viewModel.numberValidator.error}"
                         app:errorEnabled="true"
                         app:hintEnabled="false"
-                        appMoyasar:disableWhenLoading="@{viewModel.status}">
+                      >
 
                         <EditText
+                            android:id="@+id/etCardNumberInput"
                             android:layout_width="match_parent"
                             android:layout_height="45dp"
-                            android:afterTextChanged="@{(e) -> viewModel.creditCardNumberChanged(e)}"
                             android:background="@drawable/moyasar_et_background"
                             android:digits="0123456789 "
                             android:hint="@string/credit_card_label"
                             android:inputType="number"
                             android:layoutDirection="ltr"
                             android:paddingStart="8dp"
-                            android:paddingEnd="8dp"
-                            android:text="@={viewModel.number}"
-                            app:onFocusChangeListener="@{(v, hf) -> viewModel.validateField(PaymentSheetViewModel.FieldValidation.Number, hf)}"
-                            appMoyasar:showCcNumberIconsWhenEmpty="@{viewModel.number}"
-                            tools:ignore="TouchTargetSizeCheck,SpeakableTextPresentCheck" />
+                            android:paddingEnd="8dp" />
                     </android.support.design.widget.TextInputLayout>
 
                     <android.support.design.widget.TextInputLayout
@@ -94,15 +75,14 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="4dp"
-                        app:error="@{viewModel.expiryValidator.error}"
                         app:errorEnabled="true"
                         app:hintEnabled="false"
-                        appMoyasar:disableWhenLoading="@{viewModel.status}">
+                     >
 
                         <EditText
+                            android:id="@+id/etCardExpiryDateInput"
                             android:layout_width="match_parent"
                             android:layout_height="45dp"
-                            android:afterTextChanged="@{(e) -> viewModel.creditCardExpiryChanged(e)}"
                             android:background="@drawable/moyasar_et_background"
                             android:digits="0123456789 /"
                             android:hint="@string/expiration_date_label"
@@ -110,9 +90,7 @@
                             android:layoutDirection="ltr"
                             android:paddingStart="8dp"
                             android:paddingEnd="8dp"
-                            android:text="@={viewModel.expiry}"
-                            app:onFocusChangeListener="@{(v, hf) -> viewModel.validateField(PaymentSheetViewModel.FieldValidation.Expiry, hf)}"
-                            tools:ignore="TouchTargetSizeCheck,SpeakableTextPresentCheck" />
+                            />
                     </android.support.design.widget.TextInputLayout>
 
                     <android.support.design.widget.TextInputLayout
@@ -120,15 +98,14 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="4dp"
-                        app:error="@{viewModel.cvcValidator.error}"
                         app:errorEnabled="true"
                         app:hintEnabled="false"
-                        appMoyasar:disableWhenLoading="@{viewModel.status}">
+                       >
 
                         <EditText
+                            android:id="@+id/etCardSecurityCodeInput"
                             android:layout_width="match_parent"
                             android:layout_height="45dp"
-                            android:afterTextChanged="@{() -> viewModel.creditCardCvcChanged()}"
                             android:background="@drawable/moyasar_et_background"
                             android:digits="0123456789"
                             android:hint="@string/security_code_label"
@@ -137,9 +114,7 @@
                             android:maxLength="4"
                             android:paddingStart="8dp"
                             android:paddingEnd="8dp"
-                            android:text="@={viewModel.cvc}"
-                            app:onFocusChangeListener="@{(v, hf) -> viewModel.validateField(PaymentSheetViewModel.FieldValidation.Cvc, hf)}"
-                            tools:ignore="TouchTargetSizeCheck,SpeakableTextPresentCheck" />
+                           />
                     </android.support.design.widget.TextInputLayout>
 
                     <android.support.v4.widget.Space
@@ -150,13 +125,9 @@
                         android:id="@+id/payButton"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:onClick="@{() -> viewModel.submit()}"
-                        android:text="@{@string/payBtnLabel + ' ' +  viewModel.amountLabel}"
                         android:textColor="@android:color/white"
                         android:textSize="18sp"
-                        android:textAllCaps="false"
-                        appMoyasar:shouldDisableButton="@{viewModel.isFormValid}"
-                        appMoyasar:showWhenReset="@{viewModel.status}" />
+                        android:textAllCaps="false" />
 
                 </LinearLayout>
 
@@ -166,8 +137,7 @@
                     android:layout_height="50dp"
                     android:layout_centerInParent="true"
                     android:indeterminate="true"
-                    appMoyasar:showWhenLoading="@{viewModel.status}" />
+                    />
             </RelativeLayout>
         </ScrollView>
     </FrameLayout>
-</layout>
