@@ -1,4 +1,4 @@
-package com.moyasar.android.sdk.presentation.fragments
+package com.moyasar.android.sdk.presentation.view.fragments
 
 import android.app.Application
 import android.os.Bundle
@@ -18,6 +18,7 @@ import com.moyasar.android.sdk.databinding.FragmentPaymentBinding
 import com.moyasar.android.sdk.core.extensions.afterTextChanged
 import com.moyasar.android.sdk.core.extensions.shouldDisableButton
 import com.moyasar.android.sdk.core.extensions.showCcNumberIconsWhenEmpty
+import com.moyasar.android.sdk.presentation.model.PaymentStatusViewState
 import com.moyasar.android.sdk.presentation.viewmodel.SharedPaymentViewModelHolder
 
 class PaymentFragment : Fragment() {
@@ -73,10 +74,10 @@ class PaymentFragment : Fragment() {
     viewModel.cvcValidator.error.observe(viewLifecycleOwner, ::showInvalidCVVErrorMsg)
   }
 
-  private fun handleOnStatusChanged(status: PaymentSheetViewModel.Status?) {
+  private fun handleOnStatusChanged(status: PaymentStatusViewState?) {
     parentActivity.runOnUiThread {
       when (status) {
-        is PaymentSheetViewModel.Status.PaymentAuth3dSecure -> {
+        is PaymentStatusViewState.PaymentAuth3dSecure -> {
           hideLoading()
           hideScreenViews()
           disableScreenViews()
@@ -86,13 +87,13 @@ class PaymentFragment : Fragment() {
           }
         }
 
-        is PaymentSheetViewModel.Status.Reset -> {
+        is PaymentStatusViewState.Reset -> {
           hideLoading()
           showScreenViews()
           enableScreenViews()
         }
 
-        is PaymentSheetViewModel.Status.SubmittingPayment -> {
+        is PaymentStatusViewState.SubmittingPayment -> {
           showLoading()
           hideScreenViews()
           disableScreenViews()

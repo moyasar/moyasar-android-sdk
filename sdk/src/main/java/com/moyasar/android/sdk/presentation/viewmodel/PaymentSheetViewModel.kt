@@ -5,7 +5,6 @@ import android.arch.lifecycle.AndroidViewModel
 import android.arch.lifecycle.LiveData
 import android.arch.lifecycle.MediatorLiveData
 import android.arch.lifecycle.MutableLiveData
-import android.os.Parcelable
 import android.text.Editable
 import com.moyasar.android.sdk.R
 import com.moyasar.android.sdk.core.exceptions.ApiException
@@ -16,7 +15,7 @@ import com.moyasar.android.sdk.data.models.CardPaymentSource
 import com.moyasar.android.sdk.data.models.Payment
 import com.moyasar.android.sdk.data.models.PaymentRequest
 import com.moyasar.android.sdk.data.models.TokenRequest
-import com.moyasar.android.sdk.presentation.fragments.PaymentAuthFragment
+import com.moyasar.android.sdk.presentation.view.fragments.PaymentAuthFragment
 import com.moyasar.android.sdk.core.util.CreditCardNetwork
 import com.moyasar.android.sdk.core.util.getNetwork
 import com.moyasar.android.sdk.core.util.isValidLuhnNumber
@@ -26,18 +25,19 @@ import com.moyasar.android.sdk.domain.entities.PaymentConfig
 import com.moyasar.android.sdk.domain.entities.PaymentResult
 import com.moyasar.android.sdk.domain.usecases.CreatePaymentUseCase
 import com.moyasar.android.sdk.domain.usecases.CreateTokenUseCase
+import com.moyasar.android.sdk.presentation.model.PaymentStatusViewState
+import com.moyasar.android.sdk.presentation.model.RequestResultViewState
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import kotlinx.parcelize.Parcelize
 import java.text.DecimalFormat
 import java.util.Currency
 import java.util.Locale
 import kotlin.math.pow
 
-class PaymentSheetViewModel(
+internal class PaymentSheetViewModel(
     private val application: Application,
     private val paymentConfig: PaymentConfig,
     private val callback: (PaymentResult) -> Unit,
@@ -48,12 +48,12 @@ class PaymentSheetViewModel(
     private var ccOnChangeLocked = false
     private var ccExpiryOnChangeLocked = false
 
-    private val _status = MutableLiveData<Status>().default(Status.Reset)
+    private val _status = MutableLiveData<PaymentStatusViewState>().default(PaymentStatusViewState.Reset)
     private val _payment = MutableLiveData<Payment?>()
     private val _isFormValid = MediatorLiveData<Boolean>().default(false)
 
     internal val payment: LiveData<Payment?> = _payment
-    val status: LiveData<Status> = _status
+    val status: LiveData<PaymentStatusViewState> = _status
     val isFormValid: LiveData<Boolean> = _isFormValid.distinctUntilChanged()
 
     val name = MutableLiveData<String>().default("")
@@ -168,22 +168,22 @@ class PaymentSheetViewModel(
                 val result = withContext(Dispatchers.IO) {
                     try {
                         val response = createPaymentUseCase(request)
-                        RequestResult.Success(response)
+                        RequestResultViewState.Success(response)
                     } catch (e: ApiException) {
-                        RequestResult.Failure(e)
+                        RequestResultViewState.Failure(e)
                     } catch (e: Exception) {
-                        RequestResult.Failure(e)
+                        RequestResultViewState.Failure(e)
                     }
                 }
 
                 when (result) {
-                    is RequestResult.Success -> {
+                    is RequestResultViewState.Success -> {
                         _payment.value = result.payment
 
                         when (result.payment.status.lowercase()) {
                             "initiated" -> {
                                 _status.value =
-                                    Status.PaymentAuth3dSecure(result.payment.getCardTransactionUrl())
+                                    PaymentStatusViewState.PaymentAuth3dSecure(result.payment.getCardTransactionUrl())
                             }
 
                             else -> {
@@ -192,7 +192,7 @@ class PaymentSheetViewModel(
                         }
                     }
 
-                    is RequestResult.Failure -> {
+                    is RequestResultViewState.Failure -> {
                         notifyPaymentResult(PaymentResult.Failed(result.e))
                     }
                 }
@@ -263,11 +263,11 @@ class PaymentSheetViewModel(
             return
         }
 
-        if (_status.value != Status.Reset) {
+        if (_status.value != PaymentStatusViewState.Reset) {
             return
         }
 
-        _status.value = Status.SubmittingPayment
+        _status.value = PaymentStatusViewState.SubmittingPayment
 
         if (paymentConfig.createSaveOnlyToken) {
             createSaveOnlyToken()
@@ -343,22 +343,6 @@ class PaymentSheetViewModel(
 
     fun creditCardCvcChanged() {
         validateForm(false)
-    }
-
-    sealed class Status : Parcelable {
-        @Parcelize
-        data object Reset : Status()
-
-        @Parcelize
-        data object SubmittingPayment : Status()
-
-        @Parcelize
-        data class PaymentAuth3dSecure(val url: String) : Status()
-    }
-
-    internal sealed class RequestResult {
-        data class Success(val payment: Payment) : RequestResult()
-        data class Failure(val e: Exception) : RequestResult()
     }
 
     enum class FieldValidation {

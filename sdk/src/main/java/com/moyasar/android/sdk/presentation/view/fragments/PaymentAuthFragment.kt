@@ -1,4 +1,4 @@
-package com.moyasar.android.sdk.presentation.fragments
+package com.moyasar.android.sdk.presentation.view.fragments
 
 import android.annotation.SuppressLint
 import android.net.Uri
