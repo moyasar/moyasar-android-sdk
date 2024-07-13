@@ -25,6 +25,7 @@ import com.moyasar.android.sdk.domain.entities.PaymentConfig
 import com.moyasar.android.sdk.domain.entities.PaymentResult
 import com.moyasar.android.sdk.domain.usecases.CreatePaymentUseCase
 import com.moyasar.android.sdk.domain.usecases.CreateTokenUseCase
+import com.moyasar.android.sdk.presentation.model.AuthResultViewState
 import com.moyasar.android.sdk.presentation.model.PaymentStatusViewState
 import com.moyasar.android.sdk.presentation.model.RequestResultViewState
 import kotlinx.coroutines.CoroutineScope
@@ -223,9 +224,9 @@ internal class PaymentSheetViewModel(
         }
     }
 
-    internal fun onPaymentAuthReturn(result: PaymentAuthFragment.AuthResult) {
+    internal fun onPaymentAuthReturn(result: AuthResultViewState) {
         when (result) {
-            is PaymentAuthFragment.AuthResult.Completed -> {
+            is AuthResultViewState.Completed -> {
                 if (result.id != _payment.value?.id) {
                     throw Exception("Got different ID from auth process ${result.id} instead of ${_payment.value?.id}")
                 }
@@ -239,11 +240,11 @@ internal class PaymentSheetViewModel(
                 notifyPaymentResult(PaymentResult.Completed(payment))
             }
 
-            is PaymentAuthFragment.AuthResult.Failed -> {
+            is AuthResultViewState.Failed -> {
                 notifyPaymentResult(PaymentResult.Failed(PaymentSheetException(result.error)))
             }
 
-            is PaymentAuthFragment.AuthResult.Canceled -> {
+            is AuthResultViewState.Canceled -> {
                 notifyPaymentResult(PaymentResult.Canceled)
             }
         }

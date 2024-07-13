@@ -17,9 +17,10 @@ import android.widget.ProgressBar
 import com.moyasar.android.sdk.R
 import com.moyasar.android.sdk.presentation.viewmodel.PaymentSheetViewModel
 import com.moyasar.android.sdk.databinding.FragmentPaymentAuthBinding
+import com.moyasar.android.sdk.presentation.model.AuthResultViewState
 import com.moyasar.android.sdk.presentation.viewmodel.SharedPaymentViewModelHolder
 
-@SuppressLint("SetJavaScriptEnabled")
+@SuppressLint("SetJavaScriptEnabled", "ValidFragment")
 internal class PaymentAuthFragment : Fragment() {
 
     private val viewModel: PaymentSheetViewModel = SharedPaymentViewModelHolder.sharedViewModel
@@ -102,7 +103,7 @@ internal class PaymentAuthFragment : Fragment() {
         val url = authUrl
 
         if (url.isNullOrBlank()) {
-            viewModel.onPaymentAuthReturn(AuthResult.Failed("Missing Payment 3DS Auth URL."))
+            viewModel.onPaymentAuthReturn(AuthResultViewState.Failed("Missing Payment 3DS Auth URL."))
             return
         }
 
@@ -115,7 +116,7 @@ internal class PaymentAuthFragment : Fragment() {
             val status = url.getQueryParameter("status") ?: ""
             val message = url.getQueryParameter("message") ?: ""
 
-            viewModel.onPaymentAuthReturn(AuthResult.Completed(id, status, message))
+            viewModel.onPaymentAuthReturn(AuthResultViewState.Completed(id, status, message))
 
             return true;
         }
@@ -124,15 +125,7 @@ internal class PaymentAuthFragment : Fragment() {
     }
 
     private fun onReceivedError(error: String?) {
-        viewModel.onPaymentAuthReturn(AuthResult.Failed(error))
-    }
-
-    sealed class AuthResult {
-        data class Completed(val id: String, val status: String, val message: String) : AuthResult()
-
-        data class Failed(val error: String? = null) : AuthResult()
-
-        data object Canceled : AuthResult()
+        viewModel.onPaymentAuthReturn(AuthResultViewState.Failed(error))
     }
 
     companion object {
