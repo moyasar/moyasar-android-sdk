@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/payment_fragment_container"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
@@ -9,7 +10,8 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:overScrollMode="always"
-        android:theme="@style/Theme.LibTheme">
+        android:theme="@style/Theme.LibTheme"
+        tools:ignore="UselessParent">
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -20,10 +22,10 @@
                 android:id="@+id/linearLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="12dp"
-                android:layout_marginTop="16dp"
-                android:layout_marginEnd="12dp"
-                android:layout_marginBottom="16dp"
+                android:layout_marginStart="@dimen/moyasar_views_margin_s"
+                android:layout_marginTop="@dimen/moyasar_spacing_medium"
+                android:layout_marginEnd="@dimen/moyasar_views_margin_s"
+                android:layout_marginBottom="@dimen/moyasar_spacing_medium"
                 android:orientation="vertical">
 
                 <android.support.design.widget.TextInputLayout
@@ -36,94 +38,95 @@
                     <EditText
                         android:id="@+id/etNameOnCardInput"
                         android:layout_width="match_parent"
-                        android:layout_height="45dp"
+                        android:layout_height="@dimen/moyasar_view_height_s"
                         android:background="@drawable/moyasar_et_background"
                         android:hint="@string/name_on_card_label"
                         android:inputType="textPersonName"
                         android:layoutDirection="ltr"
-                        android:paddingStart="8dp"
-                        android:paddingEnd="8dp" />
+                        android:paddingStart="@dimen/moyasar_spacing_small"
+                        android:paddingEnd="@dimen/moyasar_spacing_small" />
                 </android.support.design.widget.TextInputLayout>
 
                 <android.support.design.widget.TextInputLayout
                     android:id="@+id/cardNumberInput"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="4dp"
+                    android:layout_marginTop="@dimen/moyasar_spacing_tiny"
                     app:errorEnabled="true"
                     app:hintEnabled="false">
 
                     <EditText
                         android:id="@+id/etCardNumberInput"
                         android:layout_width="match_parent"
-                        android:layout_height="45dp"
+                        android:layout_height="@dimen/moyasar_view_height_s"
                         android:background="@drawable/moyasar_et_background"
                         android:digits="0123456789 "
                         android:hint="@string/credit_card_label"
                         android:inputType="number"
                         android:layoutDirection="ltr"
-                        android:paddingStart="8dp"
-                        android:paddingEnd="8dp" />
+                        android:paddingStart="@dimen/moyasar_spacing_small"
+                        android:paddingEnd="@dimen/moyasar_spacing_small" />
                 </android.support.design.widget.TextInputLayout>
 
                 <android.support.design.widget.TextInputLayout
                     android:id="@+id/cardExpiryDateInput"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="4dp"
+                    android:layout_marginTop="@dimen/moyasar_spacing_tiny"
                     app:errorEnabled="true"
                     app:hintEnabled="false">
 
                     <EditText
                         android:id="@+id/etCardExpiryDateInput"
                         android:layout_width="match_parent"
-                        android:layout_height="45dp"
+                        android:layout_height="@dimen/moyasar_view_height_s"
                         android:background="@drawable/moyasar_et_background"
                         android:digits="0123456789 /"
                         android:hint="@string/expiration_date_label"
                         android:inputType="number"
                         android:layoutDirection="ltr"
-                        android:paddingStart="8dp"
-                        android:paddingEnd="8dp" />
+                        android:paddingStart="@dimen/moyasar_spacing_small"
+                        android:paddingEnd="@dimen/moyasar_spacing_small"
+                        tools:ignore="TextFields" />
                 </android.support.design.widget.TextInputLayout>
 
                 <android.support.design.widget.TextInputLayout
                     android:id="@+id/cardSecurityCodeInput"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="4dp"
+                    android:layout_marginTop="@dimen/moyasar_spacing_tiny"
                     app:errorEnabled="true"
                     app:hintEnabled="false">
 
                     <EditText
                         android:id="@+id/etCardSecurityCodeInput"
                         android:layout_width="match_parent"
-                        android:layout_height="45dp"
+                        android:layout_height="@dimen/moyasar_view_height_s"
                         android:background="@drawable/moyasar_et_background"
                         android:digits="0123456789"
                         android:hint="@string/security_code_label"
                         android:inputType="number"
                         android:layoutDirection="ltr"
                         android:maxLength="4"
-                        android:paddingStart="8dp"
-                        android:paddingEnd="8dp" />
+                        android:paddingStart="@dimen/moyasar_spacing_small"
+                        android:paddingEnd="@dimen/moyasar_spacing_small" />
                 </android.support.design.widget.TextInputLayout>
 
                 <Button
                     android:id="@+id/payButton"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="32dp"
+                    android:layout_marginTop="@dimen/moyasar_spacing_x_large"
                     android:textAllCaps="false"
                     android:textColor="@android:color/white"
-                    android:textSize="18sp" />
+                    android:textSize="@dimen/moyasar_font_size_xl" />
 
             </LinearLayout>
 
             <ProgressBar
                 android:id="@+id/circularProgressIndicator"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
+                android:layout_width="@dimen/moyasar_view_height_m"
+                android:layout_height="@dimen/moyasar_view_height_m"
                 android:layout_centerInParent="true"
                 android:indeterminate="true" />
         </RelativeLayout>

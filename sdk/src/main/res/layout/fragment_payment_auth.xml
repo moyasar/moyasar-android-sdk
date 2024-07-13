@@ -11,8 +11,8 @@
 
     <ProgressBar
         android:id="@+id/circularProgressIndicator"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
+        android:layout_width="@dimen/moyasar_view_height_m"
+        android:layout_height="@dimen/moyasar_view_height_m"
         android:layout_gravity="center"
         android:indeterminate="true" />
 </FrameLayout>
