@@ -105,10 +105,10 @@ internal class PaymentAuthFragment : Fragment() {
 
       viewModel.onPaymentAuthReturn(AuthResultViewState.Completed(id, status, message))
 
-      return true;
+      return true
     }
 
-    return false;
+    return false
   }
 
   private fun onReceivedError(error: String?) {
@@ -116,7 +116,7 @@ internal class PaymentAuthFragment : Fragment() {
   }
 
   companion object {
-    const val RETURN_HOST = "sdk.moyasar.com";
+    const val RETURN_HOST = "sdk.moyasar.com"
     const val RETURN_URL = "https://$RETURN_HOST/payment/return"
     private const val URI_QUERY_PARAM_ID_KEY = "id"
     private const val URI_QUERY_PARAM_STATUS_KEY = "status"

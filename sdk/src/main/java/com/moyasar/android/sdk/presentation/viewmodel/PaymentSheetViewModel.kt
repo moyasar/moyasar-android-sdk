@@ -19,7 +19,6 @@ import com.moyasar.android.sdk.core.util.parseExpiry
 import com.moyasar.android.sdk.data.models.CardPaymentSource
 import com.moyasar.android.sdk.data.models.Payment
 import com.moyasar.android.sdk.data.models.PaymentRequest
-import com.moyasar.android.sdk.data.models.Token
 import com.moyasar.android.sdk.data.models.TokenRequest
 import com.moyasar.android.sdk.domain.entities.PaymentResult
 import com.moyasar.android.sdk.domain.usecases.CreatePaymentUseCase
