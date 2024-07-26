@@ -1,4 +1,4 @@
-package com.moyasar.android.sdk.domain.entities;
+package com.moyasar.android.sdk.presentation.model;
 
 import android.os.Parcelable
 import kotlinx.parcelize.Parcelize

@@ -6,17 +6,17 @@ import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentActivity
 import android.view.LayoutInflater
 import android.view.View
-import android.view.View.INVISIBLE
-import android.view.View.VISIBLE
 import android.view.ViewGroup
 import com.moyasar.android.sdk.core.exceptions.InvalidConfigException
-import com.moyasar.android.sdk.domain.entities.PaymentConfig
+import com.moyasar.android.sdk.presentation.model.PaymentConfig
 import com.moyasar.android.sdk.domain.entities.PaymentResult
 import com.moyasar.android.sdk.R
 import com.moyasar.android.sdk.presentation.viewmodel.PaymentSheetViewModel
 import com.moyasar.android.sdk.databinding.FragmentPaymentBinding
 import com.moyasar.android.sdk.core.extensions.afterTextChanged
+import com.moyasar.android.sdk.core.extensions.hide
 import com.moyasar.android.sdk.core.extensions.shouldDisableButton
+import com.moyasar.android.sdk.core.extensions.show
 import com.moyasar.android.sdk.core.extensions.showCcNumberIconsWhenEmpty
 import com.moyasar.android.sdk.presentation.model.PaymentStatusViewState
 import com.moyasar.android.sdk.presentation.viewmodel.SharedPaymentViewModelHolder
@@ -130,19 +130,19 @@ class PaymentFragment : Fragment() {
 
 
   private fun showLoading() {
-    binding.circularProgressIndicator.visibility = VISIBLE
+    binding.circularProgressIndicator.show()
   }
 
   private fun hideLoading() {
-    binding.circularProgressIndicator.visibility = INVISIBLE
+    binding.circularProgressIndicator.hide()
   }
 
   private fun showScreenViews() = with(binding) {
-    payButton.visibility = VISIBLE
-    nameOnCardInput.visibility = VISIBLE
-    cardNumberInput.visibility = VISIBLE
-    cardExpiryDateInput.visibility = VISIBLE
-    cardSecurityCodeInput.visibility = VISIBLE
+    payButton.show()
+    nameOnCardInput.show()
+    cardNumberInput.show()
+    cardExpiryDateInput.show()
+    cardSecurityCodeInput.show()
   }
 
   private fun enableScreenViews() = with(binding) {
@@ -162,11 +162,11 @@ class PaymentFragment : Fragment() {
   }
 
   private fun hideScreenViews() = with(binding) {
-    payButton.visibility = INVISIBLE
-    nameOnCardInput.visibility = INVISIBLE
-    cardNumberInput.visibility = INVISIBLE
-    cardExpiryDateInput.visibility = INVISIBLE
-    cardSecurityCodeInput.visibility = INVISIBLE
+    payButton.hide()
+    nameOnCardInput.hide()
+    cardNumberInput.hide()
+    cardExpiryDateInput.hide()
+    cardSecurityCodeInput.hide()
   }
 
 
