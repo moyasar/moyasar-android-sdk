@@ -169,8 +169,8 @@ import kotlin.math.pow
 
     scope(block = { createPaymentUseCase(request) }) { result ->
       when (result) {
-        is RequestResultViewState.Success<*> -> {
-          _payment.value = result.data as Payment
+        is RequestResultViewState.Success -> {
+          _payment.value = result.data
 
           when (result.data.status.lowercase()) {
             "initiated" -> {
@@ -204,8 +204,8 @@ import kotlin.math.pow
 
     scope(block = { createTokenUseCase(request) }) { result ->
       when (result) {
-        is RequestResultViewState.Success<*> -> {
-          val data = result.data as Token
+        is RequestResultViewState.Success -> {
+          val data = result.data
           notifyPaymentResult(PaymentResult.CompletedToken(data))
         }
         is RequestResultViewState.Failure -> {

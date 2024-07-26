@@ -1,6 +1,5 @@
 package com.moyasar.android.sdk.core.extensions
 
-import android.arch.lifecycle.ViewModel
 import com.moyasar.android.sdk.core.exceptions.ApiException
 import com.moyasar.android.sdk.presentation.model.RequestResultViewState
 import kotlinx.coroutines.CoroutineDispatcher
@@ -10,14 +9,14 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-internal fun <T> ViewModel.scope(
+internal fun <T> scope(
   coroutineScope: CoroutineScope = CoroutineScope(Job() + Dispatchers.Main),
   ioDispatcher: CoroutineDispatcher = Dispatchers.IO,
   block: suspend CoroutineScope.() -> T,
-  resultBlock: suspend (RequestResultViewState)-> Unit
+  resultBlock: suspend (RequestResultViewState<T>) -> Unit
 ) {
   coroutineScope.launch {
-    val result: RequestResultViewState = withContext(ioDispatcher) {
+    val result: RequestResultViewState<T> = withContext(ioDispatcher) {
       try {
         val response: T = block()
         RequestResultViewState.Success(response)
