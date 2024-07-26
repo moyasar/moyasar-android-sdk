@@ -15,14 +15,14 @@ import android.webkit.WebView
 import android.webkit.WebViewClient
 import com.moyasar.android.sdk.core.extensions.gone
 import com.moyasar.android.sdk.databinding.FragmentPaymentAuthBinding
+import com.moyasar.android.sdk.presentation.di.MoyasarAppContainer
 import com.moyasar.android.sdk.presentation.model.AuthResultViewState
 import com.moyasar.android.sdk.presentation.viewmodel.PaymentSheetViewModel
-import com.moyasar.android.sdk.presentation.viewmodel.SharedPaymentViewModelHolder
 
 @SuppressLint("ValidFragment")
 internal class PaymentAuthFragment : Fragment() {
 
-  private val viewModel: PaymentSheetViewModel = SharedPaymentViewModelHolder.sharedViewModel
+  private val viewModel: PaymentSheetViewModel = MoyasarAppContainer.viewModel
   private lateinit var binding: FragmentPaymentAuthBinding
 
   private val authUrl: String? by lazy {

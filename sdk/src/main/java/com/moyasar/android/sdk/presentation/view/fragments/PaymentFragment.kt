@@ -7,24 +7,23 @@ import android.support.v4.app.FragmentActivity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.moyasar.android.sdk.core.exceptions.InvalidConfigException
-import com.moyasar.android.sdk.presentation.model.PaymentConfig
-import com.moyasar.android.sdk.domain.entities.PaymentResult
 import com.moyasar.android.sdk.R
-import com.moyasar.android.sdk.presentation.viewmodel.PaymentSheetViewModel
-import com.moyasar.android.sdk.databinding.FragmentPaymentBinding
+import com.moyasar.android.sdk.core.exceptions.InvalidConfigException
 import com.moyasar.android.sdk.core.extensions.afterTextChanged
 import com.moyasar.android.sdk.core.extensions.hide
 import com.moyasar.android.sdk.core.extensions.shouldDisableButton
 import com.moyasar.android.sdk.core.extensions.show
 import com.moyasar.android.sdk.core.extensions.showCcNumberIconsWhenEmpty
+import com.moyasar.android.sdk.databinding.FragmentPaymentBinding
+import com.moyasar.android.sdk.domain.entities.PaymentResult
+import com.moyasar.android.sdk.presentation.di.MoyasarAppContainer
+import com.moyasar.android.sdk.presentation.model.FieldValidation
+import com.moyasar.android.sdk.presentation.model.PaymentConfig
 import com.moyasar.android.sdk.presentation.model.PaymentStatusViewState
-import com.moyasar.android.sdk.presentation.viewmodel.SharedPaymentViewModelHolder
 
 class PaymentFragment : Fragment() {
 
-  private val viewModel: PaymentSheetViewModel = SharedPaymentViewModelHolder.sharedViewModel
-
+  private val viewModel = MoyasarAppContainer.viewModel
   private lateinit var parentActivity: FragmentActivity
   private lateinit var binding: FragmentPaymentBinding
 
@@ -38,9 +37,7 @@ class PaymentFragment : Fragment() {
       if (configError.any()) {
         throw InvalidConfigException(configError)
       }
-
-      SharedPaymentViewModelHolder.sharedViewModel =
-        PaymentSheetViewModel(application, config, callback)
+      MoyasarAppContainer.initialize(application, config, callback)
       return PaymentFragment()
     }
   }
@@ -192,16 +189,16 @@ class PaymentFragment : Fragment() {
     }
 
     etNameOnCardInput.setOnFocusChangeListener { _, hf ->
-      viewModel.validateField(PaymentSheetViewModel.FieldValidation.Name, hf)
+      viewModel.validateField(FieldValidation.Name, hf)
     }
     etCardNumberInput.setOnFocusChangeListener { _, hf ->
-      viewModel.validateField(PaymentSheetViewModel.FieldValidation.Number, hf)
+      viewModel.validateField(FieldValidation.Number, hf)
     }
     etCardExpiryDateInput.setOnFocusChangeListener { _, hf ->
-      viewModel.validateField(PaymentSheetViewModel.FieldValidation.Expiry, hf)
+      viewModel.validateField(FieldValidation.Expiry, hf)
     }
     etCardSecurityCodeInput.setOnFocusChangeListener { _, hf ->
-      viewModel.validateField(PaymentSheetViewModel.FieldValidation.Cvc, hf)
+      viewModel.validateField(FieldValidation.Cvc, hf)
     }
 
     payButton.setOnClickListener {

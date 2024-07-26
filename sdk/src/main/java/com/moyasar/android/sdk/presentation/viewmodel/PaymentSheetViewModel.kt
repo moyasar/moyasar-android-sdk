@@ -35,23 +35,14 @@ import java.util.Currency
 import java.util.Locale
 import kotlin.math.pow
 
-internal class PaymentSheetViewModel(
+ class PaymentSheetViewModel(
   private val application: Application,
   private val paymentConfig: PaymentConfig,
   private val callback: (PaymentResult) -> Unit,
+  private val createPaymentUseCase: CreatePaymentUseCase,
+  private val createTokenUseCase: CreateTokenUseCase,
 ) : AndroidViewModel(application) {
-  private val createPaymentUseCase by lazy {
-    CreatePaymentUseCase(
-      paymentConfig.apiKey,
-      paymentConfig.baseUrl
-    )
-  }
-  private val createTokenUseCase by lazy {
-    CreateTokenUseCase(
-      paymentConfig.apiKey,
-      paymentConfig.baseUrl
-    )
-  }
+
 
   private var ccOnChangeLocked = false
   private var ccExpiryOnChangeLocked = false

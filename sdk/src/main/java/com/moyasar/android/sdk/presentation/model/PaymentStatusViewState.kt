@@ -3,7 +3,7 @@ package com.moyasar.android.sdk.presentation.model
 import android.os.Parcelable
 import kotlinx.parcelize.Parcelize
 
-internal sealed class PaymentStatusViewState : Parcelable {
+sealed class PaymentStatusViewState : Parcelable {
   @Parcelize
   data object Reset : PaymentStatusViewState()
 
