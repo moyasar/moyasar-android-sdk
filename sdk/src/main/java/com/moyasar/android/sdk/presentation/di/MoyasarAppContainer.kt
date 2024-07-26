@@ -1,6 +1,7 @@
 package com.moyasar.android.sdk.presentation.di
 
 import android.app.Application
+import com.moyasar.android.sdk.data.remote.PaymentService
 import com.moyasar.android.sdk.domain.entities.PaymentResult
 import com.moyasar.android.sdk.domain.usecases.CreatePaymentUseCase
 import com.moyasar.android.sdk.domain.usecases.CreateTokenUseCase
@@ -16,18 +17,19 @@ object MoyasarAppContainer {
   private lateinit var config: PaymentConfig
   private lateinit var callback: (PaymentResult) -> Unit
 
-  private val createPaymentUseCase by lazy {
-    CreatePaymentUseCase(
+  private val paymentService: PaymentService by lazy {
+    PaymentService(
       config.apiKey,
       config.baseUrl
     )
   }
 
+  private val createPaymentUseCase by lazy {
+    CreatePaymentUseCase(paymentService)
+  }
+
   private val createTokenUseCase by lazy {
-    CreateTokenUseCase(
-      config.apiKey,
-      config.baseUrl
-    )
+    CreateTokenUseCase(paymentService)
   }
 
   val viewModel by lazy {
