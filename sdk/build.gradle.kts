@@ -28,7 +28,6 @@ android {
     defaultConfig {
         minSdk = 17
 
-        testInstrumentationRunner = "android.support.test.runner.AndroidJUnitRunner"
         consumerProguardFiles("consumer-rules.pro")
 
         vectorDrawables {
@@ -65,7 +64,6 @@ android {
 }
 
 dependencies {
-
     //noinspection GradleCompatible
     implementation("com.android.support:design:28.0.0")
     //noinspection GradleCompatible
@@ -73,6 +71,4 @@ dependencies {
     implementation("com.google.code.gson:gson:2.10.1")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.1")
     implementation("android.arch.lifecycle:extensions:1.1.1")
-    testImplementation("junit:junit:4.13.2")
-    androidTestImplementation("com.android.support.test:runner:1.0.2")
 }
