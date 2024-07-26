@@ -17,13 +17,13 @@ import com.moyasar.android.sdk.core.extensions.showCcNumberIconsWhenEmpty
 import com.moyasar.android.sdk.databinding.FragmentPaymentBinding
 import com.moyasar.android.sdk.domain.entities.PaymentResult
 import com.moyasar.android.sdk.presentation.di.MoyasarAppContainer
+import com.moyasar.android.sdk.presentation.di.MoyasarAppContainer.viewModel
 import com.moyasar.android.sdk.presentation.model.FieldValidation
 import com.moyasar.android.sdk.presentation.model.PaymentConfig
 import com.moyasar.android.sdk.presentation.model.PaymentStatusViewState
 
 class PaymentFragment : Fragment() {
 
-  private val viewModel = MoyasarAppContainer.viewModel
   private lateinit var parentActivity: FragmentActivity
   private lateinit var binding: FragmentPaymentBinding
 
@@ -63,12 +63,12 @@ class PaymentFragment : Fragment() {
   private fun setupObservers() {
     viewModel.status.observe(viewLifecycleOwner, ::handleOnStatusChanged)
     viewModel.isFormValid.observe(viewLifecycleOwner, ::handleFormValidationState)
-    viewModel.number.observe(viewLifecycleOwner, ::handleCardNumberValueUpdated)
+    viewModel.formValidator.number.observe(viewLifecycleOwner, ::handleCardNumberValueUpdated)
     /*  Handle Form Validation Errors  */
-    viewModel.nameValidator.error.observe(viewLifecycleOwner, ::showInvalidNameErrorMsg)
-    viewModel.numberValidator.error.observe(viewLifecycleOwner, ::showInvalidCardNumberErrorMsg)
-    viewModel.expiryValidator.error.observe(viewLifecycleOwner, ::showInvalidExpiryErrorMsg)
-    viewModel.cvcValidator.error.observe(viewLifecycleOwner, ::showInvalidCVVErrorMsg)
+    viewModel.formValidator.nameValidator.error.observe(viewLifecycleOwner, ::showInvalidNameErrorMsg)
+    viewModel.formValidator.numberValidator.error.observe(viewLifecycleOwner, ::showInvalidCardNumberErrorMsg)
+    viewModel.formValidator.expiryValidator.error.observe(viewLifecycleOwner, ::showInvalidExpiryErrorMsg)
+    viewModel.formValidator.cvcValidator.error.observe(viewLifecycleOwner, ::showInvalidCVVErrorMsg)
   }
 
   private fun handleOnStatusChanged(status: PaymentStatusViewState?) {
@@ -169,22 +169,22 @@ class PaymentFragment : Fragment() {
 
   private fun FragmentPaymentBinding.setupListeners() {
     etNameOnCardInput.afterTextChanged { text ->
-      viewModel.name.value = text?.toString()
+      viewModel.formValidator.name.value = text?.toString()
       viewModel.creditCardNameChanged()
     }
 
     etCardNumberInput.afterTextChanged { text ->
-      viewModel.number.value = text?.toString()
+      viewModel.formValidator.number.value = text?.toString()
       text?.let { viewModel.creditCardNumberChanged(it) }
     }
 
     etCardExpiryDateInput.afterTextChanged { text ->
-      viewModel.expiry.value = text?.toString()
+      viewModel.formValidator.expiry.value = text?.toString()
       text?.let { viewModel.creditCardExpiryChanged(it) }
     }
 
     etCardSecurityCodeInput.afterTextChanged { text ->
-      viewModel.cvc.value = text?.toString()
+      viewModel.formValidator.cvc.value = text?.toString()
       viewModel.creditCardCvcChanged()
     }
 

@@ -6,6 +6,7 @@ import com.moyasar.android.sdk.domain.entities.PaymentResult
 import com.moyasar.android.sdk.domain.usecases.CreatePaymentUseCase
 import com.moyasar.android.sdk.domain.usecases.CreateTokenUseCase
 import com.moyasar.android.sdk.presentation.model.PaymentConfig
+import com.moyasar.android.sdk.presentation.viewmodel.FormValidator
 import com.moyasar.android.sdk.presentation.viewmodel.PaymentSheetViewModel
 
 /**
@@ -32,11 +33,16 @@ object MoyasarAppContainer {
     CreateTokenUseCase(paymentService)
   }
 
-  val viewModel by lazy {
+  private val formValidator by lazy {
+    FormValidator(application)
+  }
+
+  internal val viewModel by lazy {
     PaymentSheetViewModel(
       application = application,
       paymentConfig = config,
       callback = callback,
+      formValidator = formValidator,
       createPaymentUseCase = createPaymentUseCase,
       createTokenUseCase = createTokenUseCase
     )
