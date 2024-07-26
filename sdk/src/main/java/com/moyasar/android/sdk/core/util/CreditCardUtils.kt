@@ -59,14 +59,6 @@ fun parseExpiry(date: String): ExpiryDate? {
   }
 }
 
-fun isValidCvc(network: CreditCardNetwork, cvc: String): Boolean {
-  val digits = when (network) {
-    CreditCardNetwork.Amex -> 4
-    else -> 3
-  }
-  return cvc.length == digits
-}
-
 fun getFormattedAmount(paymentConfig: PaymentConfig): String {
   val currentLocale = Locale.getDefault()
   val paymentCurrency = Currency.getInstance(paymentConfig.currency)
