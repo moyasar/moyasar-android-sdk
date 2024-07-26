@@ -38,6 +38,7 @@ internal class PaymentAuthFragment : Fragment() {
         return shouldOverrideUrlLoading(request?.url)
       }
 
+      @Deprecated("Deprecated in Java")
       override fun shouldOverrideUrlLoading(view: WebView?, url: String?): Boolean {
         return shouldOverrideUrlLoading(if (url != null) Uri.parse(url) else null)
       }
@@ -56,6 +57,7 @@ internal class PaymentAuthFragment : Fragment() {
         onReceivedError(error?.description?.toString())
       }
 
+      @Deprecated("Deprecated in Java")
       override fun onReceivedError(
         view: WebView?,
         errorCode: Int,
@@ -67,6 +69,7 @@ internal class PaymentAuthFragment : Fragment() {
     }
   }
 
+  @SuppressLint("SetJavaScriptEnabled")
   override fun onCreateView(
     inflater: LayoutInflater,
     container: ViewGroup?,
