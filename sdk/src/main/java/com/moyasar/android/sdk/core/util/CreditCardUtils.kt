@@ -14,21 +14,21 @@ val masterCardRangeRegex =
 
 fun isValidLuhnNumber(number: String): Boolean {
   val cleanNumber = number.replace(" ", "")
-  var sum = cleanNumber.last().digitToInt()
+  if (!cleanNumber.all { it.isDigit() }) {
+    return false
+  }
 
-  for ((i, char) in cleanNumber.toCharArray().take(cleanNumber.length - 1).withIndex()) {
-    var value = char.digitToInt()
-    if (i % 2 == 0) {
-      value *= 2
-    }
-    if (value > 9) {
-      value -= 9
-    }
-    sum += value
+  val doubleSum = intArrayOf(0, 2, 4, 6, 8, 1, 3, 5, 7, 9)
+  var sum = 0
+
+  for ((index, char) in cleanNumber.reversed().withIndex()) {
+    val digit = char.toString().toIntOrNull() ?: return false
+    sum += if (index % 2 == 0) digit else doubleSum[digit]
   }
 
   return sum % 10 == 0
-}
+  }
+
 
 fun getNetwork(number: String): CreditCardNetwork {
   val strippedNumber = number.replace(" ", "")
