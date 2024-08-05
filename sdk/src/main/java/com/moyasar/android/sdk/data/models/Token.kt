@@ -1,10 +1,7 @@
 package com.moyasar.android.sdk.data.models
 
-import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
-import kotlinx.parcelize.Parcelize
 
-@Parcelize
 data class Token(
     val id: String,
     val status: String,
@@ -15,9 +12,9 @@ data class Token(
     val year: String,
     val name: String,
     @SerializedName("last_four") val lastFour: String,
-    val metadata: Map<String, String>?,
+    val metadata: Map<String, Any>?,
     val message: String?,
     @SerializedName("verification_url") val verificationUrl: String?,
     @SerializedName("created_at") val createdAt: String,
     @SerializedName("updated_at") val updatedAt: String,
-) : Parcelable
+)

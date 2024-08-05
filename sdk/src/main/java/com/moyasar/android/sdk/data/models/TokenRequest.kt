@@ -1,4 +1,4 @@
-package com.moyasar.android.sdk.data.models;
+package com.moyasar.android.sdk.data.models
 
 import com.google.gson.annotations.SerializedName
 
@@ -10,5 +10,5 @@ data class TokenRequest(
     val year: String?,
     @SerializedName("save_only") val saveOnly: Boolean = false,
     @SerializedName("callback_url") val callbackUrl: String?,
-    val metadata: Map<String, String> = HashMap()
+    val metadata: Map<String, Any> = HashMap()
 )

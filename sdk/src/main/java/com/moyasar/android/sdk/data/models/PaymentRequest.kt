@@ -8,5 +8,5 @@ data class PaymentRequest(
   val description: String,
   @SerializedName("callback_url") val callbackUrl: String,
   val source: PaymentSource,
-  val metadata: Map<String, String> = HashMap()
+  val metadata: Map<String, Any?> = HashMap()
 )

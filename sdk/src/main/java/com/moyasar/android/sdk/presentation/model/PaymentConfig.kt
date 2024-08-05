@@ -1,20 +1,17 @@
 package com.moyasar.android.sdk.presentation.model
 
-import android.os.Parcelable
-import kotlinx.parcelize.Parcelize
 
-@Parcelize
 data class PaymentConfig(
     val amount: Int = 0,
     val currency: String = "SAR",
     val description: String,
     val apiKey: String,
     val baseUrl: String = "https://api.moyasar.com/",
-    val metadata: Map<String, String>? = null,
+    val metadata: Map<String, Any>? = null,
     val manual: Boolean = false,
     val saveCard: Boolean = false,
     val createSaveOnlyToken: Boolean = false,
-) : Parcelable {
+) {
     fun validate(): Array<String> {
         val errors = ArrayList<String>()
 

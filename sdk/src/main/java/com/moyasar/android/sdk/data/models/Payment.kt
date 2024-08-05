@@ -1,10 +1,7 @@
 package com.moyasar.android.sdk.data.models
 
-import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
-import kotlinx.parcelize.Parcelize
 
-@Parcelize
 data class Payment(
     val id: String,
     var status: String,
@@ -22,9 +19,9 @@ data class Payment(
     @SerializedName("callback_url") val callbackUrl: String?,
     @SerializedName("created_at") val createdAt: String,
     @SerializedName("updated_at") val updatedAt: String,
-    val metadata: Map<String, String>?,
+    val metadata: Map<String, Any>?,
     val source: MutableMap<String, String>
-) : Parcelable {
+)  {
     fun getCardTransactionUrl(): String {
         if (!source.containsKey("type") || !source["type"].equals("creditcard")) {
             throw IllegalArgumentException("Source is not credit card")

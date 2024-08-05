@@ -118,7 +118,7 @@ internal class PaymentSheetViewModel(
       expiryMonth,
       expiryYear,
       true,
-      "https://sdk.moyasar.com"
+      PaymentAuthFragment.RETURN_URL
     )
 
     scope(block = { createTokenUseCase(request) }) { result ->
