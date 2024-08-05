@@ -9,6 +9,7 @@ import com.moyasar.android.sdk.core.exceptions.PaymentSheetException
 import com.moyasar.android.sdk.core.extensions.default
 import com.moyasar.android.sdk.core.extensions.distinctUntilChanged
 import com.moyasar.android.sdk.core.extensions.scope
+import com.moyasar.android.sdk.core.util.CreditCardFormatter
 import com.moyasar.android.sdk.core.util.getFormattedAmount
 import com.moyasar.android.sdk.core.util.parseExpiry
 import com.moyasar.android.sdk.data.models.CardPaymentSource
@@ -178,30 +179,13 @@ internal class PaymentSheetViewModel(
     if (ccOnChangeLocked) {
       return
     }
-
     ccOnChangeLocked = true
-
-    val input = textEdit.toString().replace(" ", "")
-    val formatted = StringBuilder()
-
-    for ((current, char) in input.toCharArray().withIndex()) {
-      if (current > 15) {
-        break
-      }
-
-      if (current > 0 && current % 4 == 0) {
-        formatted.append(' ')
-      }
-
-      formatted.append(char)
-    }
-
-    textEdit.replace(0, textEdit.length, formatted.toString())
-
+    val formatted = CreditCardFormatter.formatCardNumber(textEdit.toString())
+    textEdit.replace(0, textEdit.length, formatted)
     formValidator.validate(false)
-
     ccOnChangeLocked = false
   }
+
 
   internal fun creditCardExpiryChanged(textEdit: Editable) {
     if (ccExpiryOnChangeLocked) {
