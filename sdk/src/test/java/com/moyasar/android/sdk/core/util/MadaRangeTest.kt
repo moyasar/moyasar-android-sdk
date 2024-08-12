@@ -113,7 +113,10 @@ class MadaRangeTest {
       "968208",
       "968209",
       "968211",
-      "968212"
+      "968212",
+      /// Test full card number sample
+      "96821211111111",
+      "968212222222222222222",
     )
     for (number in validNumbers) {
       assertTrue("$number should be in madaRanges", inMadaRange(number))
@@ -132,7 +135,4 @@ class MadaRangeTest {
       assertFalse("$number should not be in madaRanges", inMadaRange(number))
     }
   }
-
-  
-
 }
