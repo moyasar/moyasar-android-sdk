@@ -1,6 +1,5 @@
 package com.moyasar.android.sdk.core.util
 
-
 internal object CreditCardFormatter {
 
   fun formatCardNumber(number: String): String {
@@ -38,7 +37,7 @@ internal object CreditCardFormatter {
     return truncated.chunked(4).joinToString(" ")
   }
 
-  private fun cleanNumber(number: String): String {
+  internal fun cleanNumber(number: String): String {
     // This function should remove any non-numeric characters from the input number.
     // For now, it returns the input number unchanged.
     return number.filter { it.isDigit() }
