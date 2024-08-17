@@ -2,6 +2,7 @@ package com.moyasar.android.sdk.data.remote
 
 import com.google.gson.Gson
 import com.moyasar.android.sdk.core.exceptions.ApiException
+import com.moyasar.android.sdk.core.extensions.getResourceUrlFormated
 import com.moyasar.android.sdk.core.extensions.postJson
 import com.moyasar.android.sdk.core.extensions.setBasicAuth
 import com.moyasar.android.sdk.data.models.ErrorResponse
@@ -16,12 +17,12 @@ import java.net.URL
 
 class PaymentService(
     private val apiKey: String,
-    private val baseUrl: String
+    private val baseUrl: String,
+    private val gson: Gson = Gson()
 ) {
-    private val gson = Gson()
 
     suspend fun create(request: PaymentRequest): Payment = withContext(Dispatchers.IO) {
-        val createUrl = getResourceUrl("v1/payments")
+        val createUrl = baseUrl.getResourceUrlFormated("v1/payments")
         val client = URL(createUrl).openConnection() as HttpURLConnection
 
         client.setBasicAuth(apiKey, "")
@@ -37,7 +38,7 @@ class PaymentService(
     }
 
     suspend fun createToken(request: TokenRequest): Token = withContext(Dispatchers.IO) {
-        val createUrl = getResourceUrl("v1/tokens")
+        val createUrl = baseUrl.getResourceUrlFormated("v1/tokens")
         val client = URL(createUrl).openConnection() as HttpURLConnection
 
         client.setBasicAuth(apiKey, "")
@@ -50,10 +51,5 @@ class PaymentService(
         }
 
         gson.fromJson(response.text, Token::class.java)
-    }
-
-    private fun getResourceUrl(url: String): String {
-        return baseUrl.trimEnd('/').trimEnd() + "/" +
-            url.trimStart('/').trimStart()
     }
 }

@@ -71,6 +71,9 @@ dependencies {
     implementation("com.google.code.gson:gson:2.10.1")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.8.1")
     implementation("android.arch.lifecycle:extensions:1.1.1")
-    testImplementation("junit:junit:4.13.2")
-    testImplementation("io.mockk:mockk:1.13.4")
+    testImplementation ("junit:junit:4.13.2")
+    testImplementation ("org.jetbrains.kotlin:kotlin-test:1.8.0")
+    testImplementation ("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.8.1")
+    testImplementation ("org.mockito.kotlin:mockito-kotlin:4.0.0")
+    testImplementation ("org.mockito:mockito-inline:5.2.0")
 }
