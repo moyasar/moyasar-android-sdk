@@ -7,9 +7,7 @@ import java.io.InputStreamReader
 import java.net.HttpURLConnection
 import java.nio.charset.Charset
 
-fun HttpURLConnection.postJson(body: Any): Response {
-    val gson = Gson()
-
+fun HttpURLConnection.postJson(body: Any, gson: Gson = Gson()): Response {
     try {
         this.setRequestProperty("Content-Type", "application/json; utf-8")
         this.setRequestProperty("Accept", "application/json")
