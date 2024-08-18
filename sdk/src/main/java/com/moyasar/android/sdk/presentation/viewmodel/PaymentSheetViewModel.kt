@@ -25,6 +25,8 @@ import com.moyasar.android.sdk.presentation.model.PaymentConfig
 import com.moyasar.android.sdk.presentation.model.PaymentStatusViewState
 import com.moyasar.android.sdk.presentation.model.RequestResultViewState
 import com.moyasar.android.sdk.presentation.view.fragments.PaymentAuthFragment
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Dispatchers
 
 internal class PaymentSheetViewModel(
   application: Application,
@@ -61,13 +63,13 @@ internal class PaymentSheetViewModel(
   val amountLabel: String
     get() = getFormattedAmount(paymentConfig)
 
-  private fun notifyPaymentResult(paymentResult: PaymentResult) = callback(paymentResult)
+   fun notifyPaymentResult(paymentResult: PaymentResult) = callback(paymentResult)
 
   /*************************
    * Perform Create payment Request After submit button clicked and createSaveOnlyToken = false
    ************************/
-  private fun createPayment() {
-    val request = PaymentRequest(
+  internal fun createPayment(
+    request: PaymentRequest = PaymentRequest(
       paymentConfig.amount,
       paymentConfig.currency,
       paymentConfig.description,
@@ -82,9 +84,14 @@ internal class PaymentSheetViewModel(
         if (paymentConfig.saveCard) "true" else "false",
       ),
       paymentConfig.metadata ?: HashMap()
-    )
-
-    scope(block = { createPaymentUseCase(request) }) { result ->
+    ),
+    mainDispatcher: CoroutineDispatcher = Dispatchers.Main,
+    ioDispatcher: CoroutineDispatcher = Dispatchers.IO,
+  ) {
+    scope(
+      mainDispatcher = mainDispatcher,
+      ioDispatcher = ioDispatcher,
+      block = { createPaymentUseCase(request) }) { result ->
       when (result) {
         is RequestResultViewState.Success -> {
           _payment.value = result.data
@@ -111,8 +118,8 @@ internal class PaymentSheetViewModel(
   /*************************
    * Perform Create Save only Token Request After submit button clicked and createSaveOnlyToken = true
    ************************/
-  private fun createSaveOnlyToken() {
-    val request = TokenRequest(
+  internal fun createSaveOnlyToken(
+    request: TokenRequest = TokenRequest(
       formValidator.name.value!!,
       cleanCardNumber,
       formValidator.cvc.value!!,
@@ -120,9 +127,14 @@ internal class PaymentSheetViewModel(
       expiryYear,
       true,
       PaymentAuthFragment.RETURN_URL
-    )
-
-    scope(block = { createTokenUseCase(request) }) { result ->
+    ),
+    mainDispatcher: CoroutineDispatcher = Dispatchers.Main,
+    ioDispatcher: CoroutineDispatcher = Dispatchers.IO,
+  ) {
+    scope(
+      mainDispatcher = mainDispatcher,
+      ioDispatcher = ioDispatcher,
+      block = { createTokenUseCase(request) }) { result ->
       when (result) {
         is RequestResultViewState.Success -> {
           val data = result.data

@@ -10,11 +10,12 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 internal fun <T> scope(
-  coroutineScope: CoroutineScope = CoroutineScope(Job() + Dispatchers.Main),
+  mainDispatcher: CoroutineDispatcher = Dispatchers.Main,
   ioDispatcher: CoroutineDispatcher = Dispatchers.IO,
   block: suspend CoroutineScope.() -> T,
   resultBlock: suspend (RequestResultViewState<T>) -> Unit
 ) {
+  val coroutineScope: CoroutineScope = CoroutineScope(Job() + mainDispatcher)
   coroutineScope.launch {
     val result: RequestResultViewState<T> = withContext(ioDispatcher) {
       try {
