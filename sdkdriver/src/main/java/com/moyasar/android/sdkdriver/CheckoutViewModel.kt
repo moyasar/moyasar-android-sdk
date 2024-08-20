@@ -3,11 +3,11 @@ package com.moyasar.android.sdkdriver
 import android.arch.lifecycle.MutableLiveData
 import android.arch.lifecycle.ViewModel
 import android.os.Parcelable
-import com.moyasar.android.sdk.PaymentConfig
-import com.moyasar.android.sdk.PaymentResult
-import com.moyasar.android.sdk.extensions.default
-import com.moyasar.android.sdk.payment.models.Payment
-import com.moyasar.android.sdk.ui.PaymentFragment
+import com.moyasar.android.sdk.presentation.model.PaymentConfig
+import com.moyasar.android.sdk.domain.entities.PaymentResult
+import com.moyasar.android.sdk.core.extensions.default
+import com.moyasar.android.sdk.data.models.Payment
+import com.moyasar.android.sdk.presentation.view.fragments.PaymentFragment
 import kotlinx.parcelize.Parcelize
 
 class CheckoutViewModel : ViewModel() {
