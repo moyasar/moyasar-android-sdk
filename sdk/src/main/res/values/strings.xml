@@ -24,11 +24,19 @@
     <string name="expiry_is_required">Expiry date is required</string>
     <string name="invalid_expiry">Invalid expiry date</string>
     <string name="expired_card">Expired card</string>
+    <string name="mobile_number_is_required">Mobile Number is required</string>
     <string name="name_is_required">Name is required</string>
     <string name="both_names_required">Both first and last names are required</string>
     <string name="only_english_alpha">Name may only contain english alphabets</string>
     <string name="cvc_required">Security code is required</string>
     <string name="invalid_cvc">Invalid security code</string>
     <string name="payBtnLabel">Pay</string>
+    <string name="invalid_mobile_number">Invalid Mobile Number</string>
+    <string name="invalid_stc_pay_otp">Invalid OTP</string>
+    <string name="lbl_mobile_number">Mobile Number</string>
+    <string name="lbl_mobile_number_hint">05x xxx xxxx</string>
+    <string name="one_time_password">One-Time Password</string>
+    <string name="lbl_loading">Loading…</string>
+    <string name="lbl_confirm_button">Confirm</string>
 
 </resources>
