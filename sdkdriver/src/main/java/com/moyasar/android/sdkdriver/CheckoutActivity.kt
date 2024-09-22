@@ -33,7 +33,11 @@ class CheckoutActivity : AppCompatActivity() {
 
         val donateBtn = findViewById<Button>(R.id.button2)
         donateBtn.setOnClickListener {
-            viewModel.beginDonation(this, R.id.paymentSheetFragment)
+            viewModel.beginDonationWithCreditCard(this, R.id.paymentSheetFragment)
+        }
+        val stcPayBtn =  findViewById<Button>(R.id.button3)
+        stcPayBtn.setOnClickListener {
+            viewModel.beginDonationWithSTC(this,  R.id.paymentSheetFragment)
         }
     }
 }
