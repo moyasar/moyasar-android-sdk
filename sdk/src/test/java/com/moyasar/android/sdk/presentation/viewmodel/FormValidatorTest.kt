@@ -3,6 +3,7 @@ package com.moyasar.android.sdk.presentation.viewmodel
 import android.app.Application
 import android.arch.core.executor.testing.InstantTaskExecutorRule
 import com.moyasar.android.sdk.R
+import com.moyasar.android.sdk.creditcard.presentation.viewmodel.FormValidator
 import org.junit.Assert.*
 import org.junit.Before
 import org.junit.Rule
@@ -33,6 +34,9 @@ class FormValidatorTest {
     Mockito.`when`(application.getString(R.string.expiry_is_required)).thenReturn("Expiry date is required")
     Mockito.`when`(application.getString(R.string.invalid_expiry)).thenReturn("Invalid expiry date")
     Mockito.`when`(application.getString(R.string.expired_card)).thenReturn("Card is expired")
+    Mockito.`when`(application.getString(R.string.mobile_number_is_required)).thenReturn("Mobile is required")
+    Mockito.`when`(application.getString(R.string.invalid_mobile_number)).thenReturn("Mobile is invalid")
+    Mockito.`when`(application.getString(R.string.invalid_stc_pay_otp)).thenReturn("OTP is invalid")
 
     formValidator = FormValidator(application)
   }

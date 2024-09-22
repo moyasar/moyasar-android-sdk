@@ -1,11 +1,12 @@
 package com.moyasar.android.sdk.domain.usecases
 
 import com.moyasar.android.sdk.core.exceptions.ApiException
-import com.moyasar.android.sdk.data.models.CardPaymentSource
-import com.moyasar.android.sdk.data.models.ErrorResponse
-import com.moyasar.android.sdk.data.models.Payment
-import com.moyasar.android.sdk.data.models.PaymentRequest
-import com.moyasar.android.sdk.data.remote.PaymentService
+import com.moyasar.android.sdk.creditcard.domain.usecases.CreatePaymentUseCase
+import com.moyasar.android.sdk.creditcard.data.models.sources.CardPaymentSource
+import com.moyasar.android.sdk.core.data.response.ErrorResponse
+import com.moyasar.android.sdk.core.data.response.PaymentResponse
+import com.moyasar.android.sdk.creditcard.data.models.request.PaymentRequest
+import com.moyasar.android.sdk.creditcard.data.remote.PaymentService
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.*
 import org.junit.Before
@@ -39,7 +40,7 @@ class CreatePaymentUseCaseTest {
         manual = null, saveCard = null
       ),
     )
-    val expectedResult = Payment(
+    val expectedResult = PaymentResponse(
       "1",
       "success",
       1000,
@@ -79,7 +80,7 @@ class CreatePaymentUseCaseTest {
         manual = null, saveCard = null
       ),
     )
-    val expectedResult = Payment(
+    val expectedResult = PaymentResponse(
       "1",
       "success",
       1000,

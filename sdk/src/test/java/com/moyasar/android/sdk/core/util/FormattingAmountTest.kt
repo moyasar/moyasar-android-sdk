@@ -1,6 +1,6 @@
 package com.moyasar.android.sdk.core.util
 
-import com.moyasar.android.sdk.presentation.model.PaymentConfig
+import com.moyasar.android.sdk.creditcard.presentation.model.PaymentConfig
 import org.junit.Assert.assertEquals
 import org.junit.Test
 

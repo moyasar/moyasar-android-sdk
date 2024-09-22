@@ -1,12 +1,12 @@
 package com.moyasar.android.sdk.presentation.viewmodel
 
-import com.moyasar.android.sdk.data.models.CardPaymentSource
-import com.moyasar.android.sdk.data.models.Payment
-import com.moyasar.android.sdk.data.models.PaymentRequest
-import com.moyasar.android.sdk.data.models.Token
-import com.moyasar.android.sdk.data.models.TokenRequest
-import com.moyasar.android.sdk.presentation.model.PaymentConfig
-import com.moyasar.android.sdk.presentation.view.fragments.PaymentAuthFragment
+import com.moyasar.android.sdk.creditcard.data.models.sources.CardPaymentSource
+import com.moyasar.android.sdk.core.data.response.PaymentResponse
+import com.moyasar.android.sdk.creditcard.data.models.request.PaymentRequest
+import com.moyasar.android.sdk.creditcard.data.models.response.TokenResponse
+import com.moyasar.android.sdk.creditcard.data.models.request.TokenRequest
+import com.moyasar.android.sdk.creditcard.presentation.model.PaymentConfig
+import com.moyasar.android.sdk.creditcard.presentation.view.fragments.PaymentAuthFragment
 
 /**
  * Created by Mahmoud Ashraf on 18,August,2024
@@ -30,7 +30,7 @@ object TestDataHelper {
     metadata = mapOf("order_id" to "order_123")
   )
 
-  internal fun getPaymentBody() = Payment(
+  internal fun getPaymentBody() = PaymentResponse(
     "1",
     "initiated",
     1000,
@@ -75,7 +75,7 @@ object TestDataHelper {
     metadata = mapOf()
   )
 
-  internal fun getTokenResponseBody() = Token(
+  internal fun getTokenResponseBody() = TokenResponse(
     id = "1",
     status = "success",
     brand = "",
