@@ -1,6 +1,6 @@
 package com.moyasar.android.sdk.core.util
 
-import com.moyasar.android.sdk.presentation.model.PaymentConfig
+import com.moyasar.android.sdk.creditcard.presentation.model.PaymentConfig
 import java.text.DecimalFormat
 import java.util.Calendar
 import java.util.Currency

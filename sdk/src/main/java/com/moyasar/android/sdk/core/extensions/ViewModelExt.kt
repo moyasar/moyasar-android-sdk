@@ -1,7 +1,7 @@
 package com.moyasar.android.sdk.core.extensions
 
 import com.moyasar.android.sdk.core.exceptions.ApiException
-import com.moyasar.android.sdk.presentation.model.RequestResultViewState
+import com.moyasar.android.sdk.creditcard.presentation.model.RequestResultViewState
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
