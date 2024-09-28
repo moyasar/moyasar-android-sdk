@@ -47,25 +47,37 @@ object MoyasarAppContainer {
     FormValidator(application)
   }
 
-  internal val viewModel by lazy {
-    PaymentSheetViewModel(
-      application = application,
-      paymentConfig = config,
-      callback = callback,
-      formValidator = formValidator,
-      createPaymentUseCase = createPaymentUseCase,
-      createTokenUseCase = createTokenUseCase,
-      validateSTCPayOTPUseCase = validateSTCPayOTPUseCase
-    )
-  }
+  private var _viewModel : PaymentSheetViewModel? = null
 
+  internal val viewModel: PaymentSheetViewModel
+    get() {
+      return synchronized(this) {
+        if (_viewModel == null) {
+          _viewModel = PaymentSheetViewModel(
+            application = application,
+            paymentConfig = config,
+            callback = callback,
+            formValidator = formValidator,
+            createPaymentUseCase = createPaymentUseCase,
+            createTokenUseCase = createTokenUseCase,
+            validateSTCPayOTPUseCase = validateSTCPayOTPUseCase
+          )
+        }
+        _viewModel!!
+      }
+    }
   fun initialize(
     application: Application,
     config: PaymentConfig,
     callback: (PaymentResult) -> Unit,
   ) {
+    release()
     MoyasarAppContainer.application = application
     MoyasarAppContainer.config = config
     MoyasarAppContainer.callback = callback
+  }
+
+  private fun release() {
+    _viewModel= null
   }
 }
