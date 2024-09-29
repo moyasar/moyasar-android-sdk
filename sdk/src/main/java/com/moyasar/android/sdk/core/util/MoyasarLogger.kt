@@ -6,9 +6,9 @@ import android.util.Log
  * Created by Mahmoud Ashraf on 22,September,2024
  */
 object MoyasarLogger {
-    private val isTestModelEnabled = true
+    private const val IS_TEST_MODE_ENABLED = false
     fun log(key: String, value: String){
-        if (isTestModelEnabled)
+        if (IS_TEST_MODE_ENABLED)
             Log.d(key,value)
     }
 }
