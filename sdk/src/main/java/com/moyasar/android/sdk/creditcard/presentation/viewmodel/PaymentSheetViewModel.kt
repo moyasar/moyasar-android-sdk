@@ -73,10 +73,11 @@ internal class PaymentSheetViewModel(
     val amountLabel: String
         get() = getFormattedAmount(paymentConfig)
 
-    fun notifyPaymentResult(paymentResult: PaymentResult) = callback(paymentResult)
+    private fun notifyPaymentResult(paymentResult: PaymentResult) = callback(paymentResult)
 
     /*************************
      * Perform Create payment Request After submit button clicked and createSaveOnlyToken = false
+     * or After STC Pay Button Clicked
      ************************/
     internal fun createPayment(
         request: PaymentRequest = PaymentRequest(

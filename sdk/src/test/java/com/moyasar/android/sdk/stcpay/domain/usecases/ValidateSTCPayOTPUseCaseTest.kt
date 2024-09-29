@@ -3,7 +3,6 @@ package com.moyasar.android.sdk.stcpay.domain.usecases
 import com.moyasar.android.sdk.core.data.response.PaymentResponse
 import com.moyasar.android.sdk.stcpay.data.remote.STCPayPaymentService
 import org.junit.Assert.*
-import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.runTest
 import org.junit.Before
 import org.junit.Test
