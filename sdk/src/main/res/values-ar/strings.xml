@@ -22,6 +22,5 @@
     <string name="lbl_mobile_number">رقم الجوال</string>
     <string name="lbl_mobile_number_hint">05x xxx xxxx</string>
     <string name="one_time_password">ادخل رمز التحقق لمرة واحدة</string>
-    <string name="lbl_loading">تحميل…</string>
     <string name="lbl_confirm_button">تأكيد</string>
 </resources>

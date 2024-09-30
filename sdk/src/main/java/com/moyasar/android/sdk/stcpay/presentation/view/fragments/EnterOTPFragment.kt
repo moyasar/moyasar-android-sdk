@@ -8,7 +8,9 @@ import android.view.View
 import android.view.ViewGroup
 import com.moyasar.android.sdk.R
 import com.moyasar.android.sdk.core.extensions.afterTextChanged
+import com.moyasar.android.sdk.core.extensions.gone
 import com.moyasar.android.sdk.core.extensions.shouldDisableButton
+import com.moyasar.android.sdk.core.extensions.show
 import com.moyasar.android.sdk.databinding.FragmentEnterOTPBinding
 import com.moyasar.android.sdk.creditcard.presentation.di.MoyasarAppContainer.viewModel
 import com.moyasar.android.sdk.creditcard.presentation.model.PaymentStatusViewState
@@ -33,6 +35,7 @@ class EnterOTPFragment : Fragment() {
 
     private fun initView() {
         binding.payButton.text = getString(R.string.lbl_confirm_button)
+        binding.progressBar.gone()
         setupListeners()
         setupObservers()
         viewModel.formValidator.stcPayOTP.value = binding.etOTPInput.text?.toString()
@@ -66,7 +69,8 @@ class EnterOTPFragment : Fragment() {
         parentActivity.runOnUiThread {
             when (status) {
                 is PaymentStatusViewState.SubmittingSTCPayOTP->{
-                    binding.payButton.text = resources.getString(R.string.lbl_loading)
+                    binding.payButton.text = ""
+                    binding.progressBar.show()
                     binding.payButton.shouldDisableButton(false)
                     binding.payButton.isEnabled = false
                     binding.etOTPInput.isEnabled = false

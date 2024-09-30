@@ -36,7 +36,6 @@
     <string name="lbl_mobile_number">Mobile Number</string>
     <string name="lbl_mobile_number_hint">05x xxx xxxx</string>
     <string name="one_time_password">One-Time Password</string>
-    <string name="lbl_loading">Loading…</string>
     <string name="lbl_confirm_button">Confirm</string>
 
 </resources>

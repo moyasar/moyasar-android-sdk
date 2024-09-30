@@ -1,59 +1,72 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/enter_mobile_fragment_container"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context=".stcpay.presentation.view.fragments.EnterMobileNumberFragment"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-   >
+    tools:context=".stcpay.presentation.view.fragments.EnterMobileNumberFragment">
 
     <LinearLayout
         android:id="@+id/enter_mobile_fragment_content"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:paddingHorizontal="@dimen/moyasar_font_size_l"
-  >
-
-    <TextView
-        android:id="@+id/tv_mobile_number"
-        android:text="@string/lbl_mobile_number"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
-
-    <android.support.design.widget.TextInputLayout
-        android:id="@+id/mobileNumberInput"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/moyasar_spacing_tiny"
-        app:errorEnabled="true"
-        app:hintEnabled="false">
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:paddingHorizontal="@dimen/moyasar_font_size_l">
 
-        <EditText
-            android:id="@+id/etMobileNumberInput"
+        <TextView
+            android:id="@+id/tv_mobile_number"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/lbl_mobile_number" />
+
+        <android.support.design.widget.TextInputLayout
+            android:id="@+id/mobileNumberInput"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/moyasar_view_height_s"
-            android:digits="0123456789 "
-            android:background="@drawable/moyasar_et_background"
-            android:hint="@string/lbl_mobile_number_hint"
-            android:inputType="phone"
-            android:layoutDirection="ltr"
-            android:paddingStart="@dimen/moyasar_spacing_small"
-            android:paddingEnd="@dimen/moyasar_spacing_small" />
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/moyasar_spacing_tiny"
+            app:errorEnabled="true"
+            app:hintEnabled="false">
 
-    </android.support.design.widget.TextInputLayout>
+            <EditText
+                android:id="@+id/etMobileNumberInput"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/moyasar_view_height_s"
+                android:background="@drawable/moyasar_et_background"
+                android:digits="0123456789 "
+                android:hint="@string/lbl_mobile_number_hint"
+                android:inputType="phone"
+                android:layoutDirection="ltr"
+                android:paddingStart="@dimen/moyasar_spacing_small"
+                android:paddingEnd="@dimen/moyasar_spacing_small" />
 
-    <Button
-        android:id="@+id/payButton"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/moyasar_spacing_x_large"
-        android:textAllCaps="false"
-        android:textColor="@android:color/white"
-        android:textSize="@dimen/moyasar_font_size_xl" />
+        </android.support.design.widget.TextInputLayout>
+
+        <FrameLayout
+            android:id="@+id/fl_button_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/moyasar_spacing_x_large">
+
+            <Button
+                android:id="@+id/payButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textAllCaps="false"
+                android:textColor="@android:color/white"
+                android:textSize="@dimen/moyasar_font_size_xl" />
+
+            <ProgressBar
+                android:id="@+id/progress_bar"
+                android:layout_width="@dimen/moyasar_progress_s"
+                android:layout_height="@dimen/moyasar_progress_s"
+                android:layout_gravity="center"
+                android:indeterminate="true"
+                android:visibility="gone"
+                android:indeterminateDrawable="@drawable/bg_moyasar_progress_white" />
+
+        </FrameLayout>
 
 
-</LinearLayout>
+    </LinearLayout>
 </FrameLayout>

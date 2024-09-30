@@ -15,6 +15,7 @@ import com.moyasar.android.sdk.core.extensions.gone
 import com.moyasar.android.sdk.core.extensions.shouldDisableButton
 import com.moyasar.android.sdk.databinding.FragmentEnterMobileNumberBinding
 import com.moyasar.android.sdk.core.domain.entities.PaymentResult
+import com.moyasar.android.sdk.core.extensions.show
 import com.moyasar.android.sdk.core.util.MoyasarLogger
 import com.moyasar.android.sdk.creditcard.presentation.di.MoyasarAppContainer
 import com.moyasar.android.sdk.creditcard.presentation.model.PaymentConfig
@@ -78,7 +79,8 @@ class EnterMobileNumberFragment : Fragment() {
         parentActivity.runOnUiThread {
             when (status) {
                 is PaymentStatusViewState.SubmittingSTCPayMobileNumber ->{
-                    binding.payButton.text = resources.getString(R.string.lbl_loading)
+                    binding.payButton.text = ""
+                    binding.progressBar.show()
                     binding.payButton.shouldDisableButton(false)
                     binding.payButton.isEnabled = false
                     binding.etMobileNumberInput.isEnabled = false
@@ -102,6 +104,7 @@ class EnterMobileNumberFragment : Fragment() {
     }
 
     private fun initView() {
+        binding.progressBar.gone()
         binding.payButton.text = getString(R.string.payBtnLabel).plus(' ').plus(MoyasarAppContainer.viewModel.amountLabel)
         binding.payButton.setOnClickListener {
             MoyasarAppContainer.viewModel.submitSTC()
