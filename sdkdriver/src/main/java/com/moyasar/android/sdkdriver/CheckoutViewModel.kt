@@ -7,6 +7,7 @@ import com.moyasar.android.sdk.creditcard.presentation.model.PaymentConfig
 import com.moyasar.android.sdk.core.domain.entities.PaymentResult
 import com.moyasar.android.sdk.core.extensions.default
 import com.moyasar.android.sdk.core.data.response.PaymentResponse
+import com.moyasar.android.sdk.creditcard.data.models.CreditCardNetwork
 import com.moyasar.android.sdk.stcpay.presentation.view.fragments.EnterMobileNumberFragment
 import com.moyasar.android.sdk.creditcard.presentation.view.fragments.PaymentFragment
 import kotlinx.parcelize.Parcelize
@@ -24,6 +25,7 @@ class CheckoutViewModel : ViewModel() {
         metadata = mapOf(
             "order_id" to "order_123"
         ),
+        allowedNetworks = listOf(CreditCardNetwork.Mastercard),
         createSaveOnlyToken = false
     )
 

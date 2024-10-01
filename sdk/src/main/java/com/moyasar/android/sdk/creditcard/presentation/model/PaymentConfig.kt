@@ -1,5 +1,7 @@
 package com.moyasar.android.sdk.creditcard.presentation.model
 
+import com.moyasar.android.sdk.creditcard.data.models.CreditCardNetwork
+
 
 data class PaymentConfig(
     val amount: Int = 0,
@@ -10,6 +12,12 @@ data class PaymentConfig(
     val metadata: Map<String, Any>? = null,
     val manual: Boolean = false,
     val saveCard: Boolean = false,
+    val allowedNetworks: List<CreditCardNetwork> = listOf(
+        CreditCardNetwork.Visa,
+        CreditCardNetwork.Mastercard,
+        CreditCardNetwork.Mada,
+        CreditCardNetwork.Amex
+    ),
     val createSaveOnlyToken: Boolean = false,
 ) {
     fun validate(): Array<String> {
@@ -23,11 +31,11 @@ data class PaymentConfig(
             errors.add("Invalid currency")
         }
 
-        if (! apiKey.matches(Regex("^pk_(test|live)_.{40}\$"))) {
+        if (!apiKey.matches(Regex("^pk_(test|live)_.{40}\$"))) {
             errors.add("Invalid Publishable API key")
         }
 
-        if (! baseUrl.matches(Regex("^https:\\/\\/api(mig)?.moyasar.com(\\/)?\$"))) {
+        if (!baseUrl.matches(Regex("^https:\\/\\/api(mig)?.moyasar.com(\\/)?\$"))) {
             errors.add("Invalid base URL")
         }
 

@@ -17,7 +17,7 @@ import com.moyasar.android.sdk.creditcard.presentation.viewmodel.PaymentSheetVie
 object MoyasarAppContainer {
 
   private lateinit var application: Application
-  private lateinit var config: PaymentConfig
+  internal lateinit var config: PaymentConfig
   private lateinit var callback: (PaymentResult) -> Unit
 
   private val paymentService: PaymentService by lazy {

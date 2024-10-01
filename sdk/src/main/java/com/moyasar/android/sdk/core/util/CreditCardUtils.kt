@@ -30,17 +30,6 @@ fun isValidLuhnNumber(number: String): Boolean {
   }
 
 
-fun getNetwork(number: String): CreditCardNetwork {
-  val strippedNumber = number.replace(" ", "")
-  return when {
-    amexRangeRegex.containsMatchIn(strippedNumber) -> CreditCardNetwork.Amex
-    inMadaRange(strippedNumber) -> CreditCardNetwork.Mada
-    visaRangeRegex.containsMatchIn(strippedNumber) -> CreditCardNetwork.Visa
-    masterCardRangeRegex.containsMatchIn(strippedNumber) -> CreditCardNetwork.Mastercard
-    else -> CreditCardNetwork.Unknown
-  }
-}
-
 fun parseExpiry(date: String): ExpiryDate? {
   val clean = date.replace(" ", "")
     .replace("/", "")
@@ -82,14 +71,6 @@ fun getFormattedAmount(paymentConfig: PaymentConfig): String {
   } else {
     "$currencySymbol $formattedNumber"
   }
-}
-
-enum class CreditCardNetwork {
-  Amex,
-  Mada,
-  Visa,
-  Mastercard,
-  Unknown
 }
 
 data class ExpiryDate(val month: Int, val year: Int) {
