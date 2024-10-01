@@ -4,7 +4,7 @@ package com.moyasar.android.sdk.creditcard.presentation.model
 data class PaymentConfig(
     val amount: Int = 0,
     val currency: String = "SAR",
-    val description: String,
+    val description: String? = null,
     val apiKey: String,
     val baseUrl: String = "https://api.moyasar.com/",
     val metadata: Map<String, Any>? = null,
@@ -21,10 +21,6 @@ data class PaymentConfig(
 
         if (currency.length != 3) {
             errors.add("Invalid currency")
-        }
-
-        if (description.trim().isEmpty()) {
-            errors.add("Description is required")
         }
 
         if (! apiKey.matches(Regex("^pk_(test|live)_.{40}\$"))) {

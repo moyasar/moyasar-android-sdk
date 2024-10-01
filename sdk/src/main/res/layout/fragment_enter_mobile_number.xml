@@ -48,7 +48,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/moyasar_spacing_x_large">
 
-            <Button
+            <com.moyasar.android.sdk.core.customviews.button.MoyasarButton
                 android:id="@+id/payButton"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

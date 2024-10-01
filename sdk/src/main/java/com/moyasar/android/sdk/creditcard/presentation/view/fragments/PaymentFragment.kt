@@ -8,6 +8,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.moyasar.android.sdk.R
+import com.moyasar.android.sdk.core.customviews.button.MoyasarButtonType
 import com.moyasar.android.sdk.core.exceptions.InvalidConfigException
 import com.moyasar.android.sdk.core.extensions.afterTextChanged
 import com.moyasar.android.sdk.core.extensions.hide
@@ -57,7 +58,7 @@ class PaymentFragment : Fragment() {
   }
 
   private fun initView() {
-    binding.payButton.text = getString(R.string.payBtnLabel).plus(' ').plus(viewModel.amountLabel)
+    binding.payButton.setButtonType(MoyasarButtonType.PAY)
   }
 
   private fun setupObservers() {

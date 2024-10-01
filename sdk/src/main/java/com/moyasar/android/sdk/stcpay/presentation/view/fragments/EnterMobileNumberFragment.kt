@@ -9,6 +9,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.moyasar.android.sdk.R
+import com.moyasar.android.sdk.core.customviews.button.MoyasarButtonType
 import com.moyasar.android.sdk.core.exceptions.InvalidConfigException
 import com.moyasar.android.sdk.core.extensions.afterTextChanged
 import com.moyasar.android.sdk.core.extensions.gone
@@ -79,7 +80,7 @@ class EnterMobileNumberFragment : Fragment() {
         parentActivity.runOnUiThread {
             when (status) {
                 is PaymentStatusViewState.SubmittingSTCPayMobileNumber ->{
-                    binding.payButton.text = ""
+                    binding.payButton.setButtonType(MoyasarButtonType.PLAIN)
                     binding.progressBar.show()
                     binding.payButton.shouldDisableButton(false)
                     binding.payButton.isEnabled = false
@@ -105,7 +106,8 @@ class EnterMobileNumberFragment : Fragment() {
 
     private fun initView() {
         binding.progressBar.gone()
-        binding.payButton.text = getString(R.string.payBtnLabel).plus(' ').plus(MoyasarAppContainer.viewModel.amountLabel)
+        println("sss "+MoyasarAppContainer.viewModel.amountLabel)
+        binding.payButton.setButtonType(MoyasarButtonType.PAY)
         binding.payButton.setOnClickListener {
             MoyasarAppContainer.viewModel.submitSTC()
         }
