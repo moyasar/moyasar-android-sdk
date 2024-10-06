@@ -10,17 +10,17 @@ import android.view.View
 import android.view.ViewGroup
 import com.moyasar.android.sdk.R
 import com.moyasar.android.sdk.core.customviews.button.MoyasarButtonType
+import com.moyasar.android.sdk.core.domain.entities.PaymentResult
 import com.moyasar.android.sdk.core.exceptions.InvalidConfigException
 import com.moyasar.android.sdk.core.extensions.afterTextChanged
 import com.moyasar.android.sdk.core.extensions.gone
 import com.moyasar.android.sdk.core.extensions.shouldDisableButton
-import com.moyasar.android.sdk.databinding.FragmentEnterMobileNumberBinding
-import com.moyasar.android.sdk.core.domain.entities.PaymentResult
 import com.moyasar.android.sdk.core.extensions.show
 import com.moyasar.android.sdk.core.util.MoyasarLogger
 import com.moyasar.android.sdk.creditcard.presentation.di.MoyasarAppContainer
 import com.moyasar.android.sdk.creditcard.presentation.model.PaymentConfig
-import com.moyasar.android.sdk.creditcard.presentation.model.PaymentStatusViewState
+import com.moyasar.android.sdk.databinding.FragmentEnterMobileNumberBinding
+import com.moyasar.android.sdk.stcpay.presentation.model.STCPayViewState
 
 class EnterMobileNumberFragment : Fragment() {
 
@@ -58,7 +58,7 @@ class EnterMobileNumberFragment : Fragment() {
 
     private fun setupObservers() {
         MoyasarAppContainer.viewModel.isFormValid.observe(viewLifecycleOwner, ::handleFormValidationState)
-        MoyasarAppContainer.viewModel.status.observe(viewLifecycleOwner, ::handleOnStatusChanged)
+        MoyasarAppContainer.viewModel.stcPayStatus.observe(viewLifecycleOwner, ::handleOnStatusChanged)
         MoyasarAppContainer.viewModel.formValidator.mobileNumberValidator.error.observe(viewLifecycleOwner, ::showInvalidPhoneErrorMsg)
     }
     private fun showInvalidPhoneErrorMsg(errorMsg: String?) {
@@ -76,10 +76,10 @@ class EnterMobileNumberFragment : Fragment() {
         binding.payButton.shouldDisableButton(isFormValid ?: false)
     }
 
-    private fun handleOnStatusChanged(status: PaymentStatusViewState?) {
+    private fun handleOnStatusChanged(status: STCPayViewState?) {
         parentActivity.runOnUiThread {
             when (status) {
-                is PaymentStatusViewState.SubmittingSTCPayMobileNumber ->{
+                is STCPayViewState.SubmittingSTCPayMobileNumber ->{
                     binding.payButton.setButtonType(MoyasarButtonType.PLAIN)
                     binding.progressBar.show()
                     binding.payButton.shouldDisableButton(false)
@@ -87,7 +87,7 @@ class EnterMobileNumberFragment : Fragment() {
                     binding.etMobileNumberInput.isEnabled = false
                 }
 
-                is PaymentStatusViewState.STCPayOTPAuth -> {
+                is STCPayViewState.STCPayOTPAuth -> {
                     MoyasarLogger.log("STCPay TransactionURL", status.url)
                     binding.enterMobileFragmentContent.gone()
                     val fragment = EnterOTPFragment()

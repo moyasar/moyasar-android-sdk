@@ -14,6 +14,7 @@ import com.moyasar.android.sdk.core.extensions.show
 import com.moyasar.android.sdk.databinding.FragmentEnterOTPBinding
 import com.moyasar.android.sdk.creditcard.presentation.di.MoyasarAppContainer.viewModel
 import com.moyasar.android.sdk.creditcard.presentation.model.PaymentStatusViewState
+import com.moyasar.android.sdk.stcpay.presentation.model.STCPayViewState
 
 
 class EnterOTPFragment : Fragment() {
@@ -62,13 +63,13 @@ class EnterOTPFragment : Fragment() {
             viewLifecycleOwner,
             ::showInvalidOTPErrorMsg
         )
-        viewModel.status.observe(viewLifecycleOwner, ::handleOnStatusChanged)
+        viewModel.stcPayStatus.observe(viewLifecycleOwner, ::handleOnStatusChanged)
     }
 
-    private fun handleOnStatusChanged(status: PaymentStatusViewState?) {
+    private fun handleOnStatusChanged(status: STCPayViewState?) {
         parentActivity.runOnUiThread {
             when (status) {
-                is PaymentStatusViewState.SubmittingSTCPayOTP->{
+                is STCPayViewState.SubmittingSTCPayOTP->{
                     binding.payButton.text = ""
                     binding.progressBar.show()
                     binding.payButton.shouldDisableButton(false)

@@ -62,7 +62,7 @@ class PaymentFragment : Fragment() {
   }
 
   private fun setupObservers() {
-    viewModel.status.observe(viewLifecycleOwner, ::handleOnStatusChanged)
+    viewModel.creditCardStatus.observe(viewLifecycleOwner, ::handleOnStatusChanged)
     viewModel.isFormValid.observe(viewLifecycleOwner, ::handleFormValidationState)
     viewModel.formValidator.number.observe(viewLifecycleOwner, ::handleCardNumberValueUpdated)
     /*  Handle Form Validation Errors  */

@@ -13,12 +13,5 @@ sealed class PaymentStatusViewState : Parcelable {
   @Parcelize
   data class PaymentAuth3dSecure(val url: String) : PaymentStatusViewState()
 
-  @Parcelize
-  data object SubmittingSTCPayMobileNumber : PaymentStatusViewState()
 
-  @Parcelize
-  data object SubmittingSTCPayOTP : PaymentStatusViewState()
-
-  @Parcelize
-  data class STCPayOTPAuth(val url: String) : PaymentStatusViewState()
 }

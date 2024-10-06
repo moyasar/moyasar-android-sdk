@@ -27,6 +27,7 @@ import com.moyasar.android.sdk.creditcard.presentation.model.PaymentConfig
 import com.moyasar.android.sdk.creditcard.presentation.model.PaymentStatusViewState
 import com.moyasar.android.sdk.creditcard.presentation.model.RequestResultViewState
 import com.moyasar.android.sdk.creditcard.presentation.view.fragments.PaymentAuthFragment
+import com.moyasar.android.sdk.stcpay.presentation.model.STCPayViewState
 import com.moyasar.android.sdk.stcpay.presentation.model.formatter.SaudiPhoneNumberFormatter
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
@@ -48,12 +49,16 @@ internal class PaymentSheetViewModel(
     private var mobileNumberOnChangeLocked = false
     private var ccExpiryOnChangeLocked = false
 
-    private val _status =
+    private val _creditCardStatus =
         MutableLiveData<PaymentStatusViewState>().default(PaymentStatusViewState.Reset)
+
+    private val _stcPayStatus =
+        MutableLiveData<STCPayViewState>().default(STCPayViewState.Init)
     private val _payment = MutableLiveData<PaymentResponse?>()
 
     internal val payment: LiveData<PaymentResponse?> = _payment
-    val status: LiveData<PaymentStatusViewState> = _status
+    val creditCardStatus: LiveData<PaymentStatusViewState> = _creditCardStatus
+    val stcPayStatus: LiveData<STCPayViewState> = _stcPayStatus
     val isFormValid: LiveData<Boolean> = formValidator._isFormValid.distinctUntilChanged()
 
 
@@ -110,11 +115,11 @@ internal class PaymentSheetViewModel(
                     when (result.data.status.lowercase()) {
                         "initiated" -> {
                             if (result.data.source["type"].equals("creditcard"))
-                                _status.value =
+                                _creditCardStatus.value =
                                     PaymentStatusViewState.PaymentAuth3dSecure(result.data.getCardTransactionUrl())
                             else {
-                                _status.value =
-                                    PaymentStatusViewState.STCPayOTPAuth(result.data.getSTCPayTransactionUrl())
+                                _stcPayStatus.value =
+                                    STCPayViewState.STCPayOTPAuth(result.data.getSTCPayTransactionUrl())
                             }
                         }
 
@@ -268,11 +273,11 @@ internal class PaymentSheetViewModel(
             return
         }
 
-        if (_status.value != PaymentStatusViewState.Reset) {
+        if (_creditCardStatus.value != PaymentStatusViewState.Reset) {
             return
         }
 
-        _status.value = PaymentStatusViewState.SubmittingPayment
+        _creditCardStatus.value = PaymentStatusViewState.SubmittingPayment
 
         if (paymentConfig.createSaveOnlyToken) {
             createSaveOnlyToken()
@@ -286,7 +291,7 @@ internal class PaymentSheetViewModel(
             return
         }
 
-        _status.value = PaymentStatusViewState.SubmittingSTCPayMobileNumber
+        _stcPayStatus.value = STCPayViewState.SubmittingSTCPayMobileNumber
         createPayment(
             request = PaymentRequest(
                 amount = paymentConfig.amount,
@@ -306,7 +311,7 @@ internal class PaymentSheetViewModel(
         transactionURL: String, otp: String, mainDispatcher: CoroutineDispatcher = Dispatchers.Main,
         ioDispatcher: CoroutineDispatcher = Dispatchers.IO,
     ) {
-        _status.value= PaymentStatusViewState.SubmittingSTCPayOTP
+        _stcPayStatus.value= STCPayViewState.SubmittingSTCPayOTP
         scope(
             mainDispatcher = mainDispatcher,
             ioDispatcher = ioDispatcher,
@@ -322,8 +327,8 @@ internal class PaymentSheetViewModel(
 
                     when (result.data.status.lowercase()) {
                         "initiated" -> {
-                                _status.value =
-                                    PaymentStatusViewState.STCPayOTPAuth(result.data.getSTCPayTransactionUrl())
+                            _stcPayStatus.value =
+                                    STCPayViewState.STCPayOTPAuth(result.data.getSTCPayTransactionUrl())
 
                         }
 
