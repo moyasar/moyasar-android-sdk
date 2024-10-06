@@ -59,7 +59,7 @@ class EnterMobileNumberFragment : Fragment() {
     private fun setupObservers() {
         MoyasarAppContainer.viewModel.isFormValid.observe(viewLifecycleOwner, ::handleFormValidationState)
         MoyasarAppContainer.viewModel.stcPayStatus.observe(viewLifecycleOwner, ::handleOnStatusChanged)
-        MoyasarAppContainer.viewModel.formValidator.mobileNumberValidator.error.observe(viewLifecycleOwner, ::showInvalidPhoneErrorMsg)
+        MoyasarAppContainer.viewModel.stcPayFormValidator.mobileNumberValidator.error.observe(viewLifecycleOwner, ::showInvalidPhoneErrorMsg)
     }
     private fun showInvalidPhoneErrorMsg(errorMsg: String?) {
         if (MoyasarAppContainer.viewModel.isFirstVisitEnterMobileNumber){
@@ -115,7 +115,7 @@ class EnterMobileNumberFragment : Fragment() {
     }
     private fun FragmentEnterMobileNumberBinding.setupListeners() {
         etMobileNumberInput.afterTextChanged { text ->
-            MoyasarAppContainer.viewModel.formValidator.mobileNumber.value = text?.toString()
+            MoyasarAppContainer.viewModel.stcPayFormValidator.mobileNumber.value = text?.toString()
             text?.let { MoyasarAppContainer.viewModel.mobileNumberChanged(it) }
         }
     }

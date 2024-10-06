@@ -39,7 +39,7 @@ class EnterOTPFragment : Fragment() {
         binding.progressBar.gone()
         setupListeners()
         setupObservers()
-        viewModel.formValidator.stcPayOTP.value = binding.etOTPInput.text?.toString()
+        viewModel.stcPayFormValidator.stcPayOTP.value = binding.etOTPInput.text?.toString()
         binding.etOTPInput.text?.let { viewModel.stcPayOTPChanged() }
     }
 
@@ -52,14 +52,14 @@ class EnterOTPFragment : Fragment() {
             )
         }
         binding.etOTPInput.afterTextChanged { text ->
-            viewModel.formValidator.stcPayOTP.value = text?.toString()
+            viewModel.stcPayFormValidator.stcPayOTP.value = text?.toString()
             text?.let { viewModel.stcPayOTPChanged() }
         }
     }
 
     private fun setupObservers() {
         viewModel.isFormValid.observe(viewLifecycleOwner, ::handleFormValidationState)
-        viewModel.formValidator.stcPayOTPValidator.error.observe(
+        viewModel.stcPayFormValidator.stcPayOTPValidator.error.observe(
             viewLifecycleOwner,
             ::showInvalidOTPErrorMsg
         )

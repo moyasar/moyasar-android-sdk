@@ -29,6 +29,7 @@ import com.moyasar.android.sdk.creditcard.presentation.model.RequestResultViewSt
 import com.moyasar.android.sdk.creditcard.presentation.view.fragments.PaymentAuthFragment
 import com.moyasar.android.sdk.stcpay.presentation.model.STCPayViewState
 import com.moyasar.android.sdk.stcpay.presentation.model.formatter.SaudiPhoneNumberFormatter
+import com.moyasar.android.sdk.stcpay.presentation.model.validation.STCPayFormValidator
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 
@@ -37,6 +38,7 @@ internal class PaymentSheetViewModel(
     private val paymentConfig: PaymentConfig,
     private val callback: (PaymentResult) -> Unit,
     internal val formValidator: FormValidator,
+    internal val stcPayFormValidator: STCPayFormValidator,
     private val createPaymentUseCase: CreatePaymentUseCase,
     private val createTokenUseCase: CreateTokenUseCase,
     private val validateSTCPayOTPUseCase: ValidateSTCPayOTPUseCase,
@@ -66,7 +68,7 @@ internal class PaymentSheetViewModel(
         get() = formValidator.number.value!!.replace(" ", "")
 
     private val cleanMobileNumber: String
-        get() = formValidator.mobileNumber.value!!.replace(" ", "")
+        get() = stcPayFormValidator.mobileNumber.value!!.replace(" ", "")
 
     private val expiryMonth: String
         get() = parseExpiry(formValidator.expiry.value ?: "")?.month.toString()
@@ -227,7 +229,7 @@ internal class PaymentSheetViewModel(
         // todo test
         val formatted = SaudiPhoneNumberFormatter.formatPhoneNumber(textEdit.toString())
         textEdit.replace(0, textEdit.length, formatted)
-        formValidator.validateSTCMobile(true)
+        stcPayFormValidator.validateSTCMobile(true)
         mobileNumberOnChangeLocked = false
     }
 
@@ -287,7 +289,7 @@ internal class PaymentSheetViewModel(
     }
 
     internal fun submitSTC() {
-        if (!formValidator.validateSTCMobile()) {
+        if (!stcPayFormValidator.validateSTCMobile()) {
             return
         }
 
@@ -346,6 +348,6 @@ internal class PaymentSheetViewModel(
     }
 
     fun stcPayOTPChanged() {
-        formValidator.validateSTCOTP()
+        stcPayFormValidator.validateSTCOTP()
     }
 }

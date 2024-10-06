@@ -1,5 +1,7 @@
 package com.moyasar.android.sdk.core.util
 
+import com.moyasar.android.sdk.creditcard.data.models.CreditCardNetwork
+import com.moyasar.android.sdk.creditcard.data.models.getNetwork
 import junit.framework.TestCase.assertEquals
 import org.junit.Test
 

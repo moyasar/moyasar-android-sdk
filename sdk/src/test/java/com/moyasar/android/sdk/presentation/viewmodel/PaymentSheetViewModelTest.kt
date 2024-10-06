@@ -17,6 +17,7 @@ import com.moyasar.android.sdk.presentation.viewmodel.TestDataHelper.createToken
 import com.moyasar.android.sdk.presentation.viewmodel.TestDataHelper.getPaymentBody
 import com.moyasar.android.sdk.presentation.viewmodel.TestDataHelper.getTokenResponseBody
 import com.moyasar.android.sdk.stcpay.domain.usecases.ValidateSTCPayOTPUseCase
+import com.moyasar.android.sdk.stcpay.presentation.model.validation.STCPayFormValidator
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.TestCoroutineScheduler
@@ -53,6 +54,7 @@ class PaymentSheetViewModelTest {
       val validateSTCPayOTPUseCase = mock(ValidateSTCPayOTPUseCase::class.java)
       val createTokenUseCase = mock(CreateTokenUseCase::class.java)
       val formValidator = mock(FormValidator::class.java)
+      val stcPayFormValidator = mock(STCPayFormValidator::class.java)
       val paymentConfig = mock(PaymentConfig::class.java)
       val app = mock(Application::class.java)
       val observer: Observer<PaymentResponse?> = mock()
@@ -71,6 +73,7 @@ class PaymentSheetViewModelTest {
         createTokenUseCase = createTokenUseCase,
         validateSTCPayOTPUseCase = validateSTCPayOTPUseCase,
         formValidator = formValidator,
+        stcPayFormValidator = stcPayFormValidator,
         callback = {}
       )
       viewModel.payment.observeForever(observer)
@@ -101,6 +104,7 @@ class PaymentSheetViewModelTest {
       val createTokenUseCase = mock(CreateTokenUseCase::class.java)
       val validateSTCPayOTPUseCase = mock(ValidateSTCPayOTPUseCase::class.java)
       val formValidator = mock(FormValidator::class.java)
+      val stcPayFormValidator = mock(STCPayFormValidator::class.java)
       val paymentConfig = mock(PaymentConfig::class.java)
       val app = mock(Application::class.java)
       val callback: (PaymentResult) -> Unit = mock()
@@ -118,6 +122,7 @@ class PaymentSheetViewModelTest {
         createTokenUseCase = createTokenUseCase,
         validateSTCPayOTPUseCase = validateSTCPayOTPUseCase,
         formValidator = formValidator,
+        stcPayFormValidator = stcPayFormValidator,
         callback = callback
       )
       // act
@@ -143,6 +148,7 @@ class PaymentSheetViewModelTest {
       val createTokenUseCase = mock(CreateTokenUseCase::class.java)
       val validateSTCPayOTPUseCase = mock(ValidateSTCPayOTPUseCase::class.java)
       val formValidator = mock(FormValidator::class.java)
+      val stcPayFormValidator = mock(STCPayFormValidator::class.java)
       val paymentConfig = mock(PaymentConfig::class.java)
       val app = mock(Application::class.java)
       val callback: (PaymentResult) -> Unit = mock()
@@ -161,6 +167,7 @@ class PaymentSheetViewModelTest {
         createTokenUseCase = createTokenUseCase,
         validateSTCPayOTPUseCase = validateSTCPayOTPUseCase,
         formValidator = formValidator,
+        stcPayFormValidator = stcPayFormValidator,
         callback = callback
       )
       // act
@@ -185,6 +192,7 @@ class PaymentSheetViewModelTest {
       val createTokenUseCase = mock(CreateTokenUseCase::class.java)
       val validateSTCPayOTPUseCase = mock(ValidateSTCPayOTPUseCase::class.java)
       val formValidator = mock(FormValidator::class.java)
+      val stcPayFormValidator = mock(STCPayFormValidator::class.java)
       val paymentConfig = mock(PaymentConfig::class.java)
       val app = mock(Application::class.java)
       val callback: (PaymentResult) -> Unit = mock()
@@ -202,6 +210,7 @@ class PaymentSheetViewModelTest {
         createTokenUseCase = createTokenUseCase,
         validateSTCPayOTPUseCase = validateSTCPayOTPUseCase,
         formValidator = formValidator,
+        stcPayFormValidator = stcPayFormValidator,
         callback = callback
       )
       // act
@@ -226,6 +235,7 @@ class PaymentSheetViewModelTest {
       val createTokenUseCase = mock(CreateTokenUseCase::class.java)
       val validateSTCPayOTPUseCase = mock(ValidateSTCPayOTPUseCase::class.java)
       val formValidator = mock(FormValidator::class.java)
+      val stcPayFormValidator = mock(STCPayFormValidator::class.java)
       val paymentConfig = mock(PaymentConfig::class.java)
       val app = mock(Application::class.java)
       val observer: Observer<PaymentResponse?> = mock()
@@ -244,6 +254,7 @@ class PaymentSheetViewModelTest {
         createTokenUseCase = createTokenUseCase,
         validateSTCPayOTPUseCase = validateSTCPayOTPUseCase,
         formValidator = formValidator,
+        stcPayFormValidator = stcPayFormValidator,
         callback = {}
       )
       viewModel.payment.observeForever(observer)
@@ -271,6 +282,7 @@ class PaymentSheetViewModelTest {
       val createTokenUseCase = mock(CreateTokenUseCase::class.java)
       val validateSTCPayOTPUseCase = mock(ValidateSTCPayOTPUseCase::class.java)
       val formValidator = mock(FormValidator::class.java)
+      val stcPayFormValidator = mock(STCPayFormValidator::class.java)
       val paymentConfig = mock(PaymentConfig::class.java)
       val app = mock(Application::class.java)
       val observer: Observer<PaymentResponse?> = mock()
@@ -289,6 +301,7 @@ class PaymentSheetViewModelTest {
         createTokenUseCase = createTokenUseCase,
         validateSTCPayOTPUseCase = validateSTCPayOTPUseCase,
         formValidator = formValidator,
+        stcPayFormValidator = stcPayFormValidator,
         callback = {}
       )
       viewModel.payment.observeForever(observer)

@@ -12,8 +12,6 @@ import com.moyasar.android.sdk.creditcard.data.models.CreditCardNetwork
 import com.moyasar.android.sdk.creditcard.data.models.getNetwork
 import com.moyasar.android.sdk.creditcard.data.models.isCreditAllowed
 import com.moyasar.android.sdk.creditcard.presentation.di.MoyasarAppContainer
-import com.moyasar.android.sdk.stcpay.presentation.model.validator.STCPayOTPValidator
-import com.moyasar.android.sdk.stcpay.presentation.model.validator.SaudiPhoneNumberValidator
 
 /***************
  * This only a wrapper to wrap Moyasar form data Models And validation Rules
@@ -24,10 +22,6 @@ class FormValidator(application: Application) {
     val number = MutableLiveData<String>().default("")
     val cvc = MutableLiveData<String>().default("")
     val expiry = MutableLiveData<String>().default("")
-
-    // STC pay fields
-    val mobileNumber = MutableLiveData<String>().default("")
-    val stcPayOTP = MutableLiveData<String>().default("")
 
     internal val _isFormValid = MediatorLiveData<Boolean>().default(false)
 
@@ -66,22 +60,6 @@ class FormValidator(application: Application) {
         }
     }
 
-    val mobileNumberValidator = LiveDataValidator(mobileNumber).apply {
-        addRule(application.getString(R.string.mobile_number_is_required)) { it.isNullOrBlank() }
-        addRule(application.getString(R.string.invalid_mobile_number)) {
-            !SaudiPhoneNumberValidator.isValidSaudiPhoneNumber(
-                it ?: ""
-            )
-        }
-    }
-
-    val stcPayOTPValidator = LiveDataValidator(stcPayOTP).apply {
-        addRule(application.getString(R.string.invalid_stc_pay_otp)) {
-            !STCPayOTPValidator.isValidOtp(
-                it ?: ""
-            )
-        }
-    }
 
     val cvcValidator = LiveDataValidator(cvc).apply {
         addRule(application.getString(R.string.cvc_required)) { it.isNullOrBlank() }
@@ -114,21 +92,4 @@ class FormValidator(application: Application) {
         }
     }
 
-    fun validateSTCMobile(isShowError: Boolean = true): Boolean {
-        val validators = listOf(mobileNumberValidator)
-        return if (isShowError) {
-            validators.all { it.isValid() }.also { _isFormValid.value = it }
-        } else {
-            validators.all { it.isValidWithoutErrorMessage() }.also { _isFormValid.value = it }
-        }
-    }
-
-    fun validateSTCOTP(isShowError: Boolean = true): Boolean {
-        val validators = listOf(stcPayOTPValidator)
-        return if (isShowError) {
-            validators.all { it.isValid() }.also { _isFormValid.value = it }
-        } else {
-            validators.all { it.isValidWithoutErrorMessage() }.also { _isFormValid.value = it }
-        }
-    }
 }
