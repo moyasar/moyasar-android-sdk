@@ -15,8 +15,7 @@ data class PaymentConfig(
     val allowedNetworks: List<CreditCardNetwork> = listOf(
         CreditCardNetwork.Visa,
         CreditCardNetwork.Mastercard,
-        CreditCardNetwork.Mada,
-        CreditCardNetwork.Amex
+        CreditCardNetwork.Mada
     ),
     val createSaveOnlyToken: Boolean = false,
 ) {

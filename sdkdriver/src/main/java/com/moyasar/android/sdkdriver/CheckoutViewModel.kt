@@ -25,7 +25,7 @@ class CheckoutViewModel : ViewModel() {
         metadata = mapOf(
             "order_id" to "order_123"
         ),
-        allowedNetworks = listOf(CreditCardNetwork.Mastercard),
+        allowedNetworks = listOf(CreditCardNetwork.Mastercard, CreditCardNetwork.Visa, CreditCardNetwork.Amex),
         createSaveOnlyToken = false
     )
 
