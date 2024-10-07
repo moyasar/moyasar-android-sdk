@@ -62,6 +62,7 @@ internal class PaymentSheetViewModel(
     val creditCardStatus: LiveData<PaymentStatusViewState> = _creditCardStatus
     val stcPayStatus: LiveData<STCPayViewState> = _stcPayStatus
     val isFormValid: LiveData<Boolean> = formValidator._isFormValid.distinctUntilChanged()
+    val isSTCPayFormValid: LiveData<Boolean> = stcPayFormValidator._isSTCPayFormValid.distinctUntilChanged()
 
 
     private val cleanCardNumber: String

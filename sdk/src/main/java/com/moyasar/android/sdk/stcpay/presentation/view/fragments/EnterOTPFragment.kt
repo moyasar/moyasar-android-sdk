@@ -58,7 +58,7 @@ class EnterOTPFragment : Fragment() {
     }
 
     private fun setupObservers() {
-        viewModel.isFormValid.observe(viewLifecycleOwner, ::handleFormValidationState)
+        viewModel.isSTCPayFormValid.observe(viewLifecycleOwner, ::handleFormValidationState)
         viewModel.stcPayFormValidator.stcPayOTPValidator.error.observe(
             viewLifecycleOwner,
             ::showInvalidOTPErrorMsg
