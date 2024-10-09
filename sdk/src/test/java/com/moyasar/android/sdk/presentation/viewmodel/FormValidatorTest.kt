@@ -3,6 +3,9 @@ package com.moyasar.android.sdk.presentation.viewmodel
 import android.app.Application
 import android.arch.core.executor.testing.InstantTaskExecutorRule
 import com.moyasar.android.sdk.R
+import com.moyasar.android.sdk.creditcard.data.models.request.PaymentRequest
+import com.moyasar.android.sdk.creditcard.presentation.di.MoyasarAppContainer
+import com.moyasar.android.sdk.creditcard.presentation.viewmodel.FormValidator
 import org.junit.Assert.*
 import org.junit.Before
 import org.junit.Rule
@@ -33,6 +36,9 @@ class FormValidatorTest {
     Mockito.`when`(application.getString(R.string.expiry_is_required)).thenReturn("Expiry date is required")
     Mockito.`when`(application.getString(R.string.invalid_expiry)).thenReturn("Invalid expiry date")
     Mockito.`when`(application.getString(R.string.expired_card)).thenReturn("Card is expired")
+    Mockito.`when`(application.getString(R.string.mobile_number_is_required)).thenReturn("Mobile is required")
+    Mockito.`when`(application.getString(R.string.invalid_mobile_number)).thenReturn("Mobile is invalid")
+    Mockito.`when`(application.getString(R.string.invalid_stc_pay_otp)).thenReturn("OTP is invalid")
 
     formValidator = FormValidator(application)
   }
@@ -54,6 +60,18 @@ class FormValidatorTest {
     formValidator.number.value = "1234567812345670" // assuming this is an invalid Luhn number
     assertFalse(formValidator.numberValidator.isValid())
     formValidator.number.value = "4111111111111111" // assuming this is a valid Luhn number
+    MoyasarAppContainer.paymentRequest = PaymentRequest(
+      amount = 5,
+      currency = "SAR",
+      description = "Sample Android SDK Payment",
+      apiKey = "pk_test_vcFUHJDBwiyRu4Bd3hFuPpTnRPY4gp2ssYdNJMY3",
+      baseUrl = "https://api.moyasar.com",
+      manual = false,
+      metadata = mapOf(
+        "order_id" to "order_123"
+      ),
+      createSaveOnlyToken = false
+    )
     assertTrue(formValidator.numberValidator.isValid())
   }
 
@@ -85,7 +103,18 @@ class FormValidatorTest {
     formValidator.number.value = "4111111111111111" // Example valid card number
     formValidator.cvc.value = "123"
     formValidator.expiry.value = "12/25" // Example valid expiry date
-
+    MoyasarAppContainer.paymentRequest = PaymentRequest(
+      amount = 5,
+      currency = "SAR",
+      description = "Sample Android SDK Payment",
+      apiKey = "pk_test_vcFUHJDBwiyRu4Bd3hFuPpTnRPY4gp2ssYdNJMY3",
+      baseUrl = "https://api.moyasar.com",
+      manual = false,
+      metadata = mapOf(
+        "order_id" to "order_123"
+      ),
+      createSaveOnlyToken = false
+    )
     assertTrue(formValidator.validate())
   }
 }

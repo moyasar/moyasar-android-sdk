@@ -10,10 +10,26 @@
     <string name="expiry_is_required">تاريخ الإنتهاء مطلوب</string>
     <string name="invalid_expiry">تاريخ الإنتهاء غير صحيح</string>
     <string name="expired_card">البطاقة منتهية</string>
+    <string name="mobile_number_is_required">رقم الجوال مطلوب</string>
     <string name="name_is_required">الاسم مطلوب</string>
     <string name="both_names_required">الاسم الأول والثاني مطلوب</string>
     <string name="only_english_alpha">يجب أن يحتوي الاسم على حروف إنجليزية فقط</string>
     <string name="cvc_required">رمز التحقق مطلوب</string>
     <string name="invalid_cvc">رمز تحقق غير صحيح</string>
-    <string name="payBtnLabel">ادفع</string>
+    <string name="invalid_mobile_number">رقم الجوال غير صحيح</string>
+    <string name="invalid_stc_pay_otp">رمز التحقق لمرة واحدة غير صحيح</string>
+    <string name="lbl_mobile_number">رقم الجوال</string>
+    <string name="lbl_mobile_number_hint">05x xxx xxxx</string>
+    <string name="one_time_password">ادخل رمز التحقق لمرة واحدة</string>
+    <string name="lbl_confirm_button">تأكيد</string>
+    <string name="lbl_moyasar_button_plain" />
+    <string name="lbl_moyasar_button_pay">ادفع</string>
+    <string name="lbl_moyasar_button_buy">شراء</string>
+    <string name="lbl_moyasar_button_book">حجز</string>
+    <string name="lbl_moyasar_button_rent">استأجر</string>
+    <string name="lbl_moyasar_button_continue">استمرار</string>
+    <string name="lbl_moyasar_button_donate">تبرع</string>
+    <string name="lbl_moyasar_button_topup">اشحن</string>
+    <string name="lbl_moyasar_button_order">إتمام الطلب</string>
+    <string name="lbl_moyasar_button_support">دعم</string>
 </resources>

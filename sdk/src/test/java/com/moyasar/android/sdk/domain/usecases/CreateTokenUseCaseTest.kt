@@ -1,10 +1,11 @@
 package com.moyasar.android.sdk.domain.usecases
 
 import com.moyasar.android.sdk.core.exceptions.ApiException
-import com.moyasar.android.sdk.data.models.ErrorResponse
-import com.moyasar.android.sdk.data.models.Token
-import com.moyasar.android.sdk.data.models.TokenRequest
-import com.moyasar.android.sdk.data.remote.PaymentService
+import com.moyasar.android.sdk.creditcard.domain.usecases.CreateTokenUseCase
+import com.moyasar.android.sdk.core.data.response.ErrorResponse
+import com.moyasar.android.sdk.creditcard.data.models.response.TokenResponse
+import com.moyasar.android.sdk.creditcard.data.models.request.TokenRequest
+import com.moyasar.android.sdk.creditcard.data.remote.PaymentService
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
 import org.junit.Before
@@ -36,7 +37,7 @@ class CreateTokenUseCaseTest {
       name = "mahmoud ashraf", number = "1234123412341234", cvc = "123",
       month = "11", year = "2024", saveOnly = false, "moyasar.com", mapOf()
     )
-    val expectedToken = Token(
+    val expectedToken = TokenResponse(
       id = "1",
       status = "valid",
       brand = "123",
@@ -68,7 +69,7 @@ class CreateTokenUseCaseTest {
       name = "mahmoud ashraf", number = "1234123412341234", cvc = "123",
       month = "11", year = "2024", saveOnly = false, "moyasar.com", mapOf()
     )
-    val expectedToken = Token(
+    val expectedToken = TokenResponse(
       id = "1",
       status = "valid",
       brand = "123",

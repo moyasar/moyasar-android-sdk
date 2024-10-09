@@ -1,6 +1,6 @@
 package com.moyasar.android.sdk.core.util
 
-import com.moyasar.android.sdk.presentation.model.PaymentConfig
+import com.moyasar.android.sdk.creditcard.data.models.request.PaymentRequest
 import java.text.DecimalFormat
 import java.util.Calendar
 import java.util.Currency
@@ -30,17 +30,6 @@ fun isValidLuhnNumber(number: String): Boolean {
   }
 
 
-fun getNetwork(number: String): CreditCardNetwork {
-  val strippedNumber = number.replace(" ", "")
-  return when {
-    amexRangeRegex.containsMatchIn(strippedNumber) -> CreditCardNetwork.Amex
-    inMadaRange(strippedNumber) -> CreditCardNetwork.Mada
-    visaRangeRegex.containsMatchIn(strippedNumber) -> CreditCardNetwork.Visa
-    masterCardRangeRegex.containsMatchIn(strippedNumber) -> CreditCardNetwork.Mastercard
-    else -> CreditCardNetwork.Unknown
-  }
-}
-
 fun parseExpiry(date: String): ExpiryDate? {
   val clean = date.replace(" ", "")
     .replace("/", "")
@@ -59,9 +48,9 @@ fun parseExpiry(date: String): ExpiryDate? {
   }
 }
 
-fun getFormattedAmount(paymentConfig: PaymentConfig): String {
+fun getFormattedAmount(paymentRequest: PaymentRequest): String {
   val currentLocale = Locale.getDefault()
-  val paymentCurrency = Currency.getInstance(paymentConfig.currency)
+  val paymentCurrency = Currency.getInstance(paymentRequest.currency)
 
   val numberFormatter = DecimalFormat.getNumberInstance(Locale.US).apply {
     minimumFractionDigits = paymentCurrency.defaultFractionDigits
@@ -73,7 +62,7 @@ fun getFormattedAmount(paymentConfig: PaymentConfig): String {
   }
 
   val amount =
-    paymentConfig.amount / (10.0.pow(currencyFormatter.currency!!.defaultFractionDigits.toDouble()))
+    paymentRequest.amount / (10.0.pow(currencyFormatter.currency!!.defaultFractionDigits.toDouble()))
   val formattedNumber = numberFormatter.format(amount)
   val currencySymbol = currencyFormatter.currency!!.symbol
 
@@ -82,14 +71,6 @@ fun getFormattedAmount(paymentConfig: PaymentConfig): String {
   } else {
     "$currencySymbol $formattedNumber"
   }
-}
-
-enum class CreditCardNetwork {
-  Amex,
-  Mada,
-  Visa,
-  Mastercard,
-  Unknown
 }
 
 data class ExpiryDate(val month: Int, val year: Int) {

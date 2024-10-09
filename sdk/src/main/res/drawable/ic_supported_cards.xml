@@ -1,25 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
     <item
-        android:drawable="@drawable/ic_mada"
+        android:drawable="@drawable/ic_moyasar_mada"
         android:left="0dp"
         android:right="108dp"
         android:width="32dp"
         />
     <item
-        android:drawable="@drawable/ic_visa"
+        android:drawable="@drawable/ic_moyasar_visa"
         android:left="36dp"
         android:right="72dp"
         android:width="32dp"
          />
     <item
-        android:drawable="@drawable/ic_mastercard"
+        android:drawable="@drawable/ic_moyasar_mastercard"
         android:left="72dp"
         android:right="36dp"
         android:width="32dp"
          />
     <item
-        android:drawable="@drawable/ic_amex"
+        android:drawable="@drawable/ic_moyasar_amex"
         android:left="108dp"
         android:right="0dp"
         android:width="32dp"
