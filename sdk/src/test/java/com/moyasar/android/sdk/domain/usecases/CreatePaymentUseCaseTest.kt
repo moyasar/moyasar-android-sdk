@@ -39,6 +39,7 @@ class CreatePaymentUseCaseTest {
         name = "asd", number = "1234123412341234", month = "11", year = "2024", cvc = "123",
         manual = null, saveCard = null
       ),
+      apiKey = ""
     )
     val expectedResult = PaymentResponse(
       "1",
@@ -79,6 +80,7 @@ class CreatePaymentUseCaseTest {
         name = "asd", number = "1234123412341234", month = "11", year = "2024", cvc = "123",
         manual = null, saveCard = null
       ),
+      apiKey = ""
     )
     val expectedResult = PaymentResponse(
       "1",
@@ -119,6 +121,7 @@ class CreatePaymentUseCaseTest {
         name = "asd", number = "1234123412341234", month = "11", year = "2024", cvc = "123",
         manual = null, saveCard = null
       ),
+      apiKey = ""
     )
     val errorResponse =
       ErrorResponse(message = "Payment error", type = "server_error", errors = null)

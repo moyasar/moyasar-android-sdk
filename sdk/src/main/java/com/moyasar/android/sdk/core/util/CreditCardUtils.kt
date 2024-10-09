@@ -1,6 +1,6 @@
 package com.moyasar.android.sdk.core.util
 
-import com.moyasar.android.sdk.creditcard.presentation.model.PaymentConfig
+import com.moyasar.android.sdk.creditcard.data.models.request.PaymentRequest
 import java.text.DecimalFormat
 import java.util.Calendar
 import java.util.Currency
@@ -48,9 +48,9 @@ fun parseExpiry(date: String): ExpiryDate? {
   }
 }
 
-fun getFormattedAmount(paymentConfig: PaymentConfig): String {
+fun getFormattedAmount(paymentRequest: PaymentRequest): String {
   val currentLocale = Locale.getDefault()
-  val paymentCurrency = Currency.getInstance(paymentConfig.currency)
+  val paymentCurrency = Currency.getInstance(paymentRequest.currency)
 
   val numberFormatter = DecimalFormat.getNumberInstance(Locale.US).apply {
     minimumFractionDigits = paymentCurrency.defaultFractionDigits
@@ -62,7 +62,7 @@ fun getFormattedAmount(paymentConfig: PaymentConfig): String {
   }
 
   val amount =
-    paymentConfig.amount / (10.0.pow(currencyFormatter.currency!!.defaultFractionDigits.toDouble()))
+    paymentRequest.amount / (10.0.pow(currencyFormatter.currency!!.defaultFractionDigits.toDouble()))
   val formattedNumber = numberFormatter.format(amount)
   val currencySymbol = currencyFormatter.currency!!.symbol
 

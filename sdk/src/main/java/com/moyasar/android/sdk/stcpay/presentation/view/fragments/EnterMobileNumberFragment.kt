@@ -17,8 +17,8 @@ import com.moyasar.android.sdk.core.extensions.gone
 import com.moyasar.android.sdk.core.extensions.shouldDisableButton
 import com.moyasar.android.sdk.core.extensions.show
 import com.moyasar.android.sdk.core.util.MoyasarLogger
+import com.moyasar.android.sdk.creditcard.data.models.request.PaymentRequest
 import com.moyasar.android.sdk.creditcard.presentation.di.MoyasarAppContainer
-import com.moyasar.android.sdk.creditcard.presentation.model.PaymentConfig
 import com.moyasar.android.sdk.databinding.FragmentEnterMobileNumberBinding
 import com.moyasar.android.sdk.stcpay.presentation.model.STCPayViewState
 
@@ -30,14 +30,14 @@ class EnterMobileNumberFragment : Fragment() {
     companion object {
         fun newInstance(
             application: Application,
-            config: PaymentConfig,
+            paymentRequest: PaymentRequest,
             callback: (PaymentResult) -> Unit,
         ): EnterMobileNumberFragment {
-            val configError = config.validate()
+            val configError = paymentRequest.validate()
             if (configError.any()) {
                 throw InvalidConfigException(configError)
             }
-            MoyasarAppContainer.initialize(application, config, callback)
+            MoyasarAppContainer.initialize(application, paymentRequest, callback)
             return EnterMobileNumberFragment()
         }
     }
@@ -80,7 +80,7 @@ class EnterMobileNumberFragment : Fragment() {
         parentActivity.runOnUiThread {
             when (status) {
                 is STCPayViewState.SubmittingSTCPayMobileNumber ->{
-                    binding.payButton.setButtonType(MoyasarButtonType.PLAIN)
+                    binding.payButton.setButtonType(MoyasarAppContainer.paymentRequest.buttonType)
                     binding.progressBar.show()
                     binding.payButton.shouldDisableButton(false)
                     binding.payButton.isEnabled = false
@@ -106,8 +106,7 @@ class EnterMobileNumberFragment : Fragment() {
 
     private fun initView() {
         binding.progressBar.gone()
-        println("sss "+MoyasarAppContainer.viewModel.amountLabel)
-        binding.payButton.setButtonType(MoyasarButtonType.PAY)
+        binding.payButton.setButtonType(MoyasarAppContainer.paymentRequest.buttonType)
         binding.payButton.setOnClickListener {
             MoyasarAppContainer.viewModel.submitSTC()
         }

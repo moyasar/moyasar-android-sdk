@@ -3,8 +3,8 @@ package com.moyasar.android.sdk.presentation.viewmodel
 import android.app.Application
 import android.arch.core.executor.testing.InstantTaskExecutorRule
 import com.moyasar.android.sdk.R
+import com.moyasar.android.sdk.creditcard.data.models.request.PaymentRequest
 import com.moyasar.android.sdk.creditcard.presentation.di.MoyasarAppContainer
-import com.moyasar.android.sdk.creditcard.presentation.model.PaymentConfig
 import com.moyasar.android.sdk.creditcard.presentation.viewmodel.FormValidator
 import org.junit.Assert.*
 import org.junit.Before
@@ -60,7 +60,7 @@ class FormValidatorTest {
     formValidator.number.value = "1234567812345670" // assuming this is an invalid Luhn number
     assertFalse(formValidator.numberValidator.isValid())
     formValidator.number.value = "4111111111111111" // assuming this is a valid Luhn number
-    MoyasarAppContainer.config = PaymentConfig(
+    MoyasarAppContainer.paymentRequest = PaymentRequest(
       amount = 5,
       currency = "SAR",
       description = "Sample Android SDK Payment",
@@ -103,7 +103,7 @@ class FormValidatorTest {
     formValidator.number.value = "4111111111111111" // Example valid card number
     formValidator.cvc.value = "123"
     formValidator.expiry.value = "12/25" // Example valid expiry date
-    MoyasarAppContainer.config = PaymentConfig(
+    MoyasarAppContainer.paymentRequest = PaymentRequest(
       amount = 5,
       currency = "SAR",
       description = "Sample Android SDK Payment",

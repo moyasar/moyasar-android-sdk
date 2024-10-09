@@ -7,9 +7,9 @@ import android.arch.lifecycle.Observer
 import com.moyasar.android.sdk.core.extensions.default
 import com.moyasar.android.sdk.core.data.response.PaymentResponse
 import com.moyasar.android.sdk.core.domain.entities.PaymentResult
+import com.moyasar.android.sdk.creditcard.data.models.request.PaymentRequest
 import com.moyasar.android.sdk.creditcard.domain.usecases.CreatePaymentUseCase
 import com.moyasar.android.sdk.creditcard.domain.usecases.CreateTokenUseCase
-import com.moyasar.android.sdk.creditcard.presentation.model.PaymentConfig
 import com.moyasar.android.sdk.creditcard.presentation.viewmodel.FormValidator
 import com.moyasar.android.sdk.creditcard.presentation.viewmodel.PaymentSheetViewModel
 import com.moyasar.android.sdk.presentation.viewmodel.TestDataHelper.createPaymentRequestBody
@@ -55,7 +55,7 @@ class PaymentSheetViewModelTest {
       val createTokenUseCase = mock(CreateTokenUseCase::class.java)
       val formValidator = mock(FormValidator::class.java)
       val stcPayFormValidator = mock(STCPayFormValidator::class.java)
-      val paymentConfig = mock(PaymentConfig::class.java)
+      val paymentRequest = mock(PaymentRequest::class.java)
       val app = mock(Application::class.java)
       val observer: Observer<PaymentResponse?> = mock()
       val captor = ArgumentCaptor.forClass(PaymentResponse::class.java)
@@ -66,9 +66,12 @@ class PaymentSheetViewModelTest {
       Mockito.`when`(formValidator._isFormValid).thenReturn(
         MediatorLiveData<Boolean>().default(false)
       )
+      Mockito.`when`(stcPayFormValidator._isSTCPayFormValid).thenReturn(
+        MediatorLiveData<Boolean>().default(false)
+      )
       val viewModel = PaymentSheetViewModel(
         application = app,
-        paymentConfig = paymentConfig,
+        paymentRequest = paymentRequest,
         createPaymentUseCase = createPaymentUseCase,
         createTokenUseCase = createTokenUseCase,
         validateSTCPayOTPUseCase = validateSTCPayOTPUseCase,
@@ -105,7 +108,7 @@ class PaymentSheetViewModelTest {
       val validateSTCPayOTPUseCase = mock(ValidateSTCPayOTPUseCase::class.java)
       val formValidator = mock(FormValidator::class.java)
       val stcPayFormValidator = mock(STCPayFormValidator::class.java)
-      val paymentConfig = mock(PaymentConfig::class.java)
+      val paymentRequest = mock(PaymentRequest::class.java)
       val app = mock(Application::class.java)
       val callback: (PaymentResult) -> Unit = mock()
       val request = createTokenRequestBody()
@@ -115,9 +118,12 @@ class PaymentSheetViewModelTest {
       Mockito.`when`(formValidator._isFormValid).thenReturn(
         MediatorLiveData<Boolean>().default(false)
       )
+      Mockito.`when`(stcPayFormValidator._isSTCPayFormValid).thenReturn(
+        MediatorLiveData<Boolean>().default(false)
+      )
       val viewModel = PaymentSheetViewModel(
         application = app,
-        paymentConfig = paymentConfig,
+        paymentRequest = paymentRequest,
         createPaymentUseCase = createPaymentUseCase,
         createTokenUseCase = createTokenUseCase,
         validateSTCPayOTPUseCase = validateSTCPayOTPUseCase,
@@ -149,7 +155,7 @@ class PaymentSheetViewModelTest {
       val validateSTCPayOTPUseCase = mock(ValidateSTCPayOTPUseCase::class.java)
       val formValidator = mock(FormValidator::class.java)
       val stcPayFormValidator = mock(STCPayFormValidator::class.java)
-      val paymentConfig = mock(PaymentConfig::class.java)
+      val paymentRequest = mock(PaymentRequest::class.java)
       val app = mock(Application::class.java)
       val callback: (PaymentResult) -> Unit = mock()
       val request = createTokenRequestBody()
@@ -160,9 +166,12 @@ class PaymentSheetViewModelTest {
       Mockito.`when`(formValidator._isFormValid).thenReturn(
         MediatorLiveData<Boolean>().default(false)
       )
+      Mockito.`when`(stcPayFormValidator._isSTCPayFormValid).thenReturn(
+        MediatorLiveData<Boolean>().default(false)
+      )
       val viewModel = PaymentSheetViewModel(
         application = app,
-        paymentConfig = paymentConfig,
+        paymentRequest = paymentRequest,
         createPaymentUseCase = createPaymentUseCase,
         createTokenUseCase = createTokenUseCase,
         validateSTCPayOTPUseCase = validateSTCPayOTPUseCase,
@@ -193,7 +202,7 @@ class PaymentSheetViewModelTest {
       val validateSTCPayOTPUseCase = mock(ValidateSTCPayOTPUseCase::class.java)
       val formValidator = mock(FormValidator::class.java)
       val stcPayFormValidator = mock(STCPayFormValidator::class.java)
-      val paymentConfig = mock(PaymentConfig::class.java)
+      val paymentRequest = mock(PaymentRequest::class.java)
       val app = mock(Application::class.java)
       val callback: (PaymentResult) -> Unit = mock()
       val request = createTokenRequestBody()
@@ -203,9 +212,12 @@ class PaymentSheetViewModelTest {
       Mockito.`when`(formValidator._isFormValid).thenReturn(
         MediatorLiveData<Boolean>().default(false)
       )
+      Mockito.`when`(stcPayFormValidator._isSTCPayFormValid).thenReturn(
+        MediatorLiveData<Boolean>().default(false)
+      )
       val viewModel = PaymentSheetViewModel(
         application = app,
-        paymentConfig = paymentConfig,
+        paymentRequest = paymentRequest,
         createPaymentUseCase = createPaymentUseCase,
         createTokenUseCase = createTokenUseCase,
         validateSTCPayOTPUseCase = validateSTCPayOTPUseCase,
@@ -236,7 +248,7 @@ class PaymentSheetViewModelTest {
       val validateSTCPayOTPUseCase = mock(ValidateSTCPayOTPUseCase::class.java)
       val formValidator = mock(FormValidator::class.java)
       val stcPayFormValidator = mock(STCPayFormValidator::class.java)
-      val paymentConfig = mock(PaymentConfig::class.java)
+      val paymentRequest = mock(PaymentRequest::class.java)
       val app = mock(Application::class.java)
       val observer: Observer<PaymentResponse?> = mock()
       val captor = ArgumentCaptor.forClass(PaymentResponse::class.java)
@@ -247,9 +259,12 @@ class PaymentSheetViewModelTest {
       Mockito.`when`(formValidator._isFormValid).thenReturn(
         MediatorLiveData<Boolean>().default(false)
       )
+      Mockito.`when`(stcPayFormValidator._isSTCPayFormValid).thenReturn(
+        MediatorLiveData<Boolean>().default(false)
+      )
       val viewModel = PaymentSheetViewModel(
         application = app,
-        paymentConfig = paymentConfig,
+        paymentRequest = paymentRequest,
         createPaymentUseCase = createPaymentUseCase,
         createTokenUseCase = createTokenUseCase,
         validateSTCPayOTPUseCase = validateSTCPayOTPUseCase,
@@ -283,7 +298,7 @@ class PaymentSheetViewModelTest {
       val validateSTCPayOTPUseCase = mock(ValidateSTCPayOTPUseCase::class.java)
       val formValidator = mock(FormValidator::class.java)
       val stcPayFormValidator = mock(STCPayFormValidator::class.java)
-      val paymentConfig = mock(PaymentConfig::class.java)
+      val paymentRequest = mock(PaymentRequest::class.java)
       val app = mock(Application::class.java)
       val observer: Observer<PaymentResponse?> = mock()
       val captor = ArgumentCaptor.forClass(PaymentResponse::class.java)
@@ -294,9 +309,12 @@ class PaymentSheetViewModelTest {
       Mockito.`when`(formValidator._isFormValid).thenReturn(
         MediatorLiveData<Boolean>().default(false)
       )
+      Mockito.`when`(stcPayFormValidator._isSTCPayFormValid).thenReturn(
+        MediatorLiveData<Boolean>().default(false)
+      )
       val viewModel = PaymentSheetViewModel(
         application = app,
-        paymentConfig = paymentConfig,
+        paymentRequest = paymentRequest,
         createPaymentUseCase = createPaymentUseCase,
         createTokenUseCase = createTokenUseCase,
         validateSTCPayOTPUseCase = validateSTCPayOTPUseCase,

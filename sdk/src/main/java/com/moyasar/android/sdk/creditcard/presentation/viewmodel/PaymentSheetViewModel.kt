@@ -23,7 +23,6 @@ import com.moyasar.android.sdk.creditcard.domain.usecases.CreateTokenUseCase
 import com.moyasar.android.sdk.stcpay.domain.usecases.ValidateSTCPayOTPUseCase
 import com.moyasar.android.sdk.creditcard.presentation.model.AuthResultViewState
 import com.moyasar.android.sdk.creditcard.presentation.model.FieldValidation
-import com.moyasar.android.sdk.creditcard.presentation.model.PaymentConfig
 import com.moyasar.android.sdk.creditcard.presentation.model.PaymentStatusViewState
 import com.moyasar.android.sdk.creditcard.presentation.model.RequestResultViewState
 import com.moyasar.android.sdk.creditcard.presentation.view.fragments.PaymentAuthFragment
@@ -35,7 +34,7 @@ import kotlinx.coroutines.Dispatchers
 
 internal class PaymentSheetViewModel(
     application: Application,
-    private val paymentConfig: PaymentConfig,
+    private val paymentRequest: PaymentRequest,
     private val callback: (PaymentResult) -> Unit,
     internal val formValidator: FormValidator,
     internal val stcPayFormValidator: STCPayFormValidator,
@@ -79,7 +78,7 @@ internal class PaymentSheetViewModel(
 
     // Done logic like this to replicate iOS SDK's behavior
     val amountLabel: String
-        get() = getFormattedAmount(paymentConfig)
+        get() = getFormattedAmount(paymentRequest)
 
     private fun notifyPaymentResult(paymentResult: PaymentResult) = callback(paymentResult)
 
@@ -88,10 +87,7 @@ internal class PaymentSheetViewModel(
      * or After STC Pay Button Clicked
      ************************/
     internal fun createPayment(
-        request: PaymentRequest = PaymentRequest(
-            amount = paymentConfig.amount,
-            currency = paymentConfig.currency,
-            description = paymentConfig.description,
+        request: PaymentRequest = paymentRequest.copy(
             callbackUrl = PaymentAuthFragment.RETURN_URL,
             source = CardPaymentSource(
                 formValidator.name.value!!,
@@ -99,10 +95,9 @@ internal class PaymentSheetViewModel(
                 expiryMonth,
                 expiryYear,
                 formValidator.cvc.value!!,
-                if (paymentConfig.manual) "true" else "false",
-                if (paymentConfig.saveCard) "true" else "false",
+                if (paymentRequest.manual) "true" else "false",
+                if (paymentRequest.saveCard) "true" else "false",
             ),
-            metadata = paymentConfig.metadata ?: HashMap()
         ),
         mainDispatcher: CoroutineDispatcher = Dispatchers.Main,
         ioDispatcher: CoroutineDispatcher = Dispatchers.IO,
@@ -282,7 +277,7 @@ internal class PaymentSheetViewModel(
 
         _creditCardStatus.value = PaymentStatusViewState.SubmittingPayment
 
-        if (paymentConfig.createSaveOnlyToken) {
+        if (paymentRequest.createSaveOnlyToken) {
             createSaveOnlyToken()
         } else {
             createPayment()
@@ -296,15 +291,11 @@ internal class PaymentSheetViewModel(
 
         _stcPayStatus.value = STCPayViewState.SubmittingSTCPayMobileNumber
         createPayment(
-            request = PaymentRequest(
-                amount = paymentConfig.amount,
-                currency = paymentConfig.currency,
-                description = paymentConfig.description,
+            request = paymentRequest.copy(
                 callbackUrl = PaymentAuthFragment.RETURN_URL,
                 source = STCPayPaymentSource(
                     mobile = cleanMobileNumber,
-                ),
-                metadata = paymentConfig.metadata ?: HashMap()
+                )
             )
         )
 

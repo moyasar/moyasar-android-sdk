@@ -5,7 +5,7 @@ import com.moyasar.android.sdk.core.data.response.PaymentResponse
 import com.moyasar.android.sdk.creditcard.data.models.request.PaymentRequest
 import com.moyasar.android.sdk.creditcard.data.models.response.TokenResponse
 import com.moyasar.android.sdk.creditcard.data.models.request.TokenRequest
-import com.moyasar.android.sdk.creditcard.presentation.model.PaymentConfig
+import com.moyasar.android.sdk.creditcard.presentation.di.MoyasarAppContainer.paymentRequest
 import com.moyasar.android.sdk.creditcard.presentation.view.fragments.PaymentAuthFragment
 
 /**
@@ -27,7 +27,8 @@ object TestDataHelper {
       saveCard = "false",
       type = "creditcard",
     ),
-    metadata = mapOf("order_id" to "order_123")
+    metadata = mapOf("order_id" to "order_123"),
+    apiKey = ""
   )
 
   internal fun getPaymentBody() = PaymentResponse(
@@ -51,7 +52,7 @@ object TestDataHelper {
     mutableMapOf("type" to "creditcard", "transaction_url" to "http://example.com")
   )
 
-  internal fun getPaymentConfig() = PaymentConfig(
+  internal fun getPaymentRequest() = PaymentRequest(
     amount = 100000,
     currency = "SAR",
     description = "Sample Android SDK Payment",

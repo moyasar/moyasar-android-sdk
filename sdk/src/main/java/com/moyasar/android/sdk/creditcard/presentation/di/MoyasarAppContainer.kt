@@ -4,10 +4,10 @@ import android.app.Application
 import com.moyasar.android.sdk.creditcard.data.remote.PaymentService
 import com.moyasar.android.sdk.stcpay.data.remote.STCPayPaymentService
 import com.moyasar.android.sdk.core.domain.entities.PaymentResult
+import com.moyasar.android.sdk.creditcard.data.models.request.PaymentRequest
 import com.moyasar.android.sdk.creditcard.domain.usecases.CreatePaymentUseCase
 import com.moyasar.android.sdk.creditcard.domain.usecases.CreateTokenUseCase
 import com.moyasar.android.sdk.stcpay.domain.usecases.ValidateSTCPayOTPUseCase
-import com.moyasar.android.sdk.creditcard.presentation.model.PaymentConfig
 import com.moyasar.android.sdk.creditcard.presentation.viewmodel.FormValidator
 import com.moyasar.android.sdk.creditcard.presentation.viewmodel.PaymentSheetViewModel
 import com.moyasar.android.sdk.stcpay.presentation.model.validation.STCPayFormValidator
@@ -18,13 +18,13 @@ import com.moyasar.android.sdk.stcpay.presentation.model.validation.STCPayFormVa
 object MoyasarAppContainer {
 
   private lateinit var application: Application
-  internal lateinit var config: PaymentConfig
+  internal lateinit var paymentRequest: PaymentRequest
   private lateinit var callback: (PaymentResult) -> Unit
 
   private val paymentService: PaymentService by lazy {
     PaymentService(
-      config.apiKey,
-      config.baseUrl
+      paymentRequest.apiKey,
+      paymentRequest.baseUrl
     )
   }
 
@@ -60,7 +60,7 @@ object MoyasarAppContainer {
         if (_viewModel == null) {
           _viewModel = PaymentSheetViewModel(
             application = application,
-            paymentConfig = config,
+            paymentRequest = paymentRequest,
             callback = callback,
             formValidator = formValidator,
             stcPayFormValidator = stcPayFormValidator,
@@ -74,12 +74,12 @@ object MoyasarAppContainer {
     }
   fun initialize(
     application: Application,
-    config: PaymentConfig,
+    paymentRequest: PaymentRequest,
     callback: (PaymentResult) -> Unit,
   ) {
     release()
     MoyasarAppContainer.application = application
-    MoyasarAppContainer.config = config
+    MoyasarAppContainer.paymentRequest = paymentRequest
     MoyasarAppContainer.callback = callback
   }
 

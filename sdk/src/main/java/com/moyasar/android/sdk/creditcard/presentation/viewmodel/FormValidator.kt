@@ -55,7 +55,7 @@ class FormValidator(application: Application) {
                 number = it ?: ""
             ) == CreditCardNetwork.Unknown || !isCreditAllowed(
                 number = it ?: "",
-                allowedNetwork = MoyasarAppContainer.config.allowedNetworks
+                allowedNetwork = MoyasarAppContainer.paymentRequest.allowedNetworks
             )
         }
     }

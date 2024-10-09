@@ -15,11 +15,11 @@ import com.moyasar.android.sdk.core.extensions.afterTextChanged
 import com.moyasar.android.sdk.core.extensions.hide
 import com.moyasar.android.sdk.core.extensions.shouldDisableButton
 import com.moyasar.android.sdk.core.extensions.show
+import com.moyasar.android.sdk.creditcard.data.models.request.PaymentRequest
 import com.moyasar.android.sdk.creditcard.presentation.di.MoyasarAppContainer
-import com.moyasar.android.sdk.creditcard.presentation.di.MoyasarAppContainer.config
+import com.moyasar.android.sdk.creditcard.presentation.di.MoyasarAppContainer.paymentRequest
 import com.moyasar.android.sdk.creditcard.presentation.di.MoyasarAppContainer.viewModel
 import com.moyasar.android.sdk.creditcard.presentation.model.FieldValidation
-import com.moyasar.android.sdk.creditcard.presentation.model.PaymentConfig
 import com.moyasar.android.sdk.creditcard.presentation.model.PaymentStatusViewState
 import com.moyasar.android.sdk.creditcard.presentation.model.showAllowedCreditCardsInEditText
 import com.moyasar.android.sdk.databinding.FragmentPaymentBinding
@@ -32,14 +32,14 @@ class PaymentFragment : Fragment() {
   companion object {
     fun newInstance(
       application: Application,
-      config: PaymentConfig,
+      paymentRequest: PaymentRequest,
       callback: (PaymentResult) -> Unit,
     ): PaymentFragment {
-      val configError = config.validate()
+      val configError = paymentRequest.validate()
       if (configError.any()) {
         throw InvalidConfigException(configError)
       }
-      MoyasarAppContainer.initialize(application, config, callback)
+      MoyasarAppContainer.initialize(application, paymentRequest, callback)
       return PaymentFragment()
     }
   }
@@ -59,7 +59,7 @@ class PaymentFragment : Fragment() {
   }
 
   private fun initView() {
-    binding.payButton.setButtonType(MoyasarButtonType.PAY)
+    binding.payButton.setButtonType(paymentRequest.buttonType)
   }
 
   private fun setupObservers() {
@@ -108,7 +108,7 @@ class PaymentFragment : Fragment() {
   }
 
   private fun handleCardNumberValueUpdated(number: String?) {
-    showAllowedCreditCardsInEditText(number.orEmpty(), config.allowedNetworks, binding)
+    showAllowedCreditCardsInEditText(number.orEmpty(), paymentRequest.allowedNetworks, binding)
   }
 
   private fun showInvalidCVVErrorMsg(errorMsg: String?) {
