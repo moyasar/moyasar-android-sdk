@@ -5,7 +5,6 @@ import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentActivity
 import android.support.v4.content.ContextCompat
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -116,7 +115,6 @@ class EnterMobileNumberFragment : Fragment() {
     }
     private fun FragmentEnterMobileNumberBinding.setupListeners() {
         etMobileNumberInput.afterTextChanged { text ->
-            Log.e("test",""+text)
             MoyasarAppContainer.viewModel.stcPayFormValidator.mobileNumber.value = text?.toString()
             text?.let { MoyasarAppContainer.viewModel.mobileNumberChanged(it) }
         }

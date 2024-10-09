@@ -4,19 +4,17 @@ import android.app.Application
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentActivity
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.moyasar.android.sdk.R
 import com.moyasar.android.sdk.core.customviews.button.MoyasarButtonType
+import com.moyasar.android.sdk.core.domain.entities.PaymentResult
 import com.moyasar.android.sdk.core.exceptions.InvalidConfigException
 import com.moyasar.android.sdk.core.extensions.afterTextChanged
 import com.moyasar.android.sdk.core.extensions.hide
 import com.moyasar.android.sdk.core.extensions.shouldDisableButton
 import com.moyasar.android.sdk.core.extensions.show
-import com.moyasar.android.sdk.databinding.FragmentPaymentBinding
-import com.moyasar.android.sdk.core.domain.entities.PaymentResult
 import com.moyasar.android.sdk.creditcard.presentation.di.MoyasarAppContainer
 import com.moyasar.android.sdk.creditcard.presentation.di.MoyasarAppContainer.config
 import com.moyasar.android.sdk.creditcard.presentation.di.MoyasarAppContainer.viewModel
@@ -24,6 +22,7 @@ import com.moyasar.android.sdk.creditcard.presentation.model.FieldValidation
 import com.moyasar.android.sdk.creditcard.presentation.model.PaymentConfig
 import com.moyasar.android.sdk.creditcard.presentation.model.PaymentStatusViewState
 import com.moyasar.android.sdk.creditcard.presentation.model.showAllowedCreditCardsInEditText
+import com.moyasar.android.sdk.databinding.FragmentPaymentBinding
 
 class PaymentFragment : Fragment() {
 
@@ -121,7 +120,6 @@ class PaymentFragment : Fragment() {
   }
 
   private fun showInvalidCardNumberErrorMsg(errorMsg: String?) {
-    Log.e("asd",""+errorMsg)
    if (errorMsg==null)
      binding.cardNumberLl.setBackgroundResource( R.drawable.moyasar_et_background)
    else
