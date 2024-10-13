@@ -73,7 +73,12 @@ class EnterMobileNumberFragment : Fragment() {
     }
     private fun handleFormValidationState(isFormValid: Boolean?) {
         binding.payButton.isEnabled = isFormValid?: false
-        binding.payButton.shouldDisableButton(isFormValid ?: false)
+        binding.payButton.shouldDisableButton(isFormValid ?: false,
+        bgEnabledDrawableRes = R.drawable.moyasar_bt_purple_enabled_background,
+        bgDisabledDrawableRes = R.drawable.moyasar_bt_purple_disabled_background,
+        bgEnabledColorRes=  R.color.light_purple_button_enabled,
+        bgDisabledColorRes =  R.color.light_purple_button_disabled
+        )
     }
 
     private fun handleOnStatusChanged(status: STCPayViewState?) {
@@ -82,7 +87,11 @@ class EnterMobileNumberFragment : Fragment() {
                 is STCPayViewState.SubmittingSTCPayMobileNumber ->{
                     binding.payButton.setButtonType(MoyasarAppContainer.paymentRequest.buttonType)
                     binding.progressBar.show()
-                    binding.payButton.shouldDisableButton(false)
+                    binding.payButton.shouldDisableButton(false,
+                        bgEnabledDrawableRes = R.drawable.moyasar_bt_purple_enabled_background,
+                        bgDisabledDrawableRes = R.drawable.moyasar_bt_purple_disabled_background,
+                        bgEnabledColorRes=  R.color.light_purple_button_enabled,
+                        bgDisabledColorRes =  R.color.light_purple_button_disabled)
                     binding.payButton.isEnabled = false
                     binding.etMobileNumberInput.isEnabled = false
                 }
