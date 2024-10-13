@@ -15,6 +15,7 @@
     <dimen name="moyasar_font_size_xl">18sp</dimen>
     <dimen name="moyasar_font_size_xxl">20sp</dimen>
     <!-- Common Sizes -->
+    <dimen name="moyasar_progress_s">30dp</dimen>
     <dimen name="moyasar_view_height_s">45dp</dimen>
     <dimen name="moyasar_view_height_m">50dp</dimen>
     <dimen name="moyasar_views_margin_s">12dp</dimen>

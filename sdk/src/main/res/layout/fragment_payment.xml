@@ -32,7 +32,7 @@
                     android:id="@+id/nameOnCardInput"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    app:errorEnabled="true"
+                    app:errorEnabled="false"
                     app:hintEnabled="false">
 
                     <EditText
@@ -52,20 +52,61 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/moyasar_spacing_tiny"
-                    app:errorEnabled="true"
+                    app:errorEnabled="false"
                     app:hintEnabled="false">
-
-                    <EditText
-                        android:id="@+id/etCardNumberInput"
-                        android:layout_width="match_parent"
-                        android:layout_height="@dimen/moyasar_view_height_s"
+                    <LinearLayout
+                        android:id="@+id/cardNumberLl"
                         android:background="@drawable/moyasar_et_background"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        >
+                    <EditText
+                        android:layout_weight="1"
+                        android:id="@+id/etCardNumberInput"
+                        android:layout_width="0dp"
+                        android:layout_height="@dimen/moyasar_view_height_s"
+                        android:background="@null"
                         android:digits="0123456789 "
                         android:hint="@string/credit_card_label"
                         android:inputType="number"
                         android:layoutDirection="ltr"
                         android:paddingStart="@dimen/moyasar_spacing_small"
                         android:paddingEnd="@dimen/moyasar_spacing_small" />
+                        <ImageView
+                            android:visibility="gone"
+                            android:id="@+id/img_mada"
+                            android:layout_gravity="center"
+                            android:src="@drawable/ic_moyasar_mada"
+                            android:layout_width="wrap_content"
+                            android:layout_marginEnd="@dimen/moyasar_spacing_small"
+                            android:layout_height="wrap_content"/>
+                        <ImageView
+                            android:id="@+id/img_visa"
+                            android:layout_gravity="center"
+                            android:visibility="gone"
+                            android:src="@drawable/ic_moyasar_visa"
+                            android:layout_width="wrap_content"
+                            android:layout_marginEnd="@dimen/moyasar_spacing_small"
+                            android:layout_height="wrap_content"/>
+                        <ImageView
+                            android:visibility="gone"
+                            android:id="@+id/img_master"
+                            android:layout_gravity="center"
+                            android:src="@drawable/ic_moyasar_mastercard"
+                            android:layout_width="wrap_content"
+                            android:layout_marginEnd="@dimen/moyasar_spacing_small"
+                            android:layout_height="wrap_content"/>
+                        <ImageView
+                            android:id="@+id/img_amex"
+                            android:visibility="gone"
+                            android:layout_gravity="center"
+                            android:src="@drawable/ic_moyasar_amex"
+                            android:layout_width="wrap_content"
+                            android:layout_marginEnd="@dimen/moyasar_spacing_small"
+                            android:layout_height="wrap_content"/>
+
+                    </LinearLayout>
                 </android.support.design.widget.TextInputLayout>
 
                 <android.support.design.widget.TextInputLayout
@@ -73,7 +114,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/moyasar_spacing_tiny"
-                    app:errorEnabled="true"
+                    app:errorEnabled="false"
                     app:hintEnabled="false">
 
                     <EditText
@@ -95,7 +136,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/moyasar_spacing_tiny"
-                    app:errorEnabled="true"
+                    app:errorEnabled="false"
                     app:hintEnabled="false">
 
                     <EditText
@@ -112,7 +153,7 @@
                         android:paddingEnd="@dimen/moyasar_spacing_small" />
                 </android.support.design.widget.TextInputLayout>
 
-                <Button
+                <com.moyasar.android.sdk.core.customviews.button.MoyasarButton
                     android:id="@+id/payButton"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
