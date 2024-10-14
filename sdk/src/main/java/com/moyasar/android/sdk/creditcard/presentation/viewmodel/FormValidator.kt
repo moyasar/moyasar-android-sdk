@@ -6,6 +6,7 @@ import android.arch.lifecycle.MutableLiveData
 import com.moyasar.android.sdk.R
 import com.moyasar.android.sdk.core.extensions.default
 import com.moyasar.android.sdk.core.util.LiveDataValidator
+import com.moyasar.android.sdk.core.util.cleanSpaces
 import com.moyasar.android.sdk.core.util.isValidLuhnNumber
 import com.moyasar.android.sdk.core.util.parseExpiry
 import com.moyasar.android.sdk.creditcard.data.models.CreditCardNetwork
@@ -48,7 +49,7 @@ class FormValidator(application: Application) {
         addRule(application.getString(R.string.invalid_card_number)) {
             !isValidLuhnNumber(
                 it ?: ""
-            )
+            ) || it?.cleanSpaces().orEmpty().length < 15
         }
         addRule(application.getString(R.string.unsupported_network)) {
             getNetwork(

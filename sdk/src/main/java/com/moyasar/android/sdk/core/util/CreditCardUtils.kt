@@ -92,3 +92,5 @@ data class ExpiryDate(val month: Int, val year: Int) {
     return Calendar.getInstance().after(expiryDate())
   }
 }
+
+fun String.cleanSpaces() = this.replace(" ", "")
