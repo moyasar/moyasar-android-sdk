@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+   >
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <TextView
+        android:id="@+id/labelTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:text="Name on Card"
+        android:textSize="@dimen/moyasar_font_size_l"/>
+        <View
+            android:layout_gravity="center"
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="0dp"/>
+        <TextView
+            android:visibility="gone"
+            android:id="@+id/errorTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:text="REQUIRED"
+            android:textColor="@color/red"
+            android:textSize="@dimen/moyasar_font_size_m"/>
+    </LinearLayout>
+
+    <EditText
+        android:id="@+id/inputEditText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bg_moyasar_edittext_background"
+        tools:hint="Place holder text"
+        android:maxLines="1"
+        android:layoutDirection="ltr"
+        android:layout_marginTop="@dimen/moyasar_spacing_small"
+        android:padding="@dimen/moyasar_views_margin_s"
+        android:textSize="@dimen/moyasar_font_size_l"
+        tools:ignore="TextFields" />
+</LinearLayout>

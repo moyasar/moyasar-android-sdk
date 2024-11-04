@@ -28,7 +28,12 @@
                 android:layout_marginBottom="@dimen/moyasar_spacing_medium"
                 android:orientation="vertical">
 
-                <android.support.design.widget.TextInputLayout
+                <com.moyasar.android.sdk.creditcard.presentation.view.customviews.MoyasarInputField
+                    android:id="@+id/et_card_holder"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"/>
+
+            <!--    <android.support.design.widget.TextInputLayout
                     android:id="@+id/nameOnCardInput"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -46,8 +51,13 @@
                         android:paddingStart="@dimen/moyasar_spacing_small"
                         android:paddingEnd="@dimen/moyasar_spacing_small" />
                 </android.support.design.widget.TextInputLayout>
+-->
+           <!--     <com.moyasar.android.sdk.creditcard.presentation.view.customviews.MoyasarInputCard
+                    android:id="@+id/view_card"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"/>-->
 
-                <android.support.design.widget.TextInputLayout
+              <android.support.design.widget.TextInputLayout
                     android:id="@+id/cardNumberInput"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -159,6 +169,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/moyasar_spacing_x_large"
                     android:textAllCaps="false"
+                    android:visibility="gone"
                     android:textColor="@android:color/white"
                     android:textSize="@dimen/moyasar_font_size_xl" />
 

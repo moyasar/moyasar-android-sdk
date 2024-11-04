@@ -4,11 +4,12 @@ import android.app.Application
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentActivity
+import android.text.InputType
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.moyasar.android.sdk.R
-import com.moyasar.android.sdk.core.customviews.button.MoyasarButtonType
 import com.moyasar.android.sdk.core.domain.entities.PaymentResult
 import com.moyasar.android.sdk.core.exceptions.InvalidConfigException
 import com.moyasar.android.sdk.core.extensions.afterTextChanged
@@ -59,6 +60,25 @@ class PaymentFragment : Fragment() {
   }
 
   private fun initView() {
+    // holder
+    binding.etCardHolder.setLabelText(getString(R.string.name_on_card_label))
+    binding.etCardHolder.setHintText(getString(R.string.name_on_card_label))
+    binding.etCardHolder.setInputType(InputType.TYPE_TEXT_VARIATION_PERSON_NAME)
+    // card
+//      binding.viewCard.setLabelText(getString(R.string.card_label))
+//    val inputCreditCardUIModel = InputCreditCardUIModel(
+//      numberHint = getString(R.string.credit_card_label),
+//      expiryDateHint = getString(R.string.expiration_date_label),
+//      cvcHint = getString(R.string.security_code_label),
+//      numberType = InputType.TYPE_CLASS_NUMBER,
+//      expiryDateType =  InputType.TYPE_CLASS_NUMBER,
+//      cvcType =  InputType.TYPE_CLASS_NUMBER,
+//
+//    )
+//    binding.viewCard.setHintText(getString(R.string.name_on_card_label))
+//    binding.viewCard.setInputType(InputType.TYPE_TEXT_VARIATION_PERSON_NAME)
+
+
     binding.payButton.setButtonType(paymentRequest.buttonType)
   }
 
@@ -128,7 +148,7 @@ class PaymentFragment : Fragment() {
   }
 
   private fun showInvalidNameErrorMsg(errorMsg: String?) {
-    binding.nameOnCardInput.error = errorMsg
+    binding.etCardHolder.setError(errorMsg)
   }
 
 
@@ -142,7 +162,7 @@ class PaymentFragment : Fragment() {
 
   private fun showScreenViews() = with(binding) {
     payButton.show()
-    nameOnCardInput.show()
+    etCardHolder.show()
     cardNumberInput.show()
     cardExpiryDateInput.show()
     cardSecurityCodeInput.show()
@@ -150,7 +170,7 @@ class PaymentFragment : Fragment() {
 
   private fun enableScreenViews() = with(binding) {
     payButton.isEnabled = true
-    nameOnCardInput.isEnabled = true
+    etCardHolder.inputEditText.isEnabled = true
     cardNumberInput.isEnabled = true
     cardExpiryDateInput.isEnabled = true
     cardSecurityCodeInput.isEnabled = true
@@ -158,7 +178,7 @@ class PaymentFragment : Fragment() {
 
   private fun disableScreenViews() = with(binding) {
     payButton.isEnabled = false
-    nameOnCardInput.isEnabled = false
+    etCardHolder.inputEditText.isEnabled = false
     cardNumberInput.isEnabled = false
     cardExpiryDateInput.isEnabled = false
     cardSecurityCodeInput.isEnabled = false
@@ -166,7 +186,7 @@ class PaymentFragment : Fragment() {
 
   private fun hideScreenViews() = with(binding) {
     payButton.hide()
-    nameOnCardInput.hide()
+    etCardHolder.hide()
     cardNumberInput.hide()
     cardExpiryDateInput.hide()
     cardSecurityCodeInput.hide()
@@ -174,7 +194,7 @@ class PaymentFragment : Fragment() {
 
 
   private fun FragmentPaymentBinding.setupListeners() {
-    etNameOnCardInput.afterTextChanged { text ->
+    etCardHolder.inputEditText.afterTextChanged { text ->
       viewModel.formValidator.name.value = text?.toString()
       viewModel.creditCardNameChanged()
     }
@@ -194,7 +214,8 @@ class PaymentFragment : Fragment() {
       viewModel.creditCardCvcChanged()
     }
 
-    etNameOnCardInput.setOnFocusChangeListener { _, hf ->
+    etCardHolder.inputEditText.setOnFocusChangeListener { _, hf ->
+      Log.e("inputEditText",""+hf)
       viewModel.validateField(FieldValidation.Name, hf)
     }
     etCardNumberInput.setOnFocusChangeListener { _, hf ->
