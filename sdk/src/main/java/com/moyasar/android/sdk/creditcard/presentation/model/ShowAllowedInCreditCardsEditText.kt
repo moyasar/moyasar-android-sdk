@@ -16,17 +16,17 @@ internal fun showAllowedCreditCardsInEditText(
     if (text.isEmpty()) {
         allowedNetworks.forEach {
             when (it) {
-                CreditCardNetwork.Visa -> binding.imgVisa.show()
-                CreditCardNetwork.Mastercard -> binding.imgMaster.show()
-                CreditCardNetwork.Mada -> binding.imgMada.show()
-                CreditCardNetwork.Amex -> binding.imgAmex.show()
+                CreditCardNetwork.Visa -> binding.viewCard.imgVisa.show()
+                CreditCardNetwork.Mastercard -> binding.viewCard.imgMaster.show()
+                CreditCardNetwork.Mada -> binding.viewCard.imgMada.show()
+                CreditCardNetwork.Amex -> binding.viewCard.imgAmex.show()
                 else -> Unit
             }
         }
     } else {
-        binding.imgVisa.gone()
-        binding.imgMaster.gone()
-        binding.imgMada.gone()
-        binding.imgAmex.gone()
+        binding.viewCard.imgVisa.gone()
+        binding.viewCard.imgMaster.gone()
+        binding.viewCard.imgMada.gone()
+        binding.viewCard.imgAmex.gone()
     }
 }
