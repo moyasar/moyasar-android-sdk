@@ -46,9 +46,13 @@ internal class PaymentSheetViewModel(
 
     var isFirstVisitEnterMobileNumber = true
     var isFirstVisitOTP: Boolean = true
-    private var ccOnChangeLocked = false
-    private var mobileNumberOnChangeLocked = false
-    private var ccExpiryOnChangeLocked = false
+    internal var ccOnChangeLocked = false
+    internal var mobileNumberOnChangeLocked = false
+    internal var ccExpiryOnChangeLocked = false
+
+    internal var isExpiryValid = true
+    internal var isCvvValid = true
+    internal var isCardNumValid = true
 
     private val _creditCardStatus =
         MutableLiveData<PaymentStatusViewState>().default(PaymentStatusViewState.Reset)
@@ -230,7 +234,7 @@ internal class PaymentSheetViewModel(
     }
 
 
-    internal fun creditCardExpiryChanged(textEdit: Editable) {
+    internal fun creditCardExpiryChanged(textEdit: Editable, onUpdateText:(String)->Unit) {
         if (ccExpiryOnChangeLocked) {
             return
         }
@@ -255,7 +259,9 @@ internal class PaymentSheetViewModel(
             formatted.append(char)
         }
 
-        textEdit.replace(0, textEdit.length, formatted.toString())
+        //textEdit.replace(0, textEdit.length, formatted.toString())
+
+        onUpdateText(formatted.toString())
 
         formValidator.validate(false)
 
