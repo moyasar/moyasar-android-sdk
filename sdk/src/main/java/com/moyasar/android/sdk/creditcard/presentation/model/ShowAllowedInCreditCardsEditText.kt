@@ -3,6 +3,7 @@ package com.moyasar.android.sdk.creditcard.presentation.model
 import com.moyasar.android.sdk.core.extensions.gone
 import com.moyasar.android.sdk.core.extensions.show
 import com.moyasar.android.sdk.creditcard.data.models.CreditCardNetwork
+import com.moyasar.android.sdk.creditcard.data.models.getNetwork
 import com.moyasar.android.sdk.databinding.FragmentPaymentBinding
 
 /**
@@ -24,9 +25,38 @@ internal fun showAllowedCreditCardsInEditText(
             }
         }
     } else {
-        binding.viewCard.imgVisa.gone()
-        binding.viewCard.imgMaster.gone()
-        binding.viewCard.imgMada.gone()
-        binding.viewCard.imgAmex.gone()
+        when (getNetwork(text)) {
+            CreditCardNetwork.Visa -> {
+                binding.viewCard.imgVisa.show()
+                binding.viewCard.imgMaster.gone()
+                binding.viewCard.imgMada.gone()
+                binding.viewCard.imgAmex.gone()
+            }
+
+            CreditCardNetwork.Mastercard -> {
+                binding.viewCard.imgMaster.show()
+                binding.viewCard.imgVisa.gone()
+                binding. viewCard . imgMada.gone ()
+                binding . viewCard . imgAmex.gone ()
+        }
+            CreditCardNetwork.Mada -> {
+                binding.viewCard.imgMada.show()
+                binding.viewCard.imgVisa.gone()
+                binding.viewCard.imgMaster.gone()
+                binding.viewCard.imgAmex.gone()
+            }
+            CreditCardNetwork.Amex -> {
+                binding.viewCard.imgAmex.show()
+                binding.viewCard.imgVisa.gone()
+                binding.viewCard.imgMaster.gone()
+                binding.viewCard.imgMada.gone()
+            }
+            else -> {
+                binding.viewCard.imgVisa.gone()
+                binding.viewCard.imgMaster.gone()
+                binding.viewCard.imgMada.gone()
+                binding.viewCard.imgAmex.gone()
+            }
+        }
     }
 }
