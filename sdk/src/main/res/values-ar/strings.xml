@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="name_on_card_label">الاسم على البطاقة</string>
+    <string name="card_label">معلومات بطاقة الإئتمان</string>
     <string name="credit_card_label">رقم البطاقة</string>
     <string name="expiration_date_label">تاريخ الانتهاء</string>
     <string name="security_code_label">رمز الأمان</string>

@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/labelTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/moyasar_font_size_l"
+            tools:text="Card" />
+
+        <TextView
+            android:id="@+id/errorTextView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@color/red"
+            android:textSize="@dimen/moyasar_font_size_m"
+            android:visibility="gone"
+            tools:text="REQUIRED" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/llContainer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="6dp"
+        android:background="@drawable/bg_moyasar_edittext_background"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@null"
+            android:orientation="horizontal">
+
+            <EditText
+                android:id="@+id/inputEditTextCardNumber"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@null"
+                android:digits="0123456789 "
+                android:layoutDirection="ltr"
+                android:maxLines="1"
+                android:inputType="number"
+                android:padding="@dimen/moyasar_views_margin_s"
+                android:textSize="@dimen/moyasar_font_size_l"
+                tools:hint="Place holder text"
+                tools:ignore="TextFields" />
+
+            <ImageView
+                android:id="@+id/img_mada"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginEnd="@dimen/moyasar_spacing_small"
+                android:src="@drawable/ic_moyasar_mada"
+                android:visibility="gone" />
+
+            <ImageView
+                android:id="@+id/img_visa"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginEnd="@dimen/moyasar_spacing_small"
+                android:src="@drawable/ic_moyasar_visa"
+                android:visibility="gone" />
+
+            <ImageView
+                android:id="@+id/img_master"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginEnd="@dimen/moyasar_spacing_small"
+                android:src="@drawable/ic_moyasar_mastercard"
+                android:visibility="gone" />
+
+            <ImageView
+                android:id="@+id/img_amex"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginEnd="@dimen/moyasar_spacing_small"
+                android:src="@drawable/ic_moyasar_amex"
+                android:visibility="gone" />
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#DDDDDD" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+
+            android:layout_height="wrap_content"
+            android:background="@null"
+            android:orientation="horizontal">
+
+            <EditText
+                android:id="@+id/inputEditTextCardExpiryDate"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@null"
+                android:digits="0123456789 "
+                android:layoutDirection="ltr"
+                android:maxLines="1"
+                android:inputType="number"
+                android:padding="@dimen/moyasar_views_margin_s"
+                android:textSize="@dimen/moyasar_font_size_l"
+                tools:hint="Place holder text"
+                tools:ignore="TextFields" />
+
+            <View
+                android:layout_width="1dp"
+                android:layout_height="match_parent"
+                android:background="#DDDDDD" />
+
+            <EditText
+                android:id="@+id/inputEditTextCardCvc"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@null"
+                android:digits="0123456789 "
+                android:layoutDirection="ltr"
+                android:inputType="number"
+                android:maxLines="1"
+                android:maxLength="4"
+                android:padding="@dimen/moyasar_views_margin_s"
+                android:textSize="@dimen/moyasar_font_size_l"
+                tools:hint="Place holder text"
+                tools:ignore="TextFields" />
+        </LinearLayout>
+    </LinearLayout>
+
+</LinearLayout>
