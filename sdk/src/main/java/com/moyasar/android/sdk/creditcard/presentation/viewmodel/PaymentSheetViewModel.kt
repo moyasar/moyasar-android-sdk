@@ -259,8 +259,6 @@ internal class PaymentSheetViewModel(
             formatted.append(char)
         }
 
-        //textEdit.replace(0, textEdit.length, formatted.toString())
-
         onUpdateText(formatted.toString())
 
         formValidator.validate(false)
