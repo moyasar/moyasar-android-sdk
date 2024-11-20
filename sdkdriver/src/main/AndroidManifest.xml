@@ -16,16 +16,21 @@
         android:theme="@style/Theme.AppCompat.DayNight"
         tools:targetApi="31">
         <activity
-            android:name=".CheckoutActivity"
+            android:name=".StartActivity"
             android:exported="true"
             android:theme="@style/Theme.AppCompat.DayNight"
-            android:windowSoftInputMode="adjustPan"> >
+            android:windowSoftInputMode="adjustPan">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".CheckoutActivity"
+            android:exported="true"
+            android:theme="@style/Theme.AppCompat.DayNight"
+            android:windowSoftInputMode="adjustPan"></activity>
     </application>
 
 </manifest>

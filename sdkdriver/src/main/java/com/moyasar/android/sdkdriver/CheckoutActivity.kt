@@ -5,7 +5,7 @@ import android.arch.lifecycle.ViewModelProvider
 import android.databinding.DataBindingUtil
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
-import android.widget.Button
+import com.moyasar.android.sdkdriver.StartActivity.Companion.PAYMENT_TYPE
 import com.moyasar.android.sdkdriver.databinding.ActivityCheckoutBinding
 
 class CheckoutActivity : AppCompatActivity() {
@@ -31,13 +31,14 @@ class CheckoutActivity : AppCompatActivity() {
         binding.lifecycleOwner = this
         binding.viewModel = viewModel
 
-        val donateBtn = findViewById<Button>(R.id.button2)
-        donateBtn.setOnClickListener {
-            viewModel.beginDonationWithCreditCard(this, R.id.paymentSheetFragment)
-        }
-        val stcPayBtn =  findViewById<Button>(R.id.button3)
-        stcPayBtn.setOnClickListener {
-            viewModel.beginDonationWithSTC(this,  R.id.paymentSheetFragment)
+        val paymentType = intent.getStringExtra(PAYMENT_TYPE)
+        when(paymentType){
+            StartActivity.PaymentOptions.CREDIT.name-> {
+                viewModel.beginDonationWithCreditCard(this, R.id.paymentSheetFragment)
+            }
+            StartActivity.PaymentOptions.STC.name-> {
+                viewModel.beginDonationWithSTC(this,  R.id.paymentSheetFragment)
+            }
         }
     }
 }
