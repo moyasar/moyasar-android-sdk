@@ -44,13 +44,13 @@ object MoyasarAppContainer {
     CreateTokenUseCase(paymentService)
   }
 
-  private val formValidator by lazy {
-    FormValidator(application)
-  }
+  private val formValidator
+    get() = FormValidator(application)
 
-  private val stcPayFormValidator by lazy {
-    STCPayFormValidator(application)
-  }
+
+  private val stcPayFormValidator
+    get() = STCPayFormValidator(application)
+
 
   private var _viewModel : PaymentSheetViewModel? = null
 
