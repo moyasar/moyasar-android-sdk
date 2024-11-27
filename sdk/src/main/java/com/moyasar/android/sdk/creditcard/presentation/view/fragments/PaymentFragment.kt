@@ -17,6 +17,7 @@ import com.moyasar.android.sdk.core.extensions.gone
 import com.moyasar.android.sdk.core.extensions.hide
 import com.moyasar.android.sdk.core.extensions.shouldDisableButton
 import com.moyasar.android.sdk.core.extensions.show
+import com.moyasar.android.sdk.core.util.MoyasarLogger
 import com.moyasar.android.sdk.creditcard.data.models.request.PaymentRequest
 import com.moyasar.android.sdk.creditcard.presentation.di.MoyasarAppContainer
 import com.moyasar.android.sdk.creditcard.presentation.di.MoyasarAppContainer.paymentRequest
@@ -99,6 +100,7 @@ class PaymentFragment : Fragment() {
     parentActivity.runOnUiThread {
       when (status) {
         is PaymentStatusViewState.PaymentAuth3dSecure -> {
+          MoyasarLogger.log("transaction_url", status.url)
           hideLoading()
           hideScreenViews()
           disableScreenViews()

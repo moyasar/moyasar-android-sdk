@@ -14,6 +14,7 @@ import android.webkit.WebResourceRequest
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import com.moyasar.android.sdk.core.extensions.gone
+import com.moyasar.android.sdk.core.util.MoyasarLogger
 import com.moyasar.android.sdk.databinding.FragmentPaymentAuthBinding
 import com.moyasar.android.sdk.creditcard.presentation.di.MoyasarAppContainer.viewModel
 import com.moyasar.android.sdk.creditcard.presentation.model.AuthResultViewState
@@ -82,20 +83,16 @@ internal class PaymentAuthFragment : Fragment() {
     binding.webView.settings.javaScriptEnabled = true
     binding.webView.webViewClient = webViewClient
 
-    return binding.root
-  }
-
-  override fun onStart() {
-    super.onStart()
-
     val url = authUrl
-
+    MoyasarLogger.log("authUrl", authUrl.orEmpty())
     if (url.isNullOrBlank()) {
       viewModel.onPaymentAuthReturn(AuthResultViewState.Failed(ERROR_MESSAGE_FAILED_3DS_CHECK))
-      return
+    }
+    else {
+    binding.webView.loadUrl(url)
     }
 
-    binding.webView.loadUrl(url)
+    return binding.root
   }
 
   private fun shouldOverrideUrlLoading(url: Uri?): Boolean {
