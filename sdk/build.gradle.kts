@@ -12,7 +12,7 @@ publishing {
         create<MavenPublication>("MavenPublication") {
             groupId = "com.moyasar"
             artifactId = "android-sdk"
-            version = "1.0.4"
+            version = "1.0.5"
             afterEvaluate {
                 from(components["release"])
             }
