@@ -24,7 +24,8 @@ data class PaymentRequest(
     val createSaveOnlyToken: Boolean = false,
     val buttonType: MoyasarButtonType = MoyasarButtonType.PAY,
     val source: PaymentSource? = null,
-
+    // if you enabled samsung-pay you need to send string of 12 digits
+    val samsungPayOrderNum: String = "123456789012" //this value for test purpose only
     ) {
     fun validate(): Array<String> {
         val errors = ArrayList<String>()

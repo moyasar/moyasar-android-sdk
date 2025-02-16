@@ -47,5 +47,9 @@
     <string name="lbl_moyasar_button_topup">Top Up</string>
     <string name="lbl_moyasar_button_order">Order</string>
     <string name="lbl_moyasar_button_support">Support</string>
+    <string name="msg_moyasar_samsung_pay_go_to_activate_page">Activate Samsung wallet App, please</string>
+    <string name="msg_moyasar_samsung_pay_go_to_update_page">Register in Samsung wallet App, please</string>
+    <string name="msg_moyasar_samsung_pay_feature_is_not_supported">Samsung Pay is not supported on your device</string>
+    <string name="msg_moyasar_samsung_pay_error">Something wrong happened!, try again</string>
 
 </resources>

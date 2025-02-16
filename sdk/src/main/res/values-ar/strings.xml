@@ -33,4 +33,8 @@
     <string name="lbl_moyasar_button_topup">اشحن</string>
     <string name="lbl_moyasar_button_order">إتمام الطلب</string>
     <string name="lbl_moyasar_button_support">دعم</string>
+    <string name="msg_moyasar_samsung_pay_go_to_activate_page">قم بتفعيل محفظتك أولا</string>
+    <string name="msg_moyasar_samsung_pay_go_to_update_page">قم بتسجيل بياناتك أولا</string>
+    <string name="msg_moyasar_samsung_pay_feature_is_not_supported">الدفع باستخدام محفظة سامسونج غير متاح</string>
+    <string name="msg_moyasar_samsung_pay_error">حدث خطأ ما، حاول مره اخري</string>
 </resources>

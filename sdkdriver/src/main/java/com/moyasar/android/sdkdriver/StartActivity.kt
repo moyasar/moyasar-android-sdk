@@ -6,32 +6,36 @@ import android.support.v7.app.AppCompatActivity
 import android.widget.Button
 
 
-class StartActivity: AppCompatActivity() {
+class StartActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_start)
         val donateBtn = findViewById<Button>(R.id.button2)
-        val stcPayBtn =  findViewById<Button>(R.id.button3)
-        val samsungPayBtn =  findViewById<Button>(R.id.button4)
+        val stcPayBtn = findViewById<Button>(R.id.button3)
+        val samsungPayBtn = findViewById<Button>(R.id.button4)
         donateBtn.setOnClickListener {
             startActivity(
                 Intent(this, CheckoutActivity::class.java).apply {
-                putExtra(PAYMENT_TYPE,PaymentOptions.CREDIT.name)
-            })
+                    putExtra(PAYMENT_TYPE, PaymentOptions.CREDIT.name)
+                })
         }
         stcPayBtn.setOnClickListener {
             startActivity(
                 Intent(this, CheckoutActivity::class.java).apply {
-                putExtra(PAYMENT_TYPE,PaymentOptions.STC.name)
-            })
+                    putExtra(PAYMENT_TYPE, PaymentOptions.STC.name)
+                })
         }
         samsungPayBtn.setOnClickListener {
-          // Todo handle click action here
+            startActivity(
+                Intent(this, CheckoutActivity::class.java).apply {
+                    putExtra(PAYMENT_TYPE, PaymentOptions.SAMSUNG_PAY.name)
+                })
         }
     }
+
     companion object {
         const val PAYMENT_TYPE = "payment_type"
     }
 
-    enum class PaymentOptions {CREDIT, STC}
+    enum class PaymentOptions { CREDIT, STC, SAMSUNG_PAY }
 }

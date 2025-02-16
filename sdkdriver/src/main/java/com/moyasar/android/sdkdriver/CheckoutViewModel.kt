@@ -11,6 +11,7 @@ import com.moyasar.android.sdk.creditcard.data.models.CreditCardNetwork
 import com.moyasar.android.sdk.creditcard.data.models.request.PaymentRequest
 import com.moyasar.android.sdk.stcpay.presentation.view.fragments.EnterMobileNumberFragment
 import com.moyasar.android.sdk.creditcard.presentation.view.fragments.PaymentFragment
+import com.moyasar.android.sdk.samsungpay.presentation.InitiateSamsungPay
 import kotlinx.parcelize.Parcelize
 
 class CheckoutViewModel : ViewModel() {
@@ -27,7 +28,11 @@ class CheckoutViewModel : ViewModel() {
         manual = false,
         baseUrl = "https://api.moyasar.com",
         buttonType = MoyasarButtonType.PAY,
-        allowedNetworks = listOf(CreditCardNetwork.Mastercard, CreditCardNetwork.Visa, CreditCardNetwork.Amex),
+        allowedNetworks = listOf(
+            CreditCardNetwork.Mastercard,
+            CreditCardNetwork.Visa,
+            CreditCardNetwork.Amex
+        ),
         createSaveOnlyToken = false
     )
 
@@ -46,7 +51,8 @@ class CheckoutViewModel : ViewModel() {
 
     private fun onSTCPayPaymentResult(result: PaymentResult) {
         activity.runOnUiThread {
-            activity.supportFragmentManager.beginTransaction().remove(enterMobileNumberFragment).commit()
+            activity.supportFragmentManager.beginTransaction().remove(enterMobileNumberFragment)
+                .commit()
         }
 
         handlePaymentResult(result)
@@ -87,7 +93,10 @@ class CheckoutViewModel : ViewModel() {
     fun beginDonationWithCreditCard(activity: CheckoutActivity, id: Int) {
         this.activity = activity
 
-        this.paymentFragment = PaymentFragment.newInstance(activity.application, paymentRequest) { this.onCreditCardPaymentResult(it) }
+        this.paymentFragment = PaymentFragment.newInstance(
+            activity.application,
+            paymentRequest
+        ) { this.onCreditCardPaymentResult(it) }
 
         activity.supportFragmentManager.beginTransaction().apply {
             replace(id, paymentFragment)
@@ -98,12 +107,20 @@ class CheckoutViewModel : ViewModel() {
     fun beginDonationWithSTC(activity: CheckoutActivity, id: Int) {
         this.activity = activity
 
-        this.enterMobileNumberFragment = EnterMobileNumberFragment.newInstance(activity.application, paymentRequest) { this.onSTCPayPaymentResult(it) }
+        this.enterMobileNumberFragment = EnterMobileNumberFragment.newInstance(
+            activity.application,
+            paymentRequest
+        ) { this.onSTCPayPaymentResult(it) }
 
         activity.supportFragmentManager.beginTransaction().apply {
             replace(id, enterMobileNumberFragment)
             commit()
         }
+    }
+
+    fun beginDonationWithSamsungPay(activity: CheckoutActivity, id: Int) {
+        this.activity = activity
+        InitiateSamsungPay.initiate(activity,paymentRequest.apiKey, paymentRequest.samsungPayOrderNum)
     }
 
     sealed class Status : Parcelable {
@@ -117,3 +134,4 @@ class CheckoutViewModel : ViewModel() {
         data class Failed(val e: Exception) : Status()
     }
 }
+

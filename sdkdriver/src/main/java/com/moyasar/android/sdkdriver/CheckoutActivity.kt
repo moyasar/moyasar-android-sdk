@@ -39,6 +39,9 @@ class CheckoutActivity : AppCompatActivity() {
             StartActivity.PaymentOptions.STC.name-> {
                 viewModel.beginDonationWithSTC(this,  R.id.paymentSheetFragment)
             }
+            StartActivity.PaymentOptions.SAMSUNG_PAY.name-> {
+                viewModel.beginDonationWithSamsungPay(this,  R.id.paymentSheetFragment)
+            }
         }
     }
 }

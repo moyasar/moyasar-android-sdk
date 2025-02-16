@@ -30,7 +30,11 @@
             android:name=".CheckoutActivity"
             android:exported="true"
             android:theme="@style/Theme.AppCompat.DayNight"
-            android:windowSoftInputMode="adjustPan"></activity>
+            android:windowSoftInputMode="adjustPan" />
+        <meta-data android:name="spay_sdk_api_level" android:value="2.21" />
     </application>
-
+    <queries>
+        <package android:name="com.samsung.android.spay" />
+        <package android:name="com.samsung.android.samsungpay.gear" />
+    </queries>
 </manifest>
