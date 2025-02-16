@@ -12,6 +12,7 @@ class StartActivity: AppCompatActivity() {
         setContentView(R.layout.activity_start)
         val donateBtn = findViewById<Button>(R.id.button2)
         val stcPayBtn =  findViewById<Button>(R.id.button3)
+        val samsungPayBtn =  findViewById<Button>(R.id.button4)
         donateBtn.setOnClickListener {
             startActivity(
                 Intent(this, CheckoutActivity::class.java).apply {
@@ -23,6 +24,9 @@ class StartActivity: AppCompatActivity() {
                 Intent(this, CheckoutActivity::class.java).apply {
                 putExtra(PAYMENT_TYPE,PaymentOptions.STC.name)
             })
+        }
+        samsungPayBtn.setOnClickListener {
+          // Todo handle click action here
         }
     }
     companion object {

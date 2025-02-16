@@ -1,6 +1,5 @@
 plugins {
     id("com.android.library")
-    id("org.jetbrains.kotlin.android")
     id ("kotlin-android")
     id ("kotlin-parcelize")
     id ("kotlin-kapt")
@@ -72,6 +71,7 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.8.1")
     implementation("android.arch.lifecycle:extensions:1.1.1")
     testImplementation ("junit:junit:4.13.2")
+    implementation(files("libs/samsungpay_2.21.00.jar"))
     testImplementation ("org.jetbrains.kotlin:kotlin-test:1.8.0")
     testImplementation ("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.8.1")
     testImplementation ("org.mockito.kotlin:mockito-kotlin:4.0.0")
