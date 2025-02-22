@@ -4,8 +4,16 @@ import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
+import com.google.gson.Gson
 import com.moyasar.android.sdk.R
 import com.moyasar.android.sdk.core.util.MoyasarLogger
+import com.moyasar.android.sdk.creditcard.presentation.di.MoyasarAppContainer
+import com.moyasar.android.sdk.creditcard.presentation.di.MoyasarAppContainer.paymentRequest
+import com.moyasar.android.sdk.creditcard.presentation.view.fragments.PaymentAuthFragment
+import com.moyasar.android.sdk.samsungpay.data.CryptoDataJson
+import com.moyasar.android.sdk.samsungpay.data.PaymentCredentialJson
+import com.moyasar.android.sdk.samsungpay.data.sources.SamsungPayPaymentSource
+import com.moyasar.android.sdk.stcpay.data.models.sources.STCPayPaymentSource
 import com.samsung.android.sdk.samsungpay.v2.PartnerInfo
 import com.samsung.android.sdk.samsungpay.v2.SamsungPay
 import com.samsung.android.sdk.samsungpay.v2.SpaySdk
@@ -45,7 +53,7 @@ import com.samsung.android.sdk.samsungpay.v2.payment.sheet.CustomSheet
  * Created by Mahmoud Ashraf on 16,February,2025
  */
 object InitiateSamsungPay {
-    fun initiate(context: Context, apiKey: String, orderNum: String) {
+    fun initiate(context: Context, apiKey: String, orderNum: String, authorizePayment: (CryptoDataJson?)->Unit) {
         val paymentManager = PaymentManager(context, samsungPayPartnerInfo())
         val samsungPay = SamsungPay(context, samsungPayPartnerInfo())
         samsungPay.getSamsungPayStatus(object : StatusListener{
@@ -60,7 +68,7 @@ object InitiateSamsungPay {
                         ).show()
                     }
                     else -> {
-                        startInAppPay(paymentManager, apiKey, orderNum, context, samsungPay)
+                        startInAppPay(paymentManager, apiKey, orderNum, context, samsungPay, authorizePayment)
 
                     }
                 }
@@ -73,12 +81,21 @@ object InitiateSamsungPay {
         })
     }
 
+    fun authorizePayment(token: String){
+        MoyasarAppContainer.viewModel.createPayment(request = paymentRequest.copy(
+            callbackUrl = PaymentAuthFragment.RETURN_URL,
+            source = SamsungPayPaymentSource(
+               token
+            )
+        ))
+    }
     private fun startInAppPay(
         paymentManager: PaymentManager,
         apiKey: String,
         orderNum: String,
         context: Context,
-        samsungPay: SamsungPay
+        samsungPay: SamsungPay,
+        authorizePayment: (CryptoDataJson?)->Unit
     ) {
          paymentManager.startInAppPayWithCustomSheet(makeCustomSheetPaymentInfo(apiKey, orderNum), object :
        PaymentManager.CustomSheetTransactionInfoListener {
@@ -101,8 +118,8 @@ object InitiateSamsungPay {
            }
 
            Toast.makeText(context, "Transaction : onSuccess", Toast.LENGTH_LONG).show()
-
-         ///  authorizePayment(paymentCredential)
+           val token = Gson().fromJson(paymentCredential, PaymentCredentialJson::class.java).data
+           authorizePayment(token)
        }
 
        override fun onFailure(errorCode: Int, errorData: Bundle) {

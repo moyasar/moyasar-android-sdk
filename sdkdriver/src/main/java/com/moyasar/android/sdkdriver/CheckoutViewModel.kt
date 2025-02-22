@@ -7,6 +7,7 @@ import com.moyasar.android.sdk.core.customviews.button.MoyasarButtonType
 import com.moyasar.android.sdk.core.domain.entities.PaymentResult
 import com.moyasar.android.sdk.core.extensions.default
 import com.moyasar.android.sdk.core.data.response.PaymentResponse
+import com.moyasar.android.sdk.core.util.MoyasarLogger
 import com.moyasar.android.sdk.creditcard.data.models.CreditCardNetwork
 import com.moyasar.android.sdk.creditcard.data.models.request.PaymentRequest
 import com.moyasar.android.sdk.stcpay.presentation.view.fragments.EnterMobileNumberFragment
@@ -118,9 +119,14 @@ class CheckoutViewModel : ViewModel() {
         }
     }
 
-    fun beginDonationWithSamsungPay(activity: CheckoutActivity, id: Int) {
+    fun beginDonationWithSamsungPay(activity: CheckoutActivity) {
         this.activity = activity
-        InitiateSamsungPay.initiate(activity,paymentRequest.apiKey, paymentRequest.samsungPayOrderNum)
+        InitiateSamsungPay.initiate(activity,paymentRequest.apiKey, paymentRequest.samsungPayOrderNum,
+            authorizePayment = { token->
+              MoyasarLogger.log("spay token data",token?.data?:"")
+                InitiateSamsungPay.authorizePayment(token?.data?:"")
+
+            })
     }
 
     sealed class Status : Parcelable {
