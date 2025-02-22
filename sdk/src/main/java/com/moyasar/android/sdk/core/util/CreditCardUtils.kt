@@ -64,6 +64,7 @@ fun getFormattedAmount(paymentRequest: PaymentRequest): String {
   val amount =
     paymentRequest.amount / (10.0.pow(currencyFormatter.currency!!.defaultFractionDigits.toDouble()))
   val formattedNumber = numberFormatter.format(amount)
+  if (paymentRequest.currency == "SAR") return formattedNumber
   val currencySymbol = currencyFormatter.currency!!.symbol
 
   return if (currentLocale.language == "ar") {
