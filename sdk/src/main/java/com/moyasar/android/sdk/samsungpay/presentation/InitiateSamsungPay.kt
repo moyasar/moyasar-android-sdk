@@ -47,6 +47,10 @@ import com.samsung.android.sdk.samsungpay.v2.payment.PaymentManager
 import com.samsung.android.sdk.samsungpay.v2.payment.sheet.AmountBoxControl
 import com.samsung.android.sdk.samsungpay.v2.payment.sheet.AmountConstants
 import com.samsung.android.sdk.samsungpay.v2.payment.sheet.CustomSheet
+import java.text.DecimalFormat
+import java.util.Currency
+import java.util.Locale
+import kotlin.math.pow
 
 
 /**
@@ -101,7 +105,16 @@ object InitiateSamsungPay {
        PaymentManager.CustomSheetTransactionInfoListener {
        override fun onCardInfoUpdated(cardInfo: CardInfo, sheet: CustomSheet) {
            val amountControl = sheet.getSheetControl("amount-control") as AmountBoxControl
-           amountControl.setAmountTotal(1.00, AmountConstants.FORMAT_TOTAL_PRICE_ONLY)
+           amountControl.currencyCode = paymentRequest.currency
+           val currentLocale = Locale.getDefault()
+           val paymentCurrency = Currency.getInstance(paymentRequest.currency)
+           val currencyFormatter = DecimalFormat.getCurrencyInstance(currentLocale).apply {
+               currency = paymentCurrency
+           }
+           val amountFormated =
+               paymentRequest.amount / (10.0.pow(currencyFormatter.currency!!.defaultFractionDigits.toDouble()))
+
+           amountControl.setAmountTotal(amountFormated, AmountConstants.FORMAT_TOTAL_PRICE_ONLY)
 
            sheet.updateControl(amountControl)
            paymentManager.updateSheet(sheet)
@@ -216,8 +229,16 @@ object InitiateSamsungPay {
             SpaySdk.Brand.MASTERCARD
         )
 
-        val amountControl = AmountBoxControl("amount-control", "SAR").apply {
-            setAmountTotal(1.00, AmountConstants.FORMAT_TOTAL_PRICE_ONLY)
+        val amountControl = AmountBoxControl("amount-control", paymentRequest.currency).apply {
+            val currentLocale = Locale.getDefault()
+            val paymentCurrency = Currency.getInstance(paymentRequest.currency)
+            val currencyFormatter = DecimalFormat.getCurrencyInstance(currentLocale).apply {
+                currency = paymentCurrency
+            }
+            val amountFormated =
+                paymentRequest.amount / (10.0.pow(currencyFormatter.currency!!.defaultFractionDigits.toDouble()))
+
+            setAmountTotal(amountFormated, AmountConstants.FORMAT_TOTAL_PRICE_ONLY)
         }
 
         val customSheet = CustomSheet().apply {
