@@ -1,5 +1,6 @@
 package com.moyasar.android.sdkdriver
 
+import android.annotation.SuppressLint
 import android.arch.lifecycle.MutableLiveData
 import android.arch.lifecycle.ViewModel
 import android.os.Parcelable
@@ -13,6 +14,7 @@ import com.moyasar.android.sdk.creditcard.data.models.request.PaymentRequest
 import com.moyasar.android.sdk.stcpay.presentation.view.fragments.EnterMobileNumberFragment
 import com.moyasar.android.sdk.creditcard.presentation.view.fragments.PaymentFragment
 import com.moyasar.android.sdk.samsungpay.presentation.InitiateSamsungPay
+import com.moyasar.android.sdk.samsungpay.presentation.SamsungPayFragment
 import kotlinx.parcelize.Parcelize
 
 class CheckoutViewModel : ViewModel() {
@@ -38,9 +40,11 @@ class CheckoutViewModel : ViewModel() {
     )
 
     // For demo purposes only
+    @SuppressLint("StaticFieldLeak")
     private lateinit var activity: CheckoutActivity
     private lateinit var paymentFragment: PaymentFragment
     private lateinit var enterMobileNumberFragment: EnterMobileNumberFragment
+    private lateinit var samsungPayFragment: SamsungPayFragment
 
     private fun onCreditCardPaymentResult(result: PaymentResult) {
         activity.runOnUiThread {
@@ -54,6 +58,14 @@ class CheckoutViewModel : ViewModel() {
         activity.runOnUiThread {
             activity.supportFragmentManager.beginTransaction().remove(enterMobileNumberFragment)
                 .commit()
+        }
+
+        handlePaymentResult(result)
+    }
+
+    private fun onSamsungPayResult(result: PaymentResult) {
+        activity.runOnUiThread {
+            activity.supportFragmentManager.beginTransaction().remove(samsungPayFragment).commit()
         }
 
         handlePaymentResult(result)
@@ -119,14 +131,18 @@ class CheckoutViewModel : ViewModel() {
         }
     }
 
-    fun beginDonationWithSamsungPay(activity: CheckoutActivity) {
+    fun beginDonationWithSamsungPay(activity: CheckoutActivity, id: Int) {
         this.activity = activity
-        InitiateSamsungPay.initiate(activity,paymentRequest.apiKey, paymentRequest.samsungPayOrderNum,
-            authorizePayment = { token->
-              MoyasarLogger.log("spay token data",token?.data?:"")
-                InitiateSamsungPay.authorizePayment(token?.data?:"")
+        this.samsungPayFragment = SamsungPayFragment.newInstance(
+            activity.application,
+            paymentRequest
+        ) { this.onSamsungPayResult(it) }
 
-            })
+        activity.supportFragmentManager.beginTransaction().apply {
+            replace(id, samsungPayFragment)
+            commit()
+        }
+
     }
 
     sealed class Status : Parcelable {

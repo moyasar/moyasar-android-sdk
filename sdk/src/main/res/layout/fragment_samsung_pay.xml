@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".samsungpay.presentation.SamsungPayFragment">
+    <ProgressBar
+        android:id="@+id/progress_bar"
+        android:layout_width="@dimen/moyasar_progress_s"
+        android:layout_height="@dimen/moyasar_progress_s"
+        android:layout_gravity="center"
+        android:indeterminate="true"
+        android:indeterminateDrawable="@drawable/bg_moyasar_progress_white"
+        android:visibility="gone" />
+</FrameLayout>

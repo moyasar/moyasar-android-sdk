@@ -85,7 +85,7 @@ object InitiateSamsungPay {
         MoyasarAppContainer.viewModel.createPayment(request = paymentRequest.copy(
             callbackUrl = PaymentAuthFragment.RETURN_URL,
             source = SamsungPayPaymentSource(
-               token
+               token = token
             )
         ))
     }
