@@ -1,8 +1,8 @@
 package com.moyasar.android.sdk.creditcard.presentation.viewmodel
 
 import android.app.Application
-import android.arch.lifecycle.MediatorLiveData
-import android.arch.lifecycle.MutableLiveData
+import androidx.lifecycle.MediatorLiveData
+import androidx.lifecycle.MutableLiveData
 import com.moyasar.android.sdk.R
 import com.moyasar.android.sdk.core.extensions.default
 import com.moyasar.android.sdk.core.util.LiveDataValidator

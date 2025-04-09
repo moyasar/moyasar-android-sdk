@@ -1,8 +1,8 @@
 package com.moyasar.android.sdkdriver
 
-import android.arch.lifecycle.MutableLiveData
-import android.arch.lifecycle.ViewModel
 import android.os.Parcelable
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
 import com.moyasar.android.sdk.core.customviews.button.MoyasarButtonType
 import com.moyasar.android.sdk.core.domain.entities.PaymentResult
 import com.moyasar.android.sdk.core.extensions.default

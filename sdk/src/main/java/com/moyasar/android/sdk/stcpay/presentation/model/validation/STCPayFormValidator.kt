@@ -1,8 +1,8 @@
 package com.moyasar.android.sdk.stcpay.presentation.model.validation
 
 import android.app.Application
-import android.arch.lifecycle.MediatorLiveData
-import android.arch.lifecycle.MutableLiveData
+import androidx.lifecycle.MediatorLiveData
+import androidx.lifecycle.MutableLiveData
 import com.moyasar.android.sdk.R
 import com.moyasar.android.sdk.core.extensions.default
 import com.moyasar.android.sdk.core.util.LiveDataValidator
@@ -38,7 +38,9 @@ class STCPayFormValidator(application: Application) {
     fun validateSTCMobile(isShowError: Boolean = true): Boolean {
         val validators = listOf(mobileNumberValidator)
         return if (isShowError) {
-            validators.all { it.isValid() }.also { _isSTCPayFormValid.value = it }
+            validators.all { it.isValid() }.also {
+                _isSTCPayFormValid.value = it
+            }
         } else {
             validators.all { it.isValidWithoutErrorMessage() }.also { _isSTCPayFormValid.value = it }
         }

@@ -2,13 +2,13 @@ package com.moyasar.android.sdk.creditcard.presentation.view.fragments
 
 import android.app.Application
 import android.os.Bundle
-import android.support.v4.app.Fragment
-import android.support.v4.app.FragmentActivity
 import android.text.InputType
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentActivity
 import com.moyasar.android.sdk.R
 import com.moyasar.android.sdk.core.domain.entities.PaymentResult
 import com.moyasar.android.sdk.core.exceptions.InvalidConfigException

@@ -1,17 +1,15 @@
 package com.moyasar.android.sdkdriver
 
-import android.arch.lifecycle.ViewModel
-import android.arch.lifecycle.ViewModelProvider
-import android.databinding.DataBindingUtil
 import android.os.Bundle
-import android.support.v7.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import com.moyasar.android.sdkdriver.StartActivity.Companion.PAYMENT_TYPE
 import com.moyasar.android.sdkdriver.databinding.ActivityCheckoutBinding
 
 class CheckoutActivity : AppCompatActivity() {
-    private val binding: ActivityCheckoutBinding by lazy {
-        DataBindingUtil.setContentView(this, R.layout.activity_checkout)
-    }
+
+    private lateinit var binding: ActivityCheckoutBinding
 
     private val viewModel: CheckoutViewModel by lazy {
         val factory = object : ViewModelProvider.Factory {
@@ -26,10 +24,9 @@ class CheckoutActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_checkout)
-
-        binding.lifecycleOwner = this
-        binding.viewModel = viewModel
+        binding = ActivityCheckoutBinding.inflate(layoutInflater)
+        val view = binding.root
+        setContentView(view)
 
         val paymentType = intent.getStringExtra(PAYMENT_TYPE)
         when(paymentType){
@@ -39,6 +36,10 @@ class CheckoutActivity : AppCompatActivity() {
             StartActivity.PaymentOptions.STC.name-> {
                 viewModel.beginDonationWithSTC(this,  R.id.paymentSheetFragment)
             }
+        }
+        viewModel.status.observe(this){
+            setSuccessVisibility(binding.textView2, it)
+            setErrorVisibility(binding.textView3, it)
         }
     }
 }

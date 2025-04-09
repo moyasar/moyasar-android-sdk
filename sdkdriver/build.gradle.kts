@@ -1,7 +1,6 @@
 plugins {
     id("com.android.application")
     id("kotlin-android")
-    id("kotlin-kapt")
     id("kotlin-parcelize")
     id("org.jetbrains.kotlin.android")
 }
@@ -40,19 +39,18 @@ android {
     }
 
     buildFeatures {
-        dataBinding = true
+        viewBinding = true
     }
 }
 
 dependencies {
-    //noinspection GradleCompatible
-    implementation("com.android.support:design:28.0.0")
-    //noinspection GradleCompatible
-    implementation("com.android.support:support-fragment:28.0.0")
-    implementation("android.arch.lifecycle:extensions:1.1.1")
-    implementation("com.android.support.constraint:constraint-layout:2.0.4")
+    implementation("com.google.android.material:material:1.12.0")
+    implementation("androidx.fragment:fragment-ktx:1.8.6")
+    implementation("androidx.lifecycle:lifecycle-extensions:2.2.0")
+    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.8.7")
+    implementation("androidx.constraintlayout:constraintlayout:2.2.1")
     implementation(project(":sdk"))
     testImplementation("junit:junit:4.13.2")
-    androidTestImplementation("com.android.support.test:runner:1.0.2")
-    androidTestImplementation("com.android.support.test.espresso:espresso-core:3.0.2")
+    androidTestImplementation("androidx.test:runner:1.6.2")
+    androidTestImplementation("androidx.test.espresso:espresso-core:3.6.1")
 }
