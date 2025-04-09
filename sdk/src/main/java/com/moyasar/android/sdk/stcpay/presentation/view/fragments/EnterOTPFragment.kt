@@ -1,19 +1,18 @@
 package com.moyasar.android.sdk.stcpay.presentation.view.fragments
 
 import android.os.Bundle
-import android.support.v4.app.Fragment
-import android.support.v4.app.FragmentActivity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentActivity
 import com.moyasar.android.sdk.R
 import com.moyasar.android.sdk.core.extensions.afterTextChanged
 import com.moyasar.android.sdk.core.extensions.gone
 import com.moyasar.android.sdk.core.extensions.shouldDisableButton
 import com.moyasar.android.sdk.core.extensions.show
-import com.moyasar.android.sdk.databinding.FragmentEnterOTPBinding
 import com.moyasar.android.sdk.creditcard.presentation.di.MoyasarAppContainer.viewModel
-import com.moyasar.android.sdk.creditcard.presentation.model.PaymentStatusViewState
+import com.moyasar.android.sdk.databinding.FragmentEnterOTPBinding
 import com.moyasar.android.sdk.stcpay.presentation.model.STCPayViewState
 
 

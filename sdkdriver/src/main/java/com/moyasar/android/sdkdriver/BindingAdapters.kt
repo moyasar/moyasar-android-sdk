@@ -1,7 +1,7 @@
 package com.moyasar.android.sdkdriver
 
-import android.databinding.BindingAdapter
 import android.view.View
+import androidx.databinding.BindingAdapter
 
 @BindingAdapter("android:setDonateVisibleFromStatus")
 fun setDonateVisibility(view: View, oldValue: CheckoutViewModel.Status?, newValue: CheckoutViewModel.Status) {

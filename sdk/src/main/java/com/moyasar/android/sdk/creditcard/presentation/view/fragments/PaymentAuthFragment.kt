@@ -4,8 +4,6 @@ import android.annotation.SuppressLint
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
-import android.support.annotation.RequiresApi
-import android.support.v4.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,6 +11,8 @@ import android.webkit.WebResourceError
 import android.webkit.WebResourceRequest
 import android.webkit.WebView
 import android.webkit.WebViewClient
+import androidx.annotation.RequiresApi
+import androidx.fragment.app.Fragment
 import com.moyasar.android.sdk.core.extensions.gone
 import com.moyasar.android.sdk.core.util.MoyasarLogger
 import com.moyasar.android.sdk.databinding.FragmentPaymentAuthBinding

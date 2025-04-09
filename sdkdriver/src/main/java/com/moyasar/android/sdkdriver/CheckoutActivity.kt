@@ -1,10 +1,10 @@
 package com.moyasar.android.sdkdriver
 
-import android.arch.lifecycle.ViewModel
-import android.arch.lifecycle.ViewModelProvider
-import android.databinding.DataBindingUtil
 import android.os.Bundle
-import android.support.v7.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatActivity
+import androidx.databinding.DataBindingUtil
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import com.moyasar.android.sdkdriver.StartActivity.Companion.PAYMENT_TYPE
 import com.moyasar.android.sdkdriver.databinding.ActivityCheckoutBinding
 

@@ -18,7 +18,7 @@
             android:layout_height="wrap_content"
             android:text="@string/one_time_password" />
 
-        <android.support.design.widget.TextInputLayout
+        <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/otpInput"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -37,7 +37,7 @@
                 android:paddingStart="@dimen/moyasar_spacing_small"
                 android:paddingEnd="@dimen/moyasar_spacing_small" />
 
-        </android.support.design.widget.TextInputLayout>
+        </com.google.android.material.textfield.TextInputLayout>
 
         <FrameLayout
             android:id="@+id/fl_button_container"

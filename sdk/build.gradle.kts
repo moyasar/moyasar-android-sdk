@@ -26,7 +26,7 @@ android {
     buildToolsVersion = "34.0.0"
 
     defaultConfig {
-        minSdk = 17
+        minSdk = 21
 
         consumerProguardFiles("consumer-rules.pro")
 
@@ -64,18 +64,19 @@ android {
 }
 
 dependencies {
-    //noinspection GradleCompatible
-    implementation("com.android.support:design:28.0.0")
-    //noinspection GradleCompatible
-    implementation("com.android.support:support-fragment:28.0.0")
+    implementation("com.google.android.material:material:1.12.0")
+    implementation("androidx.fragment:fragment-ktx:1.8.6")
+    implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.8.7")
     implementation("com.google.code.gson:gson:2.10.1")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.8.1")
-    implementation("android.arch.lifecycle:extensions:1.1.1")
-    testImplementation ("junit:junit:4.13.2")
-    testImplementation ("org.jetbrains.kotlin:kotlin-test:1.8.0")
-    testImplementation ("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.8.1")
-    testImplementation ("org.mockito.kotlin:mockito-kotlin:4.0.0")
-    testImplementation ("org.mockito:mockito-inline:5.2.0")
-    testImplementation ("android.arch.core:core-testing:1.1.1")
+    implementation("androidx.lifecycle:lifecycle-extensions:2.2.0")
+    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.8.7")
+    testImplementation("junit:junit:4.13.2")
+    testImplementation("org.jetbrains.kotlin:kotlin-test:1.8.22")
+    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.8.1")
+    testImplementation("org.mockito.kotlin:mockito-kotlin:4.0.0")
+    testImplementation("org.mockito:mockito-inline:5.2.0")
+    testImplementation("androidx.arch.core:core-testing:2.2.0")
+
 
 }
