@@ -15,6 +15,7 @@ class LiveDataValidator(private val liveData: LiveData<String>) {
         for (rule in rules) {
             if (rule.predicate(liveData.value)) {
                 error.value = rule.error
+                MoyasarLogger.log("setOnFocus","errMsg "+rule.error)
                 return false
             }
         }
@@ -42,6 +43,7 @@ class LiveDataValidator(private val liveData: LiveData<String>) {
             true -> error.value = null
             false -> isValid()
         }
+        MoyasarLogger.log("setOnFocus","isValid "+isValid())
     }
 
     data class ValidationRule(val predicate: Predicate, val error: String)
