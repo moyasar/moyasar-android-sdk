@@ -9,7 +9,6 @@ import com.moyasar.android.sdk.creditcard.domain.usecases.CreatePaymentUseCase
 import com.moyasar.android.sdk.creditcard.domain.usecases.CreateTokenUseCase
 import com.moyasar.android.sdk.stcpay.domain.usecases.ValidateSTCPayOTPUseCase
 import com.moyasar.android.sdk.creditcard.presentation.viewmodel.PaymentSheetViewModel
-import com.moyasar.android.sdk.stcpay.presentation.model.validation.STCPayFormValidator
 
 /**
  * Created by Mahmoud Ashraf on 26,July,2024
@@ -43,8 +42,6 @@ object MoyasarAppContainer {
     CreateTokenUseCase(paymentService)
   }
 
-  private val stcPayFormValidator
-    get() = STCPayFormValidator(application)
 
 
   private var _viewModel : PaymentSheetViewModel? = null
@@ -57,7 +54,6 @@ object MoyasarAppContainer {
             application = application,
             paymentRequest = paymentRequest,
             callback = callback,
-            stcPayFormValidator = stcPayFormValidator,
             createPaymentUseCase = createPaymentUseCase,
             createTokenUseCase = createTokenUseCase,
             validateSTCPayOTPUseCase = validateSTCPayOTPUseCase

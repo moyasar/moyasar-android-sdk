@@ -15,9 +15,9 @@ import com.moyasar.android.sdk.core.extensions.afterTextChanged
 import com.moyasar.android.sdk.core.extensions.gone
 import com.moyasar.android.sdk.core.extensions.shouldDisableButton
 import com.moyasar.android.sdk.core.extensions.show
-import com.moyasar.android.sdk.core.util.MoyasarLogger
 import com.moyasar.android.sdk.creditcard.data.models.request.PaymentRequest
 import com.moyasar.android.sdk.creditcard.presentation.di.MoyasarAppContainer
+import com.moyasar.android.sdk.creditcard.presentation.di.MoyasarAppContainer.viewModel
 import com.moyasar.android.sdk.databinding.FragmentEnterMobileNumberBinding
 import com.moyasar.android.sdk.stcpay.presentation.model.STCPayViewState
 
@@ -56,47 +56,52 @@ class EnterMobileNumberFragment : Fragment() {
     }
 
     private fun setupObservers() {
-        MoyasarAppContainer.viewModel.isSTCPayFormValid.observe(viewLifecycleOwner, ::handleFormValidationState)
-        MoyasarAppContainer.viewModel.stcPayStatus.observe(viewLifecycleOwner, ::handleOnStatusChanged)
-        MoyasarAppContainer.viewModel.stcPayFormValidator.mobileNumberValidator.error.observe(viewLifecycleOwner, ::showInvalidPhoneErrorMsg)
-    }
-    private fun showInvalidPhoneErrorMsg(errorMsg: String?) {
-        if (MoyasarAppContainer.viewModel.isFirstVisitEnterMobileNumber){
-            MoyasarAppContainer.viewModel.isFirstVisitEnterMobileNumber = false
-            return
+        viewModel.stcPayStatus.observe(
+            viewLifecycleOwner,
+            ::handleOnStatusChanged
+        )
+        viewModel.inputFieldsValidatorLiveData.observe(viewLifecycleOwner) { inputFieldUIModel ->
+            showInvalidPhoneErrorMsg(inputFieldUIModel?.stcPayUIModel?.mobileNumberErrorMsg)
+            handleFormValidationState(viewModel.inputFieldsValidatorLiveData.value?.stcPayUIModel?.isMobileValid)
         }
+    }
+
+    private fun showInvalidPhoneErrorMsg(errorMsg: String?) {
         binding.tvMobileNumber.setTextColor(
             ContextCompat.getColor(requireContext(), R.color.red)
         )
         binding.tvMobileNumber.text = errorMsg
     }
+
     private fun handleFormValidationState(isFormValid: Boolean?) {
-        binding.payButton.isEnabled = isFormValid?: false
-        binding.payButton.shouldDisableButton(isFormValid ?: false,
-        bgEnabledDrawableRes = R.drawable.moyasar_bt_purple_enabled_background,
-        bgDisabledDrawableRes = R.drawable.moyasar_bt_purple_disabled_background,
-        bgEnabledColorRes=  R.color.light_purple_button_enabled,
-        bgDisabledColorRes =  R.color.light_purple_button_disabled
+        binding.payButton.isEnabled = isFormValid ?: false
+        binding.payButton.shouldDisableButton(
+            isFormValid ?: false,
+            bgEnabledDrawableRes = R.drawable.moyasar_bt_purple_enabled_background,
+            bgDisabledDrawableRes = R.drawable.moyasar_bt_purple_disabled_background,
+            bgEnabledColorRes = R.color.light_purple_button_enabled,
+            bgDisabledColorRes = R.color.light_purple_button_disabled
         )
     }
 
     private fun handleOnStatusChanged(status: STCPayViewState?) {
         parentActivity.runOnUiThread {
             when (status) {
-                is STCPayViewState.SubmittingSTCPayMobileNumber ->{
+                is STCPayViewState.SubmittingSTCPayMobileNumber -> {
                     binding.payButton.setButtonType(MoyasarAppContainer.paymentRequest.buttonType)
                     binding.progressBar.show()
-                    binding.payButton.shouldDisableButton(false,
+                    binding.payButton.shouldDisableButton(
+                        false,
                         bgEnabledDrawableRes = R.drawable.moyasar_bt_purple_enabled_background,
                         bgDisabledDrawableRes = R.drawable.moyasar_bt_purple_disabled_background,
-                        bgEnabledColorRes=  R.color.light_purple_button_enabled,
-                        bgDisabledColorRes =  R.color.light_purple_button_disabled)
+                        bgEnabledColorRes = R.color.light_purple_button_enabled,
+                        bgDisabledColorRes = R.color.light_purple_button_disabled
+                    )
                     binding.payButton.isEnabled = false
                     binding.etMobileNumberInput.isEnabled = false
                 }
 
                 is STCPayViewState.STCPayOTPAuth -> {
-                    MoyasarLogger.log("STCPay TransactionURL", status.url)
                     binding.enterMobileFragmentContent.gone()
                     val fragment = EnterOTPFragment()
                     val args = Bundle()
@@ -107,6 +112,7 @@ class EnterMobileNumberFragment : Fragment() {
                         commit()
                     }
                 }
+
                 else -> Unit
             }
         }
@@ -116,14 +122,20 @@ class EnterMobileNumberFragment : Fragment() {
         binding.progressBar.gone()
         binding.payButton.setButtonType(MoyasarAppContainer.paymentRequest.buttonType)
         binding.payButton.setOnClickListener {
-            MoyasarAppContainer.viewModel.submitSTC()
+            viewModel.submitSTC()
         }
 
     }
+
     private fun FragmentEnterMobileNumberBinding.setupListeners() {
         etMobileNumberInput.afterTextChanged { text ->
-            MoyasarAppContainer.viewModel.stcPayFormValidator.mobileNumber.value = text?.toString()
-            text?.let { MoyasarAppContainer.viewModel.mobileNumberChanged(it) }
+            text?.let {
+                viewModel.mobileNumberChanged(it) { s ->
+                    etMobileNumberInput.setText(s)
+                    // Move cursor to the end of the text
+                    etMobileNumberInput.setSelection(s.length)
+                }
+            }
         }
     }
 

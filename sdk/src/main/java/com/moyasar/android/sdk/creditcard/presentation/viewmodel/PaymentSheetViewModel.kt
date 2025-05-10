@@ -10,7 +10,6 @@ import com.moyasar.android.sdk.core.data.response.PaymentResponse
 import com.moyasar.android.sdk.core.domain.entities.PaymentResult
 import com.moyasar.android.sdk.core.exceptions.PaymentSheetException
 import com.moyasar.android.sdk.core.extensions.default
-import com.moyasar.android.sdk.core.extensions.distinctUntilChanged
 import com.moyasar.android.sdk.core.extensions.scope
 import com.moyasar.android.sdk.core.util.CreditCardFormatter
 import com.moyasar.android.sdk.core.util.LiveDataValidator.ValidationRule
@@ -34,12 +33,14 @@ import com.moyasar.android.sdk.creditcard.presentation.model.FormErrorMessage
 import com.moyasar.android.sdk.creditcard.presentation.model.InputFieldsUIModel
 import com.moyasar.android.sdk.creditcard.presentation.model.PaymentStatusViewState
 import com.moyasar.android.sdk.creditcard.presentation.model.RequestResultViewState
+import com.moyasar.android.sdk.creditcard.presentation.model.STCPayUIModel
 import com.moyasar.android.sdk.creditcard.presentation.view.fragments.PaymentAuthFragment
 import com.moyasar.android.sdk.stcpay.data.models.sources.STCPayPaymentSource
 import com.moyasar.android.sdk.stcpay.domain.usecases.ValidateSTCPayOTPUseCase
 import com.moyasar.android.sdk.stcpay.presentation.model.STCPayViewState
 import com.moyasar.android.sdk.stcpay.presentation.model.formatter.SaudiPhoneNumberFormatter
-import com.moyasar.android.sdk.stcpay.presentation.model.validation.STCPayFormValidator
+import com.moyasar.android.sdk.stcpay.presentation.model.validator.STCPayOTPValidator
+import com.moyasar.android.sdk.stcpay.presentation.model.validator.SaudiPhoneNumberValidator
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 
@@ -47,7 +48,6 @@ internal class PaymentSheetViewModel(
     application: Application,
     private val paymentRequest: PaymentRequest,
     private val callback: (PaymentResult) -> Unit,
-    internal val stcPayFormValidator: STCPayFormValidator,
     private val createPaymentUseCase: CreatePaymentUseCase,
     private val createTokenUseCase: CreateTokenUseCase,
     private val validateSTCPayOTPUseCase: ValidateSTCPayOTPUseCase,
@@ -55,15 +55,9 @@ internal class PaymentSheetViewModel(
 
     internal val inputFieldsValidatorLiveData: MutableLiveData<InputFieldsUIModel> =
         MutableLiveData<InputFieldsUIModel>()
-    var isFirstVisitEnterMobileNumber = true
-    var isFirstVisitOTP: Boolean = true
-    internal var ccOnChangeLocked = false
-    internal var mobileNumberOnChangeLocked = false
-    internal var ccExpiryOnChangeLocked = false
-
-//    internal var isExpiryValid = true
-//    internal var isCvvValid = true
-//    internal var isCardNumValid = true
+    private var ccOnChangeLocked = false
+    private var mobileNumberOnChangeLocked = false
+    private var ccExpiryOnChangeLocked = false
 
     private val _creditCardStatus =
         MutableLiveData<PaymentStatusViewState>().default(PaymentStatusViewState.Reset)
@@ -76,16 +70,12 @@ internal class PaymentSheetViewModel(
     val creditCardStatus: LiveData<PaymentStatusViewState> = _creditCardStatus
     val stcPayStatus: LiveData<STCPayViewState> = _stcPayStatus
 
-    ///  val isFormValid: MutableLiveData<Boolean> = MutableLiveData<Boolean>()//formValidator._isFormValid.distinctUntilChanged()
-    val isSTCPayFormValid: LiveData<Boolean> =
-        stcPayFormValidator._isSTCPayFormValid.distinctUntilChanged()
-
-
     private val cleanCardNumber: String
         get() = inputFieldsValidatorLiveData.value?.cardNumber?.replace(" ", "").orEmpty()
 
     private val cleanMobileNumber: String
-        get() = stcPayFormValidator.mobileNumber.value!!.replace(" ", "")
+        get() = inputFieldsValidatorLiveData.value?.stcPayUIModel?.mobileNumber?.replace(" ", "")
+            .orEmpty()
 
     private val expiryMonth: String
         get() = parseExpiry(inputFieldsValidatorLiveData.value?.expiryDate ?: "")?.month.toString()
@@ -99,7 +89,6 @@ internal class PaymentSheetViewModel(
 
     init {
         inputFieldsValidatorLiveData.value = InputFieldsUIModel()
-        /// isFormValid.value = false
     }
 
     private fun notifyPaymentResult(paymentResult: PaymentResult) = callback(paymentResult)
@@ -282,11 +271,11 @@ internal class PaymentSheetViewModel(
 
                     false -> getExpiryDateValidationRules().isValidExpiryDate(value)
                 }
-            }/// formValidator.expiryValidator.onFieldFocusChange(hasFocus)
+            }
         }
     }
 
-    fun getNameValidationRules(): MutableList<ValidationRule> {
+    private fun getNameValidationRules(): MutableList<ValidationRule> {
         val rules = mutableListOf<ValidationRule>()
         val latinRegex = Regex("^[a-zA-Z\\-\\s]+\$")
         val nameRegex = Regex("^[a-zA-Z\\-]+\\s+?([a-zA-Z\\-]+\\s?)+\$")
@@ -311,7 +300,7 @@ internal class PaymentSheetViewModel(
         return rules
     }
 
-    fun getNumberValidationRules(): MutableList<ValidationRule> {
+    private fun getNumberValidationRules(): MutableList<ValidationRule> {
         val rules = mutableListOf<ValidationRule>()
         rules.add(
             ValidationRule(
@@ -336,7 +325,7 @@ internal class PaymentSheetViewModel(
         return rules
     }
 
-    fun getCvcValidationRules(number: String): MutableList<ValidationRule> {
+    private fun getCvcValidationRules(number: String): MutableList<ValidationRule> {
         val rules = mutableListOf<ValidationRule>()
         rules.add(
             ValidationRule(
@@ -355,7 +344,7 @@ internal class PaymentSheetViewModel(
         return rules
     }
 
-    fun getExpiryDateValidationRules(): MutableList<ValidationRule> {
+    private fun getExpiryDateValidationRules(): MutableList<ValidationRule> {
         val rules = mutableListOf<ValidationRule>()
         rules.add(
             ValidationRule(
@@ -372,7 +361,47 @@ internal class PaymentSheetViewModel(
         return rules
     }
 
-    fun List<ValidationRule>.isValidName(value: String, isShowError: Boolean = true): Boolean {
+    private fun getPhoneNumberValidationRules(): MutableList<ValidationRule> {
+        val rules = mutableListOf<ValidationRule>()
+        rules.add(
+            ValidationRule(
+                { it.isNullOrBlank() },
+                application.getString(R.string.mobile_number_is_required)
+            )
+        )
+        rules.add(
+            ValidationRule(
+                {
+                    !SaudiPhoneNumberValidator.isValidSaudiPhoneNumber(
+                        it.orEmpty()
+                    )
+                },
+                application.getString(R.string.invalid_mobile_number)
+            )
+        )
+        return rules
+    }
+
+    private fun getOTPValidationRules(): MutableList<ValidationRule> {
+        val rules = mutableListOf<ValidationRule>()
+        rules.add(
+            ValidationRule(
+                {
+                    !STCPayOTPValidator.isValidOtp(
+                        it ?: ""
+                    )
+                },
+                application.getString(R.string.invalid_stc_pay_otp)
+            )
+        )
+
+        return rules
+    }
+
+    private fun List<ValidationRule>.isValidName(
+        value: String,
+        isShowError: Boolean = true,
+    ): Boolean {
         val rules = this
         for (rule in rules) {
             if (rule.predicate(value)) {
@@ -381,23 +410,20 @@ internal class PaymentSheetViewModel(
                         inputFieldsValidatorLiveData.value?.copy(
                             errorMessage = inputFieldsValidatorLiveData.value?.errorMessage?.copy(
                                 nameErrorMsg = rule.error
-                            )?: FormErrorMessage( nameErrorMsg = rule.error)
+                            ) ?: FormErrorMessage(nameErrorMsg = rule.error)
                         )
                 return false
             }
         }
 
-        if (isShowError)
-            inputFieldsValidatorLiveData.value =
-                inputFieldsValidatorLiveData.value?.copy(
-                    errorMessage = inputFieldsValidatorLiveData.value?.errorMessage?.copy(
-                        nameErrorMsg = ""
-                    )
-                )
         return true
     }
 
-    fun List<ValidationRule>.isValidNumber(value: String, isShowError: Boolean = true): Boolean {
+
+    private fun List<ValidationRule>.isValidNumber(
+        value: String,
+        isShowError: Boolean = true,
+    ): Boolean {
         val rules = this
         for (rule in rules) {
             if (rule.predicate(value)) {
@@ -406,23 +432,19 @@ internal class PaymentSheetViewModel(
                         inputFieldsValidatorLiveData.value?.copy(
                             errorMessage = inputFieldsValidatorLiveData.value?.errorMessage?.copy(
                                 numberErrorMsg = rule.error
-                            )?: FormErrorMessage(numberErrorMsg = rule.error)
+                            ) ?: FormErrorMessage(numberErrorMsg = rule.error)
                         )
                 return false
             }
         }
 
-        if (isShowError)
-            inputFieldsValidatorLiveData.value =
-                inputFieldsValidatorLiveData.value?.copy(
-                    errorMessage = inputFieldsValidatorLiveData.value?.errorMessage?.copy(
-                        nameErrorMsg = ""
-                    )
-                )
         return true
     }
 
-    fun List<ValidationRule>.isValidCvc(value: String, isShowError: Boolean = true): Boolean {
+    private fun List<ValidationRule>.isValidCvc(
+        value: String,
+        isShowError: Boolean = true,
+    ): Boolean {
         val rules = this
         for (rule in rules) {
             if (rule.predicate(value)) {
@@ -431,23 +453,16 @@ internal class PaymentSheetViewModel(
                         inputFieldsValidatorLiveData.value?.copy(
                             errorMessage = inputFieldsValidatorLiveData.value?.errorMessage?.copy(
                                 cvcErrorMsg = rule.error
-                            )?: FormErrorMessage( cvcErrorMsg = rule.error)
+                            ) ?: FormErrorMessage(cvcErrorMsg = rule.error)
                         )
                 return false
             }
         }
 
-        if (isShowError)
-            inputFieldsValidatorLiveData.value =
-                inputFieldsValidatorLiveData.value?.copy(
-                    errorMessage = inputFieldsValidatorLiveData.value?.errorMessage?.copy(
-                        nameErrorMsg = ""
-                    )
-                )
         return true
     }
 
-    fun List<ValidationRule>.isValidExpiryDate(
+    private fun List<ValidationRule>.isValidExpiryDate(
         value: String,
         isShowError: Boolean = true,
     ): Boolean {
@@ -459,27 +474,53 @@ internal class PaymentSheetViewModel(
                         inputFieldsValidatorLiveData.value?.copy(
                             errorMessage = inputFieldsValidatorLiveData.value?.errorMessage?.copy(
                                 expiryDateErrorMsg = rule.error
-                            )?: FormErrorMessage( expiryDateErrorMsg = rule.error)
+                            ) ?: FormErrorMessage(expiryDateErrorMsg = rule.error)
                         )
                 return false
             }
         }
 
-        if (isShowError)
-            inputFieldsValidatorLiveData.value =
-                inputFieldsValidatorLiveData.value?.copy(
-                    errorMessage = inputFieldsValidatorLiveData.value?.errorMessage?.copy(
-                        nameErrorMsg = ""
-                    )
-                )
         return true
     }
 
 
     internal fun creditCardNameChanged(name: String) {
         inputFieldsValidatorLiveData.value = inputFieldsValidatorLiveData.value?.copy(name = name)
-        ///formValidator.validate(false)
         validateForm(inputFieldsValidatorLiveData.value)
+    }
+
+
+    private fun validateSTCMobile(textEdit: String) {
+        inputFieldsValidatorLiveData.value =
+            inputFieldsValidatorLiveData.value?.copy(
+                stcPayUIModel = inputFieldsValidatorLiveData.value?.stcPayUIModel?.copy(
+                    mobileNumber = textEdit,
+                    isMobileValid = getPhoneNumberValidationRules().all {
+                        it.predicate.invoke(
+                            textEdit.toString()
+                        ).not()
+                    },
+                    mobileNumberErrorMsg = getPhoneNumberValidationRules().firstOrNull {
+                        it.predicate.invoke(
+                            textEdit.toString()
+                        )
+                    }?.error.orEmpty()
+                ) ?: STCPayUIModel(
+                    mobileNumber = textEdit,
+                    isMobileValid = getPhoneNumberValidationRules().all {
+                        it.predicate.invoke(
+                            textEdit.toString()
+                        ).not()
+                    },
+                    mobileNumberErrorMsg = getPhoneNumberValidationRules().firstOrNull {
+                        it.predicate.invoke(
+                            textEdit.toString()
+                        )
+                    }?.error.orEmpty()
+                ),
+            )
+
+
     }
 
     private fun validateForm(inputFieldsUIModel: InputFieldsUIModel?) {
@@ -500,7 +541,6 @@ internal class PaymentSheetViewModel(
             )
 
         )
-        //validators.all { it.isValidWithoutErrorMessage() }.also { _isFormValid.value = it }
     }
 
     internal fun creditCardNumberChanged(textEdit: Editable) {
@@ -513,20 +553,19 @@ internal class PaymentSheetViewModel(
         val formatted = CreditCardFormatter.formatCardNumber(textEdit.toString())
         textEdit.replace(0, textEdit.length, formatted)
         validateForm(inputFieldsValidatorLiveData.value)
-        // formValidator.validate(false)
         ccOnChangeLocked = false
     }
 
-    internal fun mobileNumberChanged(textEdit: Editable) {
+    internal fun mobileNumberChanged(textEdit: Editable, onUpdateText: (String) -> Unit) {
         if (mobileNumberOnChangeLocked) {
             return
         }
         mobileNumberOnChangeLocked = true
-        // todo test
         val formatted = SaudiPhoneNumberFormatter.formatPhoneNumber(textEdit.toString())
-        textEdit.replace(0, textEdit.length, formatted)
-        stcPayFormValidator.validateSTCMobile(true)
+        onUpdateText(formatted)
+        validateSTCMobile(formatted.replace(" ", ""))
         mobileNumberOnChangeLocked = false
+
     }
 
 
@@ -559,8 +598,6 @@ internal class PaymentSheetViewModel(
 
         onUpdateText(formatted.toString())
         validateForm(inputFieldsValidatorLiveData.value)
-        //formValidator.validate(false)
-
         ccExpiryOnChangeLocked = false
     }
 
@@ -568,7 +605,6 @@ internal class PaymentSheetViewModel(
         inputFieldsValidatorLiveData.value =
             inputFieldsValidatorLiveData.value?.copy(cvc = textEdit.toString())
         validateForm(inputFieldsValidatorLiveData.value)
-        //formValidator.validate(false)
     }
 
     internal fun submit() {
@@ -590,7 +626,7 @@ internal class PaymentSheetViewModel(
     }
 
     internal fun submitSTC() {
-        if (!stcPayFormValidator.validateSTCMobile()) {
+        if (inputFieldsValidatorLiveData.value?.stcPayUIModel?.isMobileValid == false) {
             return
         }
 
@@ -644,7 +680,22 @@ internal class PaymentSheetViewModel(
         }
     }
 
-    fun stcPayOTPChanged() {
-        stcPayFormValidator.validateSTCOTP()
+    fun stcPayOTPChanged(textEdit: Editable) {
+        inputFieldsValidatorLiveData.value =
+            inputFieldsValidatorLiveData.value?.copy(
+                stcPayUIModel = inputFieldsValidatorLiveData.value?.stcPayUIModel?.copy(
+                    otp = textEdit.toString(),
+                    isOTPValid = getOTPValidationRules().all {
+                        it.predicate.invoke(textEdit.toString()).not()
+                    },
+                    otpErrorMsg = getOTPValidationRules().firstOrNull { it.predicate.invoke(textEdit.toString()) }?.error.orEmpty()
+                ) ?: STCPayUIModel(
+                    otp = textEdit.toString(),
+                    isOTPValid = getOTPValidationRules().all {
+                        it.predicate.invoke(textEdit.toString()).not()
+                    },
+                    otpErrorMsg = getOTPValidationRules().firstOrNull { it.predicate.invoke(textEdit.toString()) }?.error.orEmpty()
+                ),
+            )
     }
 }
