@@ -87,20 +87,11 @@ class PaymentFragment : Fragment() {
 
     private fun setupObservers() {
         viewModel.creditCardStatus.observe(viewLifecycleOwner, ::handleOnStatusChanged)
-        // viewModel.isFormValid.observe(viewLifecycleOwner, ::handleFormValidationState)
-        //   viewModel.formValidator.number.observe(viewLifecycleOwner, ::handleCardNumberValueUpdated)
-        /*  Handle Form Validation Errors  */
-//    viewModel.formValidator.nameValidator.error.observe(viewLifecycleOwner, ::showInvalidNameErrorMsg)
-//    viewModel.formValidator.numberValidator.error.observe(viewLifecycleOwner, ::showInvalidCardNumberErrorMsg)
-//    viewModel.formValidator.expiryValidator.error.observe(viewLifecycleOwner, ::showInvalidExpiryErrorMsg)
-//    viewModel.formValidator.cvcValidator.error.observe(viewLifecycleOwner, ::showInvalidCVVErrorMsg)
         viewModel.inputFieldsValidatorLiveData.observe(viewLifecycleOwner) { inputFieldUIModel ->
             showInvalidNameErrorMsg(inputFieldUIModel.errorMessage?.nameErrorMsg)
-            showInvalidCardNumberErrorMsg(inputFieldUIModel.errorMessage?.numberErrorMsg)
-            showInvalidCVVErrorMsg(inputFieldUIModel.errorMessage?.cvcErrorMsg)
             handleFormValidationState(inputFieldUIModel.isFormValid)
-            showInvalidExpiryErrorMsg(inputFieldUIModel.errorMessage?.expiryDateErrorMsg)
             handleCardNumberValueUpdated(inputFieldUIModel.cardNumber)
+            validateError()
         }
     }
 
@@ -135,14 +126,15 @@ class PaymentFragment : Fragment() {
     }
 
     private fun handleFormValidationState(isFormValid: Boolean) {
-        binding.payButton.shouldDisableButton(isFormValid ?: false)
+        binding.payButton.shouldDisableButton(isFormValid)
+        binding.payButton.isEnabled = isFormValid
     }
 
     private fun handleCardNumberValueUpdated(number: String?) {
         showAllowedCreditCardsInEditText(number.orEmpty(), paymentRequest.allowedNetworks, binding)
     }
 
-    private fun setError() {
+    private fun validateError() {
         if (
             viewModel.inputFieldsValidatorLiveData.value?.errorMessage?.numberErrorMsg.isNullOrEmpty()
                 .not()
@@ -183,21 +175,6 @@ class PaymentFragment : Fragment() {
         binding.viewCard.labelTextView.show()
     }
 
-    private fun showInvalidCVVErrorMsg(errorMsg: String?) {
-        ///viewModel.isCvvValid = errorMsg.isNullOrEmpty()
-        setError()
-    }
-
-    private fun showInvalidExpiryErrorMsg(errorMsg: String?) {
-        /// viewModel.isExpiryValid = errorMsg.isNullOrEmpty()
-        setError()
-
-    }
-
-    private fun showInvalidCardNumberErrorMsg(errorMsg: String?) {
-        /// viewModel.isCardNumValid = errorMsg.isNullOrEmpty()
-        setError()
-    }
 
     private fun showInvalidNameErrorMsg(errorMsg: String?) {
         binding.etCardHolder.setError(errorMsg)
@@ -243,14 +220,12 @@ class PaymentFragment : Fragment() {
 
     private fun FragmentPaymentBinding.setupListeners() {
         etCardHolder.inputEditText.afterTextChanged { text ->
-            //   viewModel.formValidator.name.value = text?.toString()
             viewModel.creditCardNameChanged(text?.toString().orEmpty())
         }
 
         viewCard.inputEditTextCardNumber.afterTextChanged { text ->
-            // viewModel.formValidator.number.value = text?.toString()
             text?.let {
-                viewModel.creditCardNumberChanged(it){s->
+                viewModel.creditCardNumberChanged(it) { s ->
                     viewCard.inputEditTextCardNumber.setText(s)
                     // Move cursor to the end of the text
                     viewCard.inputEditTextCardNumber.setSelection(s.length)
@@ -260,7 +235,6 @@ class PaymentFragment : Fragment() {
         }
 
         viewCard.inputEditTextCardExpiryDate.afterTextChanged { text ->
-            //  viewModel.formValidator.expiry.value = text?.toString()
             text?.let {
                 viewModel.creditCardExpiryChanged(it) { s ->
                     viewCard.inputEditTextCardExpiryDate.setText(s)
@@ -280,7 +254,6 @@ class PaymentFragment : Fragment() {
             viewModel.validateField(
                 fieldType = FieldValidation.Name,
                 value = etCardHolder.inputEditText.text?.toString().orEmpty(),
-             ///   name = etCardHolder.inputEditText.text?.toString().orEmpty(),
                 cardNumber = viewCard.inputEditTextCardNumber.text?.toString().orEmpty(),
                 hasFocus = hf
             )
@@ -289,7 +262,6 @@ class PaymentFragment : Fragment() {
             viewModel.validateField(
                 fieldType = FieldValidation.Number,
                 value = viewCard.inputEditTextCardNumber.text?.toString().orEmpty(),
-                //name = etCardHolder.inputEditText.text?.toString().orEmpty(),
                 cardNumber = viewCard.inputEditTextCardNumber.text?.toString().orEmpty(),
                 hasFocus = hf
             )
@@ -298,7 +270,6 @@ class PaymentFragment : Fragment() {
             viewModel.validateField(
                 fieldType = FieldValidation.Expiry,
                 value = viewCard.inputEditTextCardExpiryDate.text?.toString().orEmpty(),
-                //name = etCardHolder.inputEditText.text?.toString().orEmpty(),
                 cardNumber = viewCard.inputEditTextCardNumber.text?.toString().orEmpty(),
                 hasFocus = hf
             )
@@ -307,7 +278,6 @@ class PaymentFragment : Fragment() {
             viewModel.validateField(
                 fieldType = FieldValidation.Cvc,
                 value = viewCard.inputEditTextCardCvc.text?.toString().orEmpty(),
-                //name = etCardHolder.inputEditText.text?.toString().orEmpty(),
                 cardNumber = viewCard.inputEditTextCardNumber.text?.toString().orEmpty(),
                 hasFocus = hf
             )
