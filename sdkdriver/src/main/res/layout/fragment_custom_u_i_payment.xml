@@ -75,6 +75,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="@dimen/moyasar_spacing_small"
+                    android:contentDescription="@null"
                     android:src="@drawable/ic_moyasar_visa"
                     android:visibility="gone" />
 
@@ -112,7 +113,7 @@
                     android:inputType="number"
                     android:layoutDirection="ltr"
                     android:maxLines="1"
-                    tools:ignore="Autofill,TextFields" />
+                    tools:ignore="Autofill,LabelFor,TextFields" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <!-- CVV -->
