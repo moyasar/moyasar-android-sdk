@@ -19,7 +19,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/moyasar_spacing_small"
-                    android:hint="Mobile: 05x xxx xxxx"
+                    android:hint="@string/mobile_05x_xxx_xxxx"
                     >
 
                     <com.google.android.material.textfield.TextInputEditText
@@ -42,7 +42,7 @@
                     android:textColor="@android:color/white"
                     android:textSize="@dimen/moyasar_font_size_xl"
                     android:enabled="false"
-                    android:text="Pay" />
+                    android:text="@string/pay" />
             </LinearLayout>
 
             <!-- Progress Indicator -->

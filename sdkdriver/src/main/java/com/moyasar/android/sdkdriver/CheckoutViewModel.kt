@@ -1,5 +1,6 @@
 package com.moyasar.android.sdkdriver
 
+import android.annotation.SuppressLint
 import android.os.Parcelable
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -34,6 +35,7 @@ class CheckoutViewModel : ViewModel() {
     )
 
     // For demo purposes only
+    @SuppressLint("StaticFieldLeak")
     private lateinit var activity: CheckoutActivity
     private lateinit var paymentFragment: PaymentFragment
     private lateinit var customUIPaymentFragment: CustomUIPaymentFragment

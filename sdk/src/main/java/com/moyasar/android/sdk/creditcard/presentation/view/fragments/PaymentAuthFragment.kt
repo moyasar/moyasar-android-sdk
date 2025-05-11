@@ -31,7 +31,6 @@ class PaymentAuthFragment : Fragment() {
   private val webViewClient by lazy {
 
     object : WebViewClient() {
-      @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
       override fun shouldOverrideUrlLoading(
         view: WebView?,
         request: WebResourceRequest?,

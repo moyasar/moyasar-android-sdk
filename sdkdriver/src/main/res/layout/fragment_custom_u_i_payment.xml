@@ -14,8 +14,8 @@
             android:id="@+id/ll_container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="@dimen/moyasar_spacing_medium"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:padding="@dimen/moyasar_spacing_medium">
 
             <!-- Holder Name -->
             <com.google.android.material.textfield.TextInputLayout
@@ -23,16 +23,15 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/moyasar_spacing_small"
-                android:hint="Holder Name"
-               >
+                android:hint="@string/holder_name">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/holderNameEt"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:maxLines="1"
                     android:inputType="text"
                     android:layoutDirection="ltr"
+                    android:maxLines="1"
                     tools:ignore="TextFields" />
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -49,16 +48,15 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:hint="Card Number"
-                   >
+                    android:hint="@string/card_number">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/cardNumberEt"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:maxLines="1"
                         android:inputType="number"
                         android:layoutDirection="ltr"
+                        android:maxLines="1"
                         tools:ignore="TextFields" />
                 </com.google.android.material.textfield.TextInputLayout>
 
@@ -68,6 +66,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="@dimen/moyasar_spacing_small"
+                    android:contentDescription="@null"
                     android:src="@drawable/ic_moyasar_mada"
                     android:visibility="gone" />
 
@@ -84,6 +83,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="@dimen/moyasar_spacing_small"
+                    android:contentDescription="@null"
                     android:src="@drawable/ic_moyasar_mastercard"
                     android:visibility="gone" />
 
@@ -92,6 +92,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="@dimen/moyasar_spacing_small"
+                    android:contentDescription="@null"
                     android:src="@drawable/ic_moyasar_amex"
                     android:visibility="gone" />
             </LinearLayout>
@@ -102,17 +103,16 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/moyasar_spacing_small"
-                android:hint="Expiry Date"
-               >
+                android:hint="@string/expiry_date">
 
                 <EditText
                     android:id="@+id/expiryDateEt"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:inputType="number"
-                    android:maxLines="1"
                     android:layoutDirection="ltr"
-                    tools:ignore="TextFields" />
+                    android:maxLines="1"
+                    tools:ignore="Autofill,TextFields" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <!-- CVV -->
@@ -121,17 +121,16 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/moyasar_spacing_small"
-                android:hint="CVV"
-              >
+                android:hint="@string/cvv">
 
                 <EditText
                     android:id="@+id/cvvEt"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:inputType="number"
-                    android:maxLines="1"
                     android:layoutDirection="ltr"
-                    tools:ignore="TextFields" />
+                    android:maxLines="1"
+                    tools:ignore="Autofill,LabelFor,TextFields" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <!-- Pay Button -->
@@ -140,11 +139,11 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/moyasar_spacing_medium"
+                android:enabled="false"
+                android:text="@string/pay"
                 android:textAllCaps="false"
                 android:textColor="@android:color/white"
-                android:textSize="@dimen/moyasar_font_size_xl"
-                android:enabled="false"
-                android:text="Pay" />
+                android:textSize="@dimen/moyasar_font_size_xl" />
         </LinearLayout>
 
         <!-- Progress Indicator -->
