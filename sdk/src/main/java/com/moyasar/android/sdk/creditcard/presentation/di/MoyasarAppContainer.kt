@@ -42,11 +42,12 @@ object MoyasarAppContainer {
     CreateTokenUseCase(paymentService)
   }
 
-
+val allowedNetworks
+  get() = paymentRequest.allowedNetworks
 
   private var _viewModel : PaymentSheetViewModel? = null
 
-  internal val viewModel: PaymentSheetViewModel
+   val viewModel: PaymentSheetViewModel
     get() {
       return synchronized(this) {
         if (_viewModel == null) {

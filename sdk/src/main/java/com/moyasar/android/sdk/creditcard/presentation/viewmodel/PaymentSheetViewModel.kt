@@ -2,6 +2,7 @@ package com.moyasar.android.sdk.creditcard.presentation.viewmodel
 
 import android.app.Application
 import android.text.Editable
+import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -44,7 +45,7 @@ import com.moyasar.android.sdk.stcpay.presentation.model.validator.SaudiPhoneNum
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 
-internal class PaymentSheetViewModel(
+class PaymentSheetViewModel(
     application: Application,
     private val paymentRequest: PaymentRequest,
     private val callback: (PaymentResult) -> Unit,
@@ -53,7 +54,7 @@ internal class PaymentSheetViewModel(
     private val validateSTCPayOTPUseCase: ValidateSTCPayOTPUseCase,
 ) : AndroidViewModel(application) {
 
-    internal val inputFieldsValidatorLiveData: MutableLiveData<InputFieldsUIModel> =
+    val inputFieldsValidatorLiveData: MutableLiveData<InputFieldsUIModel> =
         MutableLiveData<InputFieldsUIModel>()
     private var ccOnChangeLocked = false
     private var mobileNumberOnChangeLocked = false
@@ -204,13 +205,18 @@ internal class PaymentSheetViewModel(
         }
     }
 
-    internal fun validateField(
+    private var isNameVisitedBefore = false
+    private var isNumberVisitedBefore = false
+    private var isExpiryVisitedBefore = false
+    private var isCvvVisitedBefore = false
+    fun validateField(
         fieldType: FieldValidation,
         value: String,
-        name: String,
+       /// name: String,
         cardNumber: String,
-        hasFocus: Boolean,
+        hasFocus: Boolean
     ) {
+
         when (fieldType) {
             FieldValidation.Name -> {
                 when (hasFocus) {
@@ -228,7 +234,7 @@ internal class PaymentSheetViewModel(
             FieldValidation.Number -> {
                 when (hasFocus) {
                     true -> {
-                        getNameValidationRules().isValidName(name)
+                      ///  getNameValidationRules().isValidName(name)
                         inputFieldsValidatorLiveData.value =
                             inputFieldsValidatorLiveData.value?.copy(
                                 errorMessage = inputFieldsValidatorLiveData.value?.errorMessage?.copy(
@@ -242,9 +248,9 @@ internal class PaymentSheetViewModel(
             }
 
             FieldValidation.Cvc -> {
-                when (hasFocus) {
+                when (hasFocus ) {
                     true -> {
-                        getNameValidationRules().isValidName(name)
+                       /// getNameValidationRules().isValidName(name)
                         inputFieldsValidatorLiveData.value =
                             inputFieldsValidatorLiveData.value?.copy(
                                 errorMessage = inputFieldsValidatorLiveData.value?.errorMessage?.copy(
@@ -260,7 +266,7 @@ internal class PaymentSheetViewModel(
             FieldValidation.Expiry -> {
                 when (hasFocus) {
                     true -> {
-                        getNameValidationRules().isValidName(name)
+                     ///   getNameValidationRules().isValidName(name)
                         inputFieldsValidatorLiveData.value =
                             inputFieldsValidatorLiveData.value?.copy(
                                 errorMessage = inputFieldsValidatorLiveData.value?.errorMessage?.copy(
@@ -405,6 +411,7 @@ internal class PaymentSheetViewModel(
         val rules = this
         for (rule in rules) {
             if (rule.predicate(value)) {
+                Log.e("BBB",""+value)
                 if (isShowError)
                     inputFieldsValidatorLiveData.value =
                         inputFieldsValidatorLiveData.value?.copy(
@@ -484,7 +491,7 @@ internal class PaymentSheetViewModel(
     }
 
 
-    internal fun creditCardNameChanged(name: String) {
+     fun creditCardNameChanged(name: String) {
         inputFieldsValidatorLiveData.value = inputFieldsValidatorLiveData.value?.copy(name = name)
         validateForm(inputFieldsValidatorLiveData.value)
     }
@@ -543,7 +550,8 @@ internal class PaymentSheetViewModel(
         )
     }
 
-    internal fun creditCardNumberChanged(textEdit: Editable) {
+    fun creditCardNumberChanged(textEdit: Editable?, onUpdateText: (String) -> Unit) {
+        if (textEdit==null) return
         inputFieldsValidatorLiveData.value =
             inputFieldsValidatorLiveData.value?.copy(cardNumber = textEdit.toString())
         if (ccOnChangeLocked) {
@@ -551,7 +559,8 @@ internal class PaymentSheetViewModel(
         }
         ccOnChangeLocked = true
         val formatted = CreditCardFormatter.formatCardNumber(textEdit.toString())
-        textEdit.replace(0, textEdit.length, formatted)
+        onUpdateText(formatted)
+     ///   textEdit.replace(0, textEdit.length, formatted)
         validateForm(inputFieldsValidatorLiveData.value)
         ccOnChangeLocked = false
     }
@@ -569,7 +578,8 @@ internal class PaymentSheetViewModel(
     }
 
 
-    internal fun creditCardExpiryChanged(textEdit: Editable, onUpdateText: (String) -> Unit) {
+    fun creditCardExpiryChanged(textEdit: Editable?, onUpdateText: (String) -> Unit) {
+        if (textEdit == null) return
         inputFieldsValidatorLiveData.value =
             inputFieldsValidatorLiveData.value?.copy(expiryDate = textEdit.toString())
         if (ccExpiryOnChangeLocked) {
@@ -601,13 +611,13 @@ internal class PaymentSheetViewModel(
         ccExpiryOnChangeLocked = false
     }
 
-    internal fun creditCardCvcChanged(textEdit: Editable?) {
+    fun creditCardCvcChanged(textEdit: Editable?) {
         inputFieldsValidatorLiveData.value =
             inputFieldsValidatorLiveData.value?.copy(cvc = textEdit.toString())
         validateForm(inputFieldsValidatorLiveData.value)
     }
 
-    internal fun submit() {
+     fun submit() {
         if (inputFieldsValidatorLiveData.value?.isFormValid == false) {
             return
         }

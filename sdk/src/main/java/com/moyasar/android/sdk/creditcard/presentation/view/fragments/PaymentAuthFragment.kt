@@ -20,7 +20,7 @@ import com.moyasar.android.sdk.creditcard.presentation.di.MoyasarAppContainer.vi
 import com.moyasar.android.sdk.creditcard.presentation.model.AuthResultViewState
 
 @SuppressLint("ValidFragment")
-internal class PaymentAuthFragment : Fragment() {
+class PaymentAuthFragment : Fragment() {
 
   private lateinit var binding: FragmentPaymentAuthBinding
 

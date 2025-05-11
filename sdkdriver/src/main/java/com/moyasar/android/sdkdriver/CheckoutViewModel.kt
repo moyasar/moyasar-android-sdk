@@ -11,6 +11,7 @@ import com.moyasar.android.sdk.creditcard.data.models.CreditCardNetwork
 import com.moyasar.android.sdk.creditcard.data.models.request.PaymentRequest
 import com.moyasar.android.sdk.stcpay.presentation.view.fragments.EnterMobileNumberFragment
 import com.moyasar.android.sdk.creditcard.presentation.view.fragments.PaymentFragment
+import com.moyasar.android.sdkdriver.customui.CustomUIPaymentFragment
 import kotlinx.parcelize.Parcelize
 
 class CheckoutViewModel : ViewModel() {
@@ -34,11 +35,19 @@ class CheckoutViewModel : ViewModel() {
     // For demo purposes only
     private lateinit var activity: CheckoutActivity
     private lateinit var paymentFragment: PaymentFragment
+    private lateinit var customUIPaymentFragment: CustomUIPaymentFragment
     private lateinit var enterMobileNumberFragment: EnterMobileNumberFragment
 
     private fun onCreditCardPaymentResult(result: PaymentResult) {
         activity.runOnUiThread {
             activity.supportFragmentManager.beginTransaction().remove(paymentFragment).commit()
+        }
+
+        handlePaymentResult(result)
+    }
+    private fun onCustomUICreditCardPaymentResult(result: PaymentResult) {
+        activity.runOnUiThread {
+            activity.supportFragmentManager.beginTransaction().remove(customUIPaymentFragment).commit()
         }
 
         handlePaymentResult(result)
@@ -91,6 +100,17 @@ class CheckoutViewModel : ViewModel() {
 
         activity.supportFragmentManager.beginTransaction().apply {
             replace(id, paymentFragment)
+            commit()
+        }
+    }
+
+    fun beginDonationWithCreditCardCustomUI(activity: CheckoutActivity, id: Int) {
+        this.activity = activity
+
+        this.customUIPaymentFragment = CustomUIPaymentFragment.newInstance(activity.application, paymentRequest) { this.onCustomUICreditCardPaymentResult(it) }
+
+        activity.supportFragmentManager.beginTransaction().apply {
+            replace(id, customUIPaymentFragment)
             commit()
         }
     }

@@ -81,6 +81,8 @@ class PaymentFragment : Fragment() {
         binding.viewCard.inputEditTextCardCvc.hint = (inputCreditCardUIModel.cvcHint)
 
         binding.payButton.setButtonType(paymentRequest.buttonType)
+
+        binding.etCardHolder.requestFocus()
     }
 
     private fun setupObservers() {
@@ -248,7 +250,12 @@ class PaymentFragment : Fragment() {
         viewCard.inputEditTextCardNumber.afterTextChanged { text ->
             // viewModel.formValidator.number.value = text?.toString()
             text?.let {
-                viewModel.creditCardNumberChanged(it)
+                viewModel.creditCardNumberChanged(it){s->
+                    viewCard.inputEditTextCardNumber.setText(s)
+                    // Move cursor to the end of the text
+                    viewCard.inputEditTextCardNumber.setSelection(s.length)
+
+                }
             }
         }
 
@@ -273,7 +280,7 @@ class PaymentFragment : Fragment() {
             viewModel.validateField(
                 fieldType = FieldValidation.Name,
                 value = etCardHolder.inputEditText.text?.toString().orEmpty(),
-                name = etCardHolder.inputEditText.text?.toString().orEmpty(),
+             ///   name = etCardHolder.inputEditText.text?.toString().orEmpty(),
                 cardNumber = viewCard.inputEditTextCardNumber.text?.toString().orEmpty(),
                 hasFocus = hf
             )
@@ -282,7 +289,7 @@ class PaymentFragment : Fragment() {
             viewModel.validateField(
                 fieldType = FieldValidation.Number,
                 value = viewCard.inputEditTextCardNumber.text?.toString().orEmpty(),
-                name = etCardHolder.inputEditText.text?.toString().orEmpty(),
+                //name = etCardHolder.inputEditText.text?.toString().orEmpty(),
                 cardNumber = viewCard.inputEditTextCardNumber.text?.toString().orEmpty(),
                 hasFocus = hf
             )
@@ -291,7 +298,7 @@ class PaymentFragment : Fragment() {
             viewModel.validateField(
                 fieldType = FieldValidation.Expiry,
                 value = viewCard.inputEditTextCardExpiryDate.text?.toString().orEmpty(),
-                name = etCardHolder.inputEditText.text?.toString().orEmpty(),
+                //name = etCardHolder.inputEditText.text?.toString().orEmpty(),
                 cardNumber = viewCard.inputEditTextCardNumber.text?.toString().orEmpty(),
                 hasFocus = hf
             )
@@ -300,7 +307,7 @@ class PaymentFragment : Fragment() {
             viewModel.validateField(
                 fieldType = FieldValidation.Cvc,
                 value = viewCard.inputEditTextCardCvc.text?.toString().orEmpty(),
-                name = etCardHolder.inputEditText.text?.toString().orEmpty(),
+                //name = etCardHolder.inputEditText.text?.toString().orEmpty(),
                 cardNumber = viewCard.inputEditTextCardNumber.text?.toString().orEmpty(),
                 hasFocus = hf
             )

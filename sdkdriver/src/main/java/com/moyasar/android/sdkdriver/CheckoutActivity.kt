@@ -33,6 +33,9 @@ class CheckoutActivity : AppCompatActivity() {
             StartActivity.PaymentOptions.CREDIT.name-> {
                 viewModel.beginDonationWithCreditCard(this, R.id.paymentSheetFragment)
             }
+            StartActivity.PaymentOptions.CREDIT_CUSTOM_UI.name-> {
+                viewModel.beginDonationWithCreditCardCustomUI(this, R.id.paymentSheetFragment)
+            }
             StartActivity.PaymentOptions.STC.name-> {
                 viewModel.beginDonationWithSTC(this,  R.id.paymentSheetFragment)
             }
