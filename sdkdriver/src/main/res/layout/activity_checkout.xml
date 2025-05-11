@@ -17,13 +17,13 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView" />
+        app:layout_constraintTop_toBottomOf="@+id/titleTv" />
 
     <TextView
-        android:id="@+id/textView"
+        android:id="@+id/titleTv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Donate Coffee ☕️"
+        android:text="@string/donate_coffee"
         android:textSize="34sp"
         app:layout_constraintBottom_toTopOf="@+id/paymentSheetFragment"
         app:layout_constraintLeft_toLeftOf="parent"
@@ -32,10 +32,10 @@
 
 
     <TextView
-        android:id="@+id/textView2"
+        android:id="@+id/successTv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="✅"
+        android:text="@string/valid_mark"
         android:textSize="34sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -43,10 +43,10 @@
         app:layout_constraintTop_toBottomOf="@+id/paymentSheetFragment" />
 
     <TextView
-        android:id="@+id/textView3"
+        android:id="@+id/errorTv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="⛔️"
+        android:text="@string/not_valid_mark"
         android:textSize="34sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

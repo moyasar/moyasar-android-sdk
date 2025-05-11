@@ -44,8 +44,8 @@ class CheckoutActivity : AppCompatActivity() {
             }
         }
         viewModel.status.observe(this){
-            setSuccessVisibility(binding.textView2, it)
-            setErrorVisibility(binding.textView3, it)
+            setSuccessVisibility(binding.successTv, it)
+            setErrorVisibility(binding.errorTv, it)
         }
     }
 }

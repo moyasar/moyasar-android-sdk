@@ -6,4 +6,6 @@
     <string name="donate_credit_card_custom_ui" translatable="false">Donate (Credit Card - Custom UI)</string>
     <string name="donate_stc_wallet" translatable="false">Donate (STC Wallet)</string>
     <string name="donate_stc_wallet_custom_ui" translatable="false">Donate (STC Wallet - Custom UI)</string>
+    <string name="valid_mark">✅</string>
+    <string name="not_valid_mark">⛔️</string>
 </resources>
