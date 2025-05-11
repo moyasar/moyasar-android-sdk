@@ -9,11 +9,11 @@ import androidx.lifecycle.MutableLiveData
 import com.moyasar.android.sdk.R
 import com.moyasar.android.sdk.core.data.response.PaymentResponse
 import com.moyasar.android.sdk.core.domain.entities.PaymentResult
+import com.moyasar.android.sdk.core.domain.entities.ValidationRule
 import com.moyasar.android.sdk.core.exceptions.PaymentSheetException
 import com.moyasar.android.sdk.core.extensions.default
 import com.moyasar.android.sdk.core.extensions.scope
 import com.moyasar.android.sdk.core.util.CreditCardFormatter
-import com.moyasar.android.sdk.core.util.LiveDataValidator.ValidationRule
 import com.moyasar.android.sdk.core.util.cleanSpaces
 import com.moyasar.android.sdk.core.util.getFormattedAmount
 import com.moyasar.android.sdk.core.util.isValidLuhnNumber
