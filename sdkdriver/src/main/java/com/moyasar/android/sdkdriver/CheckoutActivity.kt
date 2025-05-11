@@ -39,6 +39,9 @@ class CheckoutActivity : AppCompatActivity() {
             StartActivity.PaymentOptions.STC.name-> {
                 viewModel.beginDonationWithSTC(this,  R.id.paymentSheetFragment)
             }
+            StartActivity.PaymentOptions.STC_CUSTOM_UI.name-> {
+                viewModel.beginDonationWithSTCCustomUI(this,  R.id.paymentSheetFragment)
+            }
         }
         viewModel.status.observe(this){
             setSuccessVisibility(binding.textView2, it)

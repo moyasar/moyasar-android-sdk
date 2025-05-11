@@ -1,4 +1,4 @@
-package com.moyasar.android.sdkdriver.customui
+package com.moyasar.android.sdkdriver.customui.creditcard
 
 import android.app.Application
 import android.os.Bundle

@@ -565,7 +565,8 @@ class PaymentSheetViewModel(
         ccOnChangeLocked = false
     }
 
-    internal fun mobileNumberChanged(textEdit: Editable, onUpdateText: (String) -> Unit) {
+    fun mobileNumberChanged(textEdit: Editable?, onUpdateText: (String) -> Unit) {
+        if (textEdit == null) return
         if (mobileNumberOnChangeLocked) {
             return
         }
@@ -635,7 +636,7 @@ class PaymentSheetViewModel(
         }
     }
 
-    internal fun submitSTC() {
+     fun submitSTC() {
         if (inputFieldsValidatorLiveData.value?.stcPayUIModel?.isMobileValid == false) {
             return
         }
@@ -690,7 +691,8 @@ class PaymentSheetViewModel(
         }
     }
 
-    fun stcPayOTPChanged(textEdit: Editable) {
+    fun stcPayOTPChanged(textEdit: Editable?) {
+        if (textEdit == null) return
         inputFieldsValidatorLiveData.value =
             inputFieldsValidatorLiveData.value?.copy(
                 stcPayUIModel = inputFieldsValidatorLiveData.value?.stcPayUIModel?.copy(

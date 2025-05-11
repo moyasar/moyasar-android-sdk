@@ -11,7 +11,8 @@ import com.moyasar.android.sdk.creditcard.data.models.CreditCardNetwork
 import com.moyasar.android.sdk.creditcard.data.models.request.PaymentRequest
 import com.moyasar.android.sdk.stcpay.presentation.view.fragments.EnterMobileNumberFragment
 import com.moyasar.android.sdk.creditcard.presentation.view.fragments.PaymentFragment
-import com.moyasar.android.sdkdriver.customui.CustomUIPaymentFragment
+import com.moyasar.android.sdkdriver.customui.creditcard.CustomUIPaymentFragment
+import com.moyasar.android.sdkdriver.customui.stcpay.EnterMobileNumberCustomUIFragment
 import kotlinx.parcelize.Parcelize
 
 class CheckoutViewModel : ViewModel() {
@@ -37,6 +38,7 @@ class CheckoutViewModel : ViewModel() {
     private lateinit var paymentFragment: PaymentFragment
     private lateinit var customUIPaymentFragment: CustomUIPaymentFragment
     private lateinit var enterMobileNumberFragment: EnterMobileNumberFragment
+    private lateinit var enterMobileNumberCustomUIFragment: EnterMobileNumberCustomUIFragment
 
     private fun onCreditCardPaymentResult(result: PaymentResult) {
         activity.runOnUiThread {
@@ -56,6 +58,14 @@ class CheckoutViewModel : ViewModel() {
     private fun onSTCPayPaymentResult(result: PaymentResult) {
         activity.runOnUiThread {
             activity.supportFragmentManager.beginTransaction().remove(enterMobileNumberFragment).commit()
+        }
+
+        handlePaymentResult(result)
+    }
+
+ private fun onCustomUISTCPayPaymentResult(result: PaymentResult) {
+        activity.runOnUiThread {
+            activity.supportFragmentManager.beginTransaction().remove(enterMobileNumberCustomUIFragment).commit()
         }
 
         handlePaymentResult(result)
@@ -122,6 +132,17 @@ class CheckoutViewModel : ViewModel() {
 
         activity.supportFragmentManager.beginTransaction().apply {
             replace(id, enterMobileNumberFragment)
+            commit()
+        }
+    }
+
+    fun beginDonationWithSTCCustomUI(activity: CheckoutActivity, id: Int) {
+        this.activity = activity
+
+        this.enterMobileNumberCustomUIFragment = EnterMobileNumberCustomUIFragment.newInstance(activity.application, paymentRequest) { this.onCustomUISTCPayPaymentResult(it) }
+
+        activity.supportFragmentManager.beginTransaction().apply {
+            replace(id, enterMobileNumberCustomUIFragment)
             commit()
         }
     }

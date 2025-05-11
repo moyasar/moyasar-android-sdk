@@ -37,5 +37,12 @@
         android:layout_marginTop="@dimen/moyasar_spacing_medium"
         android:text="Donate (STC Wallet)"
         android:textAllCaps="false" />
+    <Button
+        android:id="@+id/donateWithSTCPayCustomUIBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/moyasar_spacing_medium"
+        android:text="Donate (STC Wallet - Custom UI)"
+        android:textAllCaps="false" />
 
 </LinearLayout>
