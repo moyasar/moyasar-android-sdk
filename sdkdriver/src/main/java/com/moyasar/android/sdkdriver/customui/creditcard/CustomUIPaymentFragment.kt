@@ -2,7 +2,6 @@ package com.moyasar.android.sdkdriver.customui.creditcard
 
 import android.app.Application
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,7 +10,6 @@ import androidx.core.view.isVisible
 import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
-import com.moyasar.android.sdk.R as sdkR
 import com.moyasar.android.sdk.core.domain.entities.PaymentResult
 import com.moyasar.android.sdk.core.exceptions.InvalidConfigException
 import com.moyasar.android.sdk.creditcard.data.models.CreditCardNetwork
@@ -24,6 +22,7 @@ import com.moyasar.android.sdk.creditcard.presentation.model.PaymentStatusViewSt
 import com.moyasar.android.sdk.creditcard.presentation.view.fragments.PaymentAuthFragment
 import com.moyasar.android.sdkdriver.R
 import com.moyasar.android.sdkdriver.databinding.FragmentCustomUIPaymentBinding
+import com.moyasar.android.sdk.R as sdkR
 
 
 class CustomUIPaymentFragment : Fragment() {
@@ -70,7 +69,6 @@ class CustomUIPaymentFragment : Fragment() {
     }
 
     private fun handleShowAllowedCardTypesIcons(text: String?) {
-        // showAllowedCreditCardsInEditText(number.orEmpty(), paymentRequest.allowedNetworks, binding)
         if (text.orEmpty().isEmpty()) {
             MoyasarAppContainer.allowedNetworks.forEach {
                 when (it) {
@@ -129,23 +127,27 @@ class CustomUIPaymentFragment : Fragment() {
                 requireContext(), sdkR.color.light_blue_button_enabled
             )
         )
-        else binding.payButton.setTextColor(ContextCompat.getColor(requireContext(), sdkR.color.red))
+        else binding.payButton.setTextColor(
+            ContextCompat.getColor(
+                requireContext(), sdkR.color.red
+            )
+        )
     }
 
     private fun showInvalidCVVErrorMsg(cvvErrorMsg: String?) {
-        binding.cvvInputLayout.error = cvvErrorMsg.takeIf { it?.isNotEmpty() == true}
+        binding.cvvInputLayout.error = cvvErrorMsg.takeIf { it?.isNotEmpty() == true }
     }
 
     private fun showInvalidExpiryErrorMsg(expiryErrorMsg: String?) {
-        binding.expiryDateInputLayout.error = expiryErrorMsg.takeIf { it?.isNotEmpty() == true}
+        binding.expiryDateInputLayout.error = expiryErrorMsg.takeIf { it?.isNotEmpty() == true }
     }
 
     private fun showInvalidCardNumberErrorMsg(numberErrorMsg: String?) {
-        binding.cardNumberInputLayout.error = numberErrorMsg.takeIf { it?.isNotEmpty() == true}
+        binding.cardNumberInputLayout.error = numberErrorMsg.takeIf { it?.isNotEmpty() == true }
     }
 
     private fun showInvalidNameErrorMsg(nameErrorMsg: String?) {
-        binding.holderNameInputLayout.error = nameErrorMsg.takeIf { it?.isNotEmpty() == true}
+        binding.holderNameInputLayout.error = nameErrorMsg.takeIf { it?.isNotEmpty() == true }
     }
 
     private fun FragmentCustomUIPaymentBinding.setupListeners() {
@@ -176,13 +178,9 @@ class CustomUIPaymentFragment : Fragment() {
             viewModel.submit()
         }
         holderNameEt.setOnFocusChangeListener { _, hf ->
-            Log.e("TEXT",""+ holderNameEt.text?.toString().orEmpty())
             viewModel.validateField(
                 fieldType = FieldValidation.Name,
                 value = holderNameEt.text?.toString().orEmpty(),
-                ///name = holderNameEt.text?.toString().orEmpty(),
-
-                // required to validated with cvv
                 cardNumber = cardNumberEt.text?.toString().orEmpty(),
                 hasFocus = hf,
             )
@@ -191,7 +189,6 @@ class CustomUIPaymentFragment : Fragment() {
             viewModel.validateField(
                 fieldType = FieldValidation.Number,
                 value = cardNumberEt.text?.toString().orEmpty(),
-           //     name = holderNameEt.text?.toString().orEmpty(),
                 cardNumber = cardNumberEt.text?.toString().orEmpty(),
                 hasFocus = hf,
             )
@@ -200,7 +197,6 @@ class CustomUIPaymentFragment : Fragment() {
             viewModel.validateField(
                 fieldType = FieldValidation.Expiry,
                 value = expiryDateEt.text?.toString().orEmpty(),
-                //name = holderNameEt.text?.toString().orEmpty(),
                 cardNumber = cardNumberEt.text?.toString().orEmpty(),
                 hasFocus = hf,
             )
@@ -209,7 +205,6 @@ class CustomUIPaymentFragment : Fragment() {
             viewModel.validateField(
                 fieldType = FieldValidation.Cvc,
                 value = cvvEt.text?.toString().orEmpty(),
-              //  name = holderNameEt.text?.toString().orEmpty(),
                 cardNumber = cardNumberEt.text?.toString().orEmpty(),
                 hasFocus = hf,
             )
@@ -259,6 +254,5 @@ class CustomUIPaymentFragment : Fragment() {
     private fun hideScreenViews() = with(binding) {
         llContainer.isVisible = false
     }
-
 
 }
