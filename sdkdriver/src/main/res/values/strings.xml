@@ -2,4 +2,9 @@
     <string name="app_name">Moyasar Android SDK</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="donate_coffee">Donate Coffee ☕️</string>
+    <string name="donate_credit_card">Donate (Credit Card)</string>
+    <string name="donate_credit_card_custom_ui">Donate (Credit Card - Custom UI)</string>
+    <string name="donate_stc_wallet">Donate (STC Wallet)</string>
+    <string name="donate_stc_wallet_custom_ui">Donate (STC Wallet - Custom UI)</string>
 </resources>
