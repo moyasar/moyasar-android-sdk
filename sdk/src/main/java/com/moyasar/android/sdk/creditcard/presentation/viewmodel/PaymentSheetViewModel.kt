@@ -5,54 +5,57 @@ import android.text.Editable
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import com.moyasar.android.sdk.core.data.response.PaymentResponse
+import com.moyasar.android.sdk.core.domain.entities.PaymentResult
 import com.moyasar.android.sdk.core.exceptions.PaymentSheetException
 import com.moyasar.android.sdk.core.extensions.default
-import com.moyasar.android.sdk.core.extensions.distinctUntilChanged
 import com.moyasar.android.sdk.core.extensions.scope
 import com.moyasar.android.sdk.core.util.CreditCardFormatter
 import com.moyasar.android.sdk.core.util.getFormattedAmount
 import com.moyasar.android.sdk.core.util.parseExpiry
-import com.moyasar.android.sdk.creditcard.data.models.sources.CardPaymentSource
-import com.moyasar.android.sdk.core.data.response.PaymentResponse
 import com.moyasar.android.sdk.creditcard.data.models.request.PaymentRequest
 import com.moyasar.android.sdk.creditcard.data.models.request.TokenRequest
-import com.moyasar.android.sdk.stcpay.data.models.sources.STCPayPaymentSource
-import com.moyasar.android.sdk.core.domain.entities.PaymentResult
+import com.moyasar.android.sdk.creditcard.data.models.sources.CardPaymentSource
 import com.moyasar.android.sdk.creditcard.domain.usecases.CreatePaymentUseCase
 import com.moyasar.android.sdk.creditcard.domain.usecases.CreateTokenUseCase
-import com.moyasar.android.sdk.stcpay.domain.usecases.ValidateSTCPayOTPUseCase
 import com.moyasar.android.sdk.creditcard.presentation.model.AuthResultViewState
 import com.moyasar.android.sdk.creditcard.presentation.model.FieldValidation
+import com.moyasar.android.sdk.creditcard.presentation.model.InputFieldsUIModel
 import com.moyasar.android.sdk.creditcard.presentation.model.PaymentStatusViewState
 import com.moyasar.android.sdk.creditcard.presentation.model.RequestResultViewState
+import com.moyasar.android.sdk.creditcard.presentation.model.STCPayUIModel
+import com.moyasar.android.sdk.creditcard.presentation.utils.getCvcValidationRules
+import com.moyasar.android.sdk.creditcard.presentation.utils.getExpiryDateValidationRules
+import com.moyasar.android.sdk.creditcard.presentation.utils.getNameValidationRules
+import com.moyasar.android.sdk.creditcard.presentation.utils.getNumberValidationRules
+import com.moyasar.android.sdk.creditcard.presentation.utils.getOTPValidationRules
+import com.moyasar.android.sdk.creditcard.presentation.utils.getPhoneNumberValidationRules
+import com.moyasar.android.sdk.creditcard.presentation.utils.isValidCvc
+import com.moyasar.android.sdk.creditcard.presentation.utils.isValidExpiryDate
+import com.moyasar.android.sdk.creditcard.presentation.utils.isValidName
+import com.moyasar.android.sdk.creditcard.presentation.utils.isValidNumber
 import com.moyasar.android.sdk.creditcard.presentation.view.fragments.PaymentAuthFragment
+import com.moyasar.android.sdk.stcpay.data.models.sources.STCPayPaymentSource
+import com.moyasar.android.sdk.stcpay.domain.usecases.ValidateSTCPayOTPUseCase
 import com.moyasar.android.sdk.stcpay.presentation.model.STCPayViewState
 import com.moyasar.android.sdk.stcpay.presentation.model.formatter.SaudiPhoneNumberFormatter
-import com.moyasar.android.sdk.stcpay.presentation.model.validation.STCPayFormValidator
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 
-internal class PaymentSheetViewModel(
+class PaymentSheetViewModel(
     application: Application,
     private val paymentRequest: PaymentRequest,
     private val callback: (PaymentResult) -> Unit,
-    internal val formValidator: FormValidator,
-    internal val stcPayFormValidator: STCPayFormValidator,
     private val createPaymentUseCase: CreatePaymentUseCase,
     private val createTokenUseCase: CreateTokenUseCase,
     private val validateSTCPayOTPUseCase: ValidateSTCPayOTPUseCase,
 ) : AndroidViewModel(application) {
 
-
-    var isFirstVisitEnterMobileNumber = true
-    var isFirstVisitOTP: Boolean = true
-    internal var ccOnChangeLocked = false
-    internal var mobileNumberOnChangeLocked = false
-    internal var ccExpiryOnChangeLocked = false
-
-    internal var isExpiryValid = true
-    internal var isCvvValid = true
-    internal var isCardNumValid = true
+    val inputFieldsValidatorLiveData: MutableLiveData<InputFieldsUIModel> =
+        MutableLiveData<InputFieldsUIModel>()
+    private var ccOnChangeLocked = false
+    private var mobileNumberOnChangeLocked = false
+    private var ccExpiryOnChangeLocked = false
 
     private val _creditCardStatus =
         MutableLiveData<PaymentStatusViewState>().default(PaymentStatusViewState.Reset)
@@ -64,25 +67,27 @@ internal class PaymentSheetViewModel(
     internal val payment: LiveData<PaymentResponse?> = _payment
     val creditCardStatus: LiveData<PaymentStatusViewState> = _creditCardStatus
     val stcPayStatus: LiveData<STCPayViewState> = _stcPayStatus
-    val isFormValid: LiveData<Boolean> = formValidator._isFormValid.distinctUntilChanged()
-    val isSTCPayFormValid: LiveData<Boolean> = stcPayFormValidator._isSTCPayFormValid.distinctUntilChanged()
-
 
     private val cleanCardNumber: String
-        get() = formValidator.number.value!!.replace(" ", "")
+        get() = inputFieldsValidatorLiveData.value?.cardNumber?.replace(" ", "").orEmpty()
 
     private val cleanMobileNumber: String
-        get() = stcPayFormValidator.mobileNumber.value!!.replace(" ", "")
+        get() = inputFieldsValidatorLiveData.value?.stcPayUIModel?.mobileNumber?.replace(" ", "")
+            .orEmpty()
 
     private val expiryMonth: String
-        get() = parseExpiry(formValidator.expiry.value ?: "")?.month.toString()
+        get() = parseExpiry(inputFieldsValidatorLiveData.value?.expiryDate ?: "")?.month.toString()
 
     private val expiryYear: String
-        get() = parseExpiry(formValidator.expiry.value ?: "")?.year.toString()
+        get() = parseExpiry(inputFieldsValidatorLiveData.value?.expiryDate ?: "")?.year.toString()
 
     // Done logic like this to replicate iOS SDK's behavior
     val amountLabel: String
         get() = getFormattedAmount(paymentRequest)
+
+    init {
+        inputFieldsValidatorLiveData.value = InputFieldsUIModel()
+    }
 
     private fun notifyPaymentResult(paymentResult: PaymentResult) = callback(paymentResult)
 
@@ -94,13 +99,13 @@ internal class PaymentSheetViewModel(
         request: PaymentRequest = paymentRequest.copy(
             callbackUrl = PaymentAuthFragment.RETURN_URL,
             source = CardPaymentSource(
-                formValidator.name.value!!,
-                cleanCardNumber,
-                expiryMonth,
-                expiryYear,
-                formValidator.cvc.value!!,
-                if (paymentRequest.manual) "true" else "false",
-                if (paymentRequest.saveCard) "true" else "false",
+                name = inputFieldsValidatorLiveData.value?.name.orEmpty(),
+                number = cleanCardNumber,
+                month = expiryMonth,
+                year = expiryYear,
+                cvc = inputFieldsValidatorLiveData.value?.cvc.orEmpty(),
+                manual = if (paymentRequest.manual) "true" else "false",
+                saveCard = if (paymentRequest.saveCard) "true" else "false",
             ),
         ),
         mainDispatcher: CoroutineDispatcher = Dispatchers.Main,
@@ -143,13 +148,13 @@ internal class PaymentSheetViewModel(
      ************************/
     internal fun createSaveOnlyToken(
         request: TokenRequest = TokenRequest(
-            formValidator.name.value!!,
-            cleanCardNumber,
-            formValidator.cvc.value!!,
-            expiryMonth,
-            expiryYear,
-            true,
-            PaymentAuthFragment.RETURN_URL
+            name = inputFieldsValidatorLiveData.value?.name.orEmpty(),
+            number = cleanCardNumber,
+            cvc = inputFieldsValidatorLiveData.value?.cvc.orEmpty(),
+            month = expiryMonth,
+            year = expiryYear,
+            saveOnly = true,
+            callbackUrl = PaymentAuthFragment.RETURN_URL
         ),
         mainDispatcher: CoroutineDispatcher = Dispatchers.Main,
         ioDispatcher: CoroutineDispatcher = Dispatchers.IO,
@@ -197,44 +202,172 @@ internal class PaymentSheetViewModel(
         }
     }
 
-    internal fun validateField(fieldType: FieldValidation, hasFocus: Boolean) {
+    fun validateField(
+        fieldType: FieldValidation,
+        value: String,
+        cardNumber: String,
+        hasFocus: Boolean
+    ) {
+
         when (fieldType) {
-            FieldValidation.Name -> formValidator.nameValidator.onFieldFocusChange(hasFocus)
-            FieldValidation.Number -> formValidator.numberValidator.onFieldFocusChange(hasFocus)
-            FieldValidation.Cvc -> formValidator.cvcValidator.onFieldFocusChange(hasFocus)
-            FieldValidation.Expiry -> formValidator.expiryValidator.onFieldFocusChange(hasFocus)
+            FieldValidation.Name -> {
+                when (hasFocus) {
+                    true -> inputFieldsValidatorLiveData.value =
+                        inputFieldsValidatorLiveData.value?.copy(
+                            errorMessage = inputFieldsValidatorLiveData.value?.errorMessage?.copy(
+                                nameErrorMsg = ""
+                            ),
+                        )
+
+                    false -> getNameValidationRules().isValidName(value, inputFieldsValidatorLiveData)
+                }
+            }
+
+            FieldValidation.Number -> {
+                when (hasFocus) {
+                    true -> {
+                        inputFieldsValidatorLiveData.value =
+                            inputFieldsValidatorLiveData.value?.copy(
+                                errorMessage = inputFieldsValidatorLiveData.value?.errorMessage?.copy(
+                                    numberErrorMsg = ""
+                                )
+                            )
+                    }
+
+                    false -> getNumberValidationRules().isValidNumber(value, inputFieldsValidatorLiveData)
+                }
+            }
+
+            FieldValidation.Cvc -> {
+                when (hasFocus ) {
+                    true -> {
+                        inputFieldsValidatorLiveData.value =
+                            inputFieldsValidatorLiveData.value?.copy(
+                                errorMessage = inputFieldsValidatorLiveData.value?.errorMessage?.copy(
+                                    cvcErrorMsg = ""
+                                )
+                            )
+                    }
+
+                    false -> getCvcValidationRules(cardNumber).isValidCvc(value, inputFieldsValidatorLiveData)
+                }
+            }
+
+            FieldValidation.Expiry -> {
+                when (hasFocus) {
+                    true -> {
+                        inputFieldsValidatorLiveData.value =
+                            inputFieldsValidatorLiveData.value?.copy(
+                                errorMessage = inputFieldsValidatorLiveData.value?.errorMessage?.copy(
+                                    expiryDateErrorMsg = ""
+                                )
+                            )
+                    }
+
+                    false -> getExpiryDateValidationRules().isValidExpiryDate(value, inputFieldsValidatorLiveData)
+                }
+            }
         }
     }
 
-    internal fun creditCardNameChanged() {
-        formValidator.validate(false)
+
+
+
+
+     fun creditCardNameChanged(name: String) {
+        inputFieldsValidatorLiveData.value = inputFieldsValidatorLiveData.value?.copy(name = name)
+        validateForm(inputFieldsValidatorLiveData.value)
     }
 
-    internal fun creditCardNumberChanged(textEdit: Editable) {
+
+    private fun validateSTCMobile(textEdit: String) {
+        inputFieldsValidatorLiveData.value =
+            inputFieldsValidatorLiveData.value?.copy(
+                stcPayUIModel = inputFieldsValidatorLiveData.value?.stcPayUIModel?.copy(
+                    mobileNumber = textEdit,
+                    isMobileValid = getPhoneNumberValidationRules().all {
+                        it.predicate.invoke(
+                            textEdit
+                        ).not()
+                    },
+                    mobileNumberErrorMsg = getPhoneNumberValidationRules().firstOrNull {
+                        it.predicate.invoke(
+                            textEdit
+                        )
+                    }?.error.orEmpty()
+                ) ?: STCPayUIModel(
+                    mobileNumber = textEdit,
+                    isMobileValid = getPhoneNumberValidationRules().all {
+                        it.predicate.invoke(
+                            textEdit
+                        ).not()
+                    },
+                    mobileNumberErrorMsg = getPhoneNumberValidationRules().firstOrNull {
+                        it.predicate.invoke(
+                            textEdit
+                        )
+                    }?.error.orEmpty()
+                ),
+            )
+
+
+    }
+
+    private fun validateForm(inputFieldsUIModel: InputFieldsUIModel?) {
+        inputFieldsValidatorLiveData.value = inputFieldsValidatorLiveData.value?.copy(
+            isFormValid =
+            getNameValidationRules().isValidName(inputFieldsUIModel?.name.orEmpty(), inputFieldsValidatorLiveData,false)
+                && getNumberValidationRules().isValidNumber(
+                inputFieldsUIModel?.cardNumber.orEmpty(),
+                inputFieldsValidatorLiveData,
+                false
+            )
+                && getCvcValidationRules(inputFieldsUIModel?.cardNumber.orEmpty()).isValidCvc(
+                inputFieldsUIModel?.cvc.orEmpty(),
+                inputFieldsValidatorLiveData,
+                false
+            )
+                && getExpiryDateValidationRules().isValidExpiryDate(
+                inputFieldsUIModel?.expiryDate.orEmpty(),
+                inputFieldsValidatorLiveData,
+                false
+            )
+
+        )
+    }
+
+    fun creditCardNumberChanged(textEdit: Editable?, onUpdateText: (String) -> Unit) {
+        if (textEdit==null) return
+        inputFieldsValidatorLiveData.value =
+            inputFieldsValidatorLiveData.value?.copy(cardNumber = textEdit.toString())
         if (ccOnChangeLocked) {
             return
         }
         ccOnChangeLocked = true
         val formatted = CreditCardFormatter.formatCardNumber(textEdit.toString())
-        textEdit.replace(0, textEdit.length, formatted)
-        formValidator.validate(false)
+        onUpdateText(formatted)
+        validateForm(inputFieldsValidatorLiveData.value)
         ccOnChangeLocked = false
     }
 
-    internal fun mobileNumberChanged(textEdit: Editable) {
+    fun mobileNumberChanged(textEdit: Editable?, onUpdateText: (String) -> Unit) {
+        if (textEdit == null) return
         if (mobileNumberOnChangeLocked) {
             return
         }
         mobileNumberOnChangeLocked = true
-        // todo test
         val formatted = SaudiPhoneNumberFormatter.formatPhoneNumber(textEdit.toString())
-        textEdit.replace(0, textEdit.length, formatted)
-        stcPayFormValidator.validateSTCMobile(true)
+        onUpdateText(formatted)
+        validateSTCMobile(formatted.replace(" ", ""))
         mobileNumberOnChangeLocked = false
+
     }
 
 
-    internal fun creditCardExpiryChanged(textEdit: Editable, onUpdateText:(String)->Unit) {
+    fun creditCardExpiryChanged(textEdit: Editable?, onUpdateText: (String) -> Unit) {
+        if (textEdit == null) return
+        inputFieldsValidatorLiveData.value =
+            inputFieldsValidatorLiveData.value?.copy(expiryDate = textEdit.toString())
         if (ccExpiryOnChangeLocked) {
             return
         }
@@ -260,18 +393,18 @@ internal class PaymentSheetViewModel(
         }
 
         onUpdateText(formatted.toString())
-
-        formValidator.validate(false)
-
+        validateForm(inputFieldsValidatorLiveData.value)
         ccExpiryOnChangeLocked = false
     }
 
-    internal fun creditCardCvcChanged() {
-        formValidator.validate(false)
+    fun creditCardCvcChanged(textEdit: Editable?) {
+        inputFieldsValidatorLiveData.value =
+            inputFieldsValidatorLiveData.value?.copy(cvc = textEdit.toString())
+        validateForm(inputFieldsValidatorLiveData.value)
     }
 
-    internal fun submit() {
-        if (!formValidator.validate()) {
+     fun submit() {
+        if (inputFieldsValidatorLiveData.value?.isFormValid == false) {
             return
         }
 
@@ -288,8 +421,8 @@ internal class PaymentSheetViewModel(
         }
     }
 
-    internal fun submitSTC() {
-        if (!stcPayFormValidator.validateSTCMobile()) {
+     fun submitSTC() {
+        if (inputFieldsValidatorLiveData.value?.stcPayUIModel?.isMobileValid == false) {
             return
         }
 
@@ -309,7 +442,7 @@ internal class PaymentSheetViewModel(
         transactionURL: String, otp: String, mainDispatcher: CoroutineDispatcher = Dispatchers.Main,
         ioDispatcher: CoroutineDispatcher = Dispatchers.IO,
     ) {
-        _stcPayStatus.value= STCPayViewState.SubmittingSTCPayOTP
+        _stcPayStatus.value = STCPayViewState.SubmittingSTCPayOTP
         scope(
             mainDispatcher = mainDispatcher,
             ioDispatcher = ioDispatcher,
@@ -326,7 +459,7 @@ internal class PaymentSheetViewModel(
                     when (result.data.status.lowercase()) {
                         "initiated" -> {
                             _stcPayStatus.value =
-                                    STCPayViewState.STCPayOTPAuth(result.data.getSTCPayTransactionUrl())
+                                STCPayViewState.STCPayOTPAuth(result.data.getSTCPayTransactionUrl())
 
                         }
 
@@ -343,7 +476,23 @@ internal class PaymentSheetViewModel(
         }
     }
 
-    fun stcPayOTPChanged() {
-        stcPayFormValidator.validateSTCOTP()
+    fun stcPayOTPChanged(textEdit: Editable?) {
+        if (textEdit == null) return
+        inputFieldsValidatorLiveData.value =
+            inputFieldsValidatorLiveData.value?.copy(
+                stcPayUIModel = inputFieldsValidatorLiveData.value?.stcPayUIModel?.copy(
+                    otp = textEdit.toString(),
+                    isOTPValid = getOTPValidationRules().all {
+                        it.predicate.invoke(textEdit.toString()).not()
+                    },
+                    otpErrorMsg = getOTPValidationRules().firstOrNull { it.predicate.invoke(textEdit.toString()) }?.error.orEmpty()
+                ) ?: STCPayUIModel(
+                    otp = textEdit.toString(),
+                    isOTPValid = getOTPValidationRules().all {
+                        it.predicate.invoke(textEdit.toString()).not()
+                    },
+                    otpErrorMsg = getOTPValidationRules().firstOrNull { it.predicate.invoke(textEdit.toString()) }?.error.orEmpty()
+                ),
+            )
     }
 }

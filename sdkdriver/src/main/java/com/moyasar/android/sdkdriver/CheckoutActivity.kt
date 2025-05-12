@@ -33,13 +33,19 @@ class CheckoutActivity : AppCompatActivity() {
             StartActivity.PaymentOptions.CREDIT.name-> {
                 viewModel.beginDonationWithCreditCard(this, R.id.paymentSheetFragment)
             }
+            StartActivity.PaymentOptions.CREDIT_CUSTOM_UI.name-> {
+                viewModel.beginDonationWithCreditCardCustomUI(this, R.id.paymentSheetFragment)
+            }
             StartActivity.PaymentOptions.STC.name-> {
                 viewModel.beginDonationWithSTC(this,  R.id.paymentSheetFragment)
             }
+            StartActivity.PaymentOptions.STC_CUSTOM_UI.name-> {
+                viewModel.beginDonationWithSTCCustomUI(this,  R.id.paymentSheetFragment)
+            }
         }
         viewModel.status.observe(this){
-            setSuccessVisibility(binding.textView2, it)
-            setErrorVisibility(binding.textView3, it)
+            setSuccessVisibility(binding.successTv, it)
+            setErrorVisibility(binding.errorTv, it)
         }
     }
 }

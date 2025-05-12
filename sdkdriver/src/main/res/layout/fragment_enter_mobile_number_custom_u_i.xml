@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/enter_mobile_fragment_custom_ui_container"
+    tools:context=".customui.stcpay.EnterMobileNumberCustomUIFragment">
+
+            <LinearLayout
+                android:id="@+id/ll_container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/moyasar_spacing_medium"
+                android:orientation="vertical">
+
+                <!-- Mobile -->
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/mobileInputLayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/moyasar_spacing_small"
+                    android:hint="@string/mobile_05x_xxx_xxxx"
+                    >
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/mobileEt"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:maxLines="1"
+                        android:inputType="text"
+                        android:layoutDirection="ltr"
+                        tools:ignore="TextFields" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <!-- Pay Button -->
+                <Button
+                    android:id="@+id/payButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/moyasar_spacing_medium"
+                    android:textAllCaps="false"
+                    android:textColor="@android:color/white"
+                    android:textSize="@dimen/moyasar_font_size_xl"
+                    android:enabled="false"
+                    android:text="@string/pay" />
+            </LinearLayout>
+
+            <!-- Progress Indicator -->
+            <ProgressBar
+                android:id="@+id/progress_bar"
+                android:layout_width="@dimen/moyasar_view_height_m"
+                android:layout_height="@dimen/moyasar_view_height_m"
+                android:layout_gravity="center"
+                android:indeterminate="true" />
+</FrameLayout>

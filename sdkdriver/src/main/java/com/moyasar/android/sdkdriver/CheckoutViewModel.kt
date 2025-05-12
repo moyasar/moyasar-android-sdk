@@ -1,5 +1,6 @@
 package com.moyasar.android.sdkdriver
 
+import android.annotation.SuppressLint
 import android.os.Parcelable
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -11,6 +12,8 @@ import com.moyasar.android.sdk.creditcard.data.models.CreditCardNetwork
 import com.moyasar.android.sdk.creditcard.data.models.request.PaymentRequest
 import com.moyasar.android.sdk.stcpay.presentation.view.fragments.EnterMobileNumberFragment
 import com.moyasar.android.sdk.creditcard.presentation.view.fragments.PaymentFragment
+import com.moyasar.android.sdkdriver.customui.creditcard.CustomUIPaymentFragment
+import com.moyasar.android.sdkdriver.customui.stcpay.EnterMobileNumberCustomUIFragment
 import kotlinx.parcelize.Parcelize
 
 class CheckoutViewModel : ViewModel() {
@@ -32,9 +35,12 @@ class CheckoutViewModel : ViewModel() {
     )
 
     // For demo purposes only
+    @SuppressLint("StaticFieldLeak")
     private lateinit var activity: CheckoutActivity
     private lateinit var paymentFragment: PaymentFragment
+    private lateinit var customUIPaymentFragment: CustomUIPaymentFragment
     private lateinit var enterMobileNumberFragment: EnterMobileNumberFragment
+    private lateinit var enterMobileNumberCustomUIFragment: EnterMobileNumberCustomUIFragment
 
     private fun onCreditCardPaymentResult(result: PaymentResult) {
         activity.runOnUiThread {
@@ -43,10 +49,25 @@ class CheckoutViewModel : ViewModel() {
 
         handlePaymentResult(result)
     }
+    private fun onCustomUICreditCardPaymentResult(result: PaymentResult) {
+        activity.runOnUiThread {
+            activity.supportFragmentManager.beginTransaction().remove(customUIPaymentFragment).commit()
+        }
+
+        handlePaymentResult(result)
+    }
 
     private fun onSTCPayPaymentResult(result: PaymentResult) {
         activity.runOnUiThread {
             activity.supportFragmentManager.beginTransaction().remove(enterMobileNumberFragment).commit()
+        }
+
+        handlePaymentResult(result)
+    }
+
+ private fun onCustomUISTCPayPaymentResult(result: PaymentResult) {
+        activity.runOnUiThread {
+            activity.supportFragmentManager.beginTransaction().remove(enterMobileNumberCustomUIFragment).commit()
         }
 
         handlePaymentResult(result)
@@ -95,6 +116,17 @@ class CheckoutViewModel : ViewModel() {
         }
     }
 
+    fun beginDonationWithCreditCardCustomUI(activity: CheckoutActivity, id: Int) {
+        this.activity = activity
+
+        this.customUIPaymentFragment = CustomUIPaymentFragment.newInstance(activity.application, paymentRequest) { this.onCustomUICreditCardPaymentResult(it) }
+
+        activity.supportFragmentManager.beginTransaction().apply {
+            replace(id, customUIPaymentFragment)
+            commit()
+        }
+    }
+
     fun beginDonationWithSTC(activity: CheckoutActivity, id: Int) {
         this.activity = activity
 
@@ -102,6 +134,17 @@ class CheckoutViewModel : ViewModel() {
 
         activity.supportFragmentManager.beginTransaction().apply {
             replace(id, enterMobileNumberFragment)
+            commit()
+        }
+    }
+
+    fun beginDonationWithSTCCustomUI(activity: CheckoutActivity, id: Int) {
+        this.activity = activity
+
+        this.enterMobileNumberCustomUIFragment = EnterMobileNumberCustomUIFragment.newInstance(activity.application, paymentRequest) { this.onCustomUISTCPayPaymentResult(it) }
+
+        activity.supportFragmentManager.beginTransaction().apply {
+            replace(id, enterMobileNumberCustomUIFragment)
             commit()
         }
     }

@@ -20,7 +20,7 @@ import com.moyasar.android.sdk.creditcard.presentation.di.MoyasarAppContainer.vi
 import com.moyasar.android.sdk.creditcard.presentation.model.AuthResultViewState
 
 @SuppressLint("ValidFragment")
-internal class PaymentAuthFragment : Fragment() {
+class PaymentAuthFragment : Fragment() {
 
   private lateinit var binding: FragmentPaymentAuthBinding
 
@@ -31,7 +31,6 @@ internal class PaymentAuthFragment : Fragment() {
   private val webViewClient by lazy {
 
     object : WebViewClient() {
-      @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
       override fun shouldOverrideUrlLoading(
         view: WebView?,
         request: WebResourceRequest?,

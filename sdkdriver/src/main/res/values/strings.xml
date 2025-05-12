@@ -1,3 +1,18 @@
 <resources>
-    <string name="app_name">Moyasar Android SDK</string>
+    <string name="app_name" translatable="false">Moyasar Android SDK</string>
+    <string name="hello_blank_fragment" translatable="false">Hello blank fragment</string>
+    <string name="donate_coffee" translatable="false">Donate Coffee ☕️</string>
+    <string name="donate_credit_card" translatable="false">Donate (Credit Card)</string>
+    <string name="donate_credit_card_custom_ui" translatable="false">Donate (Credit Card - Custom UI)</string>
+    <string name="donate_stc_wallet" translatable="false">Donate (STC Wallet)</string>
+    <string name="donate_stc_wallet_custom_ui" translatable="false">Donate (STC Wallet - Custom UI)</string>
+    <string name="valid_mark" translatable="false">✅</string>
+    <string name="not_valid_mark" translatable="false">⛔️</string>
+    <string name="otp" translatable="false">OTP</string>
+    <string name="pay" translatable="false">Pay</string>
+    <string name="mobile_05x_xxx_xxxx" translatable="false">Mobile: 05x xxx xxxx</string>
+    <string name="holder_name" translatable="false">Holder Name</string>
+    <string name="card_number" translatable="false">Card Number</string>
+    <string name="expiry_date" translatable="false">Expiry Date</string>
+    <string name="cvv" translatable="false">CVV</string>
 </resources>

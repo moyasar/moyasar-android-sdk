@@ -6,28 +6,44 @@ import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
 
 
-class StartActivity: AppCompatActivity() {
+class StartActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_start)
-        val donateBtn = findViewById<Button>(R.id.button2)
-        val stcPayBtn =  findViewById<Button>(R.id.button3)
-        donateBtn.setOnClickListener {
+        val donateWithCreditCardBtn = findViewById<Button>(R.id.donateWithCreditCardBtn)
+        val donateWithCreditCardCustomUIBtn =
+            findViewById<Button>(R.id.donateWithCreditCardCustomUIBtn)
+        val donateWithSTCPayBtn = findViewById<Button>(R.id.donateWithSTCPayBtn)
+        val donateWithSTCPayCustomUIBtn = findViewById<Button>(R.id.donateWithSTCPayCustomUIBtn)
+        donateWithCreditCardBtn.setOnClickListener {
             startActivity(
                 Intent(this, CheckoutActivity::class.java).apply {
-                putExtra(PAYMENT_TYPE,PaymentOptions.CREDIT.name)
-            })
+                    putExtra(PAYMENT_TYPE, PaymentOptions.CREDIT.name)
+                })
         }
-        stcPayBtn.setOnClickListener {
+        donateWithCreditCardCustomUIBtn.setOnClickListener {
             startActivity(
                 Intent(this, CheckoutActivity::class.java).apply {
-                putExtra(PAYMENT_TYPE,PaymentOptions.STC.name)
-            })
+                    putExtra(PAYMENT_TYPE, PaymentOptions.CREDIT_CUSTOM_UI.name)
+                })
+        }
+        donateWithSTCPayBtn.setOnClickListener {
+            startActivity(
+                Intent(this, CheckoutActivity::class.java).apply {
+                    putExtra(PAYMENT_TYPE, PaymentOptions.STC.name)
+                })
+        }
+        donateWithSTCPayCustomUIBtn.setOnClickListener {
+            startActivity(
+                Intent(this, CheckoutActivity::class.java).apply {
+                    putExtra(PAYMENT_TYPE, PaymentOptions.STC_CUSTOM_UI.name)
+                })
         }
     }
+
     companion object {
         const val PAYMENT_TYPE = "payment_type"
     }
 
-    enum class PaymentOptions {CREDIT, STC}
+    enum class PaymentOptions { CREDIT, STC, CREDIT_CUSTOM_UI, STC_CUSTOM_UI }
 }
