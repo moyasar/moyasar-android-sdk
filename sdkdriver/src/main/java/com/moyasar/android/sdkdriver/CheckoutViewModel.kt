@@ -15,6 +15,7 @@ import com.moyasar.android.sdk.creditcard.presentation.view.fragments.PaymentFra
 import com.moyasar.android.sdkdriver.customui.creditcard.CustomUIPaymentFragment
 import com.moyasar.android.sdkdriver.customui.stcpay.EnterMobileNumberCustomUIFragment
 import kotlinx.parcelize.Parcelize
+import java.util.UUID
 
 class CheckoutViewModel : ViewModel() {
     val status = MutableLiveData<Status>().default(Status.Idle)
@@ -23,6 +24,7 @@ class CheckoutViewModel : ViewModel() {
         apiKey = "pk_test_vcFUHJDBwiyRu4Bd3hFuPpTnRPY4gp2ssYdNJMY3",
         amount = 100000,
         currency = "SAR",
+        givenID = UUID.randomUUID().toString(), // generate from your side uuid (v4 is recommended) to apply Idempotency or keep it null
         description = "Sample Android SDK Payment",
         metadata = mapOf(
             "order_id" to "order_123"
