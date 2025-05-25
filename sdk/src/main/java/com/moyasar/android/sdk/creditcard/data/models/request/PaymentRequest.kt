@@ -14,6 +14,7 @@ data class PaymentRequest(
     val metadata: Map<String, Any?> = HashMap(),
     val manual: Boolean = false,
     val saveCard: Boolean = false,
+    @SerializedName("given_id") val givenID: String? = null,
     val allowedNetworks: List<CreditCardNetwork> = listOf(
         CreditCardNetwork.Visa,
         CreditCardNetwork.Mastercard,
