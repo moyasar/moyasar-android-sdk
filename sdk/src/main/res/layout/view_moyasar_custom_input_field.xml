@@ -15,6 +15,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="@dimen/moyasar_font_size_l"
+            android:textColor="@color/m_dark"
+            android:fontFamily="@font/aeonik_regular"
             tools:text="Name on Card" />
 
         <TextView
@@ -22,6 +24,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textColor="@color/red"
+            android:fontFamily="@font/aeonik_regular"
             android:textSize="@dimen/moyasar_font_size_m"
             android:visibility="gone"
             tools:text="REQUIRED" />
@@ -32,6 +35,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/moyasar_spacing_small"
+        android:textColor="@color/m_dark"
+        android:textColorHint="@color/m_grey"
+        android:fontFamily="@font/aeonik_regular"
         android:background="@drawable/bg_moyasar_edittext_background"
         android:layoutDirection="ltr"
         android:maxLines="1"
