@@ -19,43 +19,29 @@ object MoyasarAppContainer {
   internal lateinit var paymentRequest: PaymentRequest
   private lateinit var callback: (PaymentResult) -> Unit
 
-  private val paymentService: PaymentService by lazy {
-    PaymentService(
-      paymentRequest.apiKey,
-      paymentRequest.baseUrl
-    )
-  }
-
-  private val stcPayPaymentService: STCPayPaymentService by lazy {
-    STCPayPaymentService()
-  }
-
-  private val createPaymentUseCase by lazy {
-    CreatePaymentUseCase(paymentService)
-  }
-
-  private val validateSTCPayOTPUseCase by lazy {
-    ValidateSTCPayOTPUseCase(stcPayPaymentService)
-  }
-
-  private val createTokenUseCase by lazy {
-    CreateTokenUseCase(paymentService)
-  }
-
-val allowedNetworks
-  get() = paymentRequest.allowedNetworks
+  val allowedNetworks
+    get() = paymentRequest.allowedNetworks
 
   private var _viewModel : PaymentSheetViewModel? = null
 
-   val viewModel: PaymentSheetViewModel
+  val viewModel: PaymentSheetViewModel
     get() {
       return synchronized(this) {
         if (_viewModel == null) {
+          val paymentService = PaymentService(
+            paymentRequest.apiKey,
+            paymentRequest.baseUrl
+          )
+          val stcPayPaymentService = STCPayPaymentService()
+          val createPaymentUseCase = CreatePaymentUseCase(paymentService)
+          val validateSTCPayOTPUseCase  = ValidateSTCPayOTPUseCase(stcPayPaymentService)
+          val createTokenUseCase = CreateTokenUseCase(paymentService)
+
           _viewModel = PaymentSheetViewModel(
             application = application,
             paymentRequest = paymentRequest,
             callback = callback,
-            createPaymentUseCase = createPaymentUseCase,
+            createPaymentUseCase =createPaymentUseCase,
             createTokenUseCase = createTokenUseCase,
             validateSTCPayOTPUseCase = validateSTCPayOTPUseCase
           )
