@@ -25,6 +25,7 @@ data class PaymentRequest(
     val createSaveOnlyToken: Boolean = false,
     val buttonType: MoyasarButtonType = MoyasarButtonType.PAY,
     val source: PaymentSource? = null,
+    @SerializedName("apply_coupon") val applyCoupon: Boolean? = true,
 
     ) {
     fun validate(): Array<String> {
