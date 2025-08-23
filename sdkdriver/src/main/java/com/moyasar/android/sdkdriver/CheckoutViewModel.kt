@@ -33,7 +33,8 @@ class CheckoutViewModel : ViewModel() {
         baseUrl = "https://api.moyasar.com",
         buttonType = MoyasarButtonType.PAY,
         allowedNetworks = listOf(CreditCardNetwork.Mastercard, CreditCardNetwork.Visa, CreditCardNetwork.Amex),
-        createSaveOnlyToken = false
+        createSaveOnlyToken = false,
+        applyCoupon = true
     )
 
     // For demo purposes only
