@@ -19,12 +19,12 @@ object MoyasarAppContainer {
   internal lateinit var paymentRequest: PaymentRequest
   private lateinit var callback: (PaymentResult) -> Unit
 
-val allowedNetworks
-  get() = paymentRequest.allowedNetworks
+  val allowedNetworks
+    get() = paymentRequest.allowedNetworks
 
   private var _viewModel : PaymentSheetViewModel? = null
 
-   val viewModel: PaymentSheetViewModel
+  val viewModel: PaymentSheetViewModel
     get() {
       return synchronized(this) {
         if (_viewModel == null) {
