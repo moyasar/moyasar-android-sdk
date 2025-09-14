@@ -50,6 +50,7 @@ dependencies {
     implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.8.7")
     implementation("androidx.constraintlayout:constraintlayout:2.2.1")
     implementation(project(":sdk"))
+   // implementation("com.github.Moyasar:moyasar-android-sdk:1.0.9")
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test:runner:1.6.2")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.6.1")

@@ -57,7 +57,7 @@ internal class MoyasarButton @JvmOverloads constructor(
         val fullText = if (isArabic) {
             "$title $amountLabel  " // Space for icon at the end
         } else {
-            "$title  $amountLabel" // Space for icon in the middle
+            "$title   $amountLabel" // Space for icon in the middle
         }
 
         val spannable = SpannableStringBuilder(fullText)
