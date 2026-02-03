@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:fillViewport="true">
+
+    <FrameLayout
+        android:id="@+id/custom_ui_payment_fragment_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:id="@+id/ll_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="@dimen/moyasar_spacing_medium">
+
+            <!-- Holder Name -->
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/holderNameInputLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/moyasar_spacing_small"
+                android:hint="@string/holder_name">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/holderNameEt"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="text"
+                    android:layoutDirection="ltr"
+                    android:maxLines="1"
+                    tools:ignore="TextFields" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <!-- Card Number and Icons -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/moyasar_spacing_small"
+                android:gravity="center"
+                android:orientation="horizontal">
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/cardNumberInputLayout"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:hint="@string/card_number">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/cardNumberEt"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="number"
+                        android:layoutDirection="ltr"
+                        android:maxLines="1"
+                        tools:ignore="TextFields" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <!-- Card Type Icons -->
+                <ImageView
+                    android:id="@+id/img_mada"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="@dimen/moyasar_spacing_small"
+                    android:contentDescription="@null"
+                    android:src="@drawable/ic_moyasar_mada"
+                    android:visibility="gone" />
+
+                <ImageView
+                    android:id="@+id/img_visa"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="@dimen/moyasar_spacing_small"
+                    android:contentDescription="@null"
+                    android:src="@drawable/ic_moyasar_visa"
+                    android:visibility="gone" />
+
+                <ImageView
+                    android:id="@+id/img_master"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="@dimen/moyasar_spacing_small"
+                    android:contentDescription="@null"
+                    android:src="@drawable/ic_moyasar_mastercard"
+                    android:visibility="gone" />
+
+                <ImageView
+                    android:id="@+id/img_amex"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="@dimen/moyasar_spacing_small"
+                    android:contentDescription="@null"
+                    android:src="@drawable/ic_moyasar_amex"
+                    android:visibility="gone" />
+            </LinearLayout>
+
+            <!-- Expiry Date -->
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/expiryDateInputLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/moyasar_spacing_small"
+                android:hint="@string/expiry_date">
+
+                <EditText
+                    android:id="@+id/expiryDateEt"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="number"
+                    android:layoutDirection="ltr"
+                    android:maxLines="1"
+                    tools:ignore="Autofill,LabelFor,TextFields" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <!-- CVV -->
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/cvvInputLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/moyasar_spacing_small"
+                android:hint="@string/cvv">
+
+                <EditText
+                    android:id="@+id/cvvEt"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="number"
+                    android:layoutDirection="ltr"
+                    android:maxLines="1"
+                    tools:ignore="Autofill,LabelFor,TextFields" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <!-- Pay Button -->
+            <Button
+                android:id="@+id/payButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/moyasar_spacing_medium"
+                android:enabled="false"
+                android:text="@string/pay"
+                android:textAllCaps="false"
+                android:textColor="@android:color/white"
+                android:textSize="@dimen/moyasar_font_size_xl" />
+        </LinearLayout>
+
+        <!-- Progress Indicator -->
+        <ProgressBar
+            android:id="@+id/circularProgressIndicator"
+            android:layout_width="@dimen/moyasar_view_height_m"
+            android:layout_height="@dimen/moyasar_view_height_m"
+            android:layout_gravity="center"
+            android:indeterminate="true" />
+    </FrameLayout>
+</ScrollView>

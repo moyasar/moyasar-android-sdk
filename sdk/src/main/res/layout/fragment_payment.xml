@@ -46,10 +46,37 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/moyasar_spacing_x_large"
+                    android:fontFamily="@font/aeonik_regular"
                     android:textAllCaps="false"
                     android:textColor="@android:color/white"
                     android:textSize="@dimen/moyasar_font_size_xl"
                     android:visibility="gone" />
+
+                <LinearLayout
+                    android:layoutDirection="ltr"
+                    android:layout_marginTop="86dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:orientation="horizontal">
+                    <TextView
+                        android:text="Powered by"
+                        android:textSize="@dimen/moyasar_font_size_l"
+                        android:textColor="@color/m_logo_color"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"/>
+                    <ImageView
+                        android:layout_marginHorizontal="@dimen/moyasar_spacing_small"
+                        android:layout_gravity="center"
+                        android:src="@drawable/ic_logo"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"/>
+                    <ImageView
+                        android:layout_gravity="center"
+                        android:src="@drawable/ic_logo_words"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"/>
+                </LinearLayout>
 
             </LinearLayout>
 

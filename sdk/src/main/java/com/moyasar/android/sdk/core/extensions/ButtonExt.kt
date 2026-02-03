@@ -1,8 +1,8 @@
 package com.moyasar.android.sdk.core.extensions
 
 import android.os.Build
-import android.support.v4.content.ContextCompat
 import android.widget.Button
+import androidx.core.content.ContextCompat
 import com.moyasar.android.sdk.R
 
 /**

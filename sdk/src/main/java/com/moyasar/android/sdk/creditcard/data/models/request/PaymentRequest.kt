@@ -28,6 +28,9 @@ data class PaymentRequest(
     @SerializedName("saveCard")
     val saveCard: Boolean = false,
 
+    @SerializedName("given_id")
+    val givenID: String? = null,
+
     @SerializedName("allowedNetworks")
     val allowedNetworks: List<CreditCardNetwork> = listOf(
         CreditCardNetwork.Visa,
@@ -48,8 +51,11 @@ data class PaymentRequest(
     val buttonType: MoyasarButtonType = MoyasarButtonType.PAY,
 
     @SerializedName("source")
-    val source: PaymentSource? = null
-) {
+    val source: PaymentSource? = null,
+    @SerializedName("apply_coupon")
+    val applyCoupon: Boolean? = true,
+
+    ) {
     fun validate(): Array<String> {
         val errors = ArrayList<String>()
 

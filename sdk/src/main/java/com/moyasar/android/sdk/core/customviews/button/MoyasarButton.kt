@@ -4,13 +4,13 @@ import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Paint
 import android.graphics.drawable.Drawable
-import android.support.v4.content.ContextCompat
-import android.support.v7.widget.AppCompatButton
 import android.text.SpannableStringBuilder
 import android.text.Spanned
 import android.text.style.ImageSpan
 import android.util.AttributeSet
 import android.view.Gravity
+import androidx.appcompat.widget.AppCompatButton
+import androidx.core.content.ContextCompat
 import com.moyasar.android.sdk.R
 import com.moyasar.android.sdk.creditcard.presentation.di.MoyasarAppContainer
 import java.util.Locale
@@ -57,7 +57,7 @@ internal class MoyasarButton @JvmOverloads constructor(
         val fullText = if (isArabic) {
             "$title $amountLabel  " // Space for icon at the end
         } else {
-            "$title  $amountLabel" // Space for icon in the middle
+            "$title   $amountLabel" // Space for icon in the middle
         }
 
         val spannable = SpannableStringBuilder(fullText)
