@@ -7,25 +7,53 @@ import com.moyasar.android.sdk.core.exceptions.InvalidConfigException
 import com.moyasar.android.sdk.creditcard.data.models.CreditCardNetwork
 
 data class PaymentRequest(
+    @SerializedName("apiKey")
     val apiKey: String,
+
+    @SerializedName("amount")
     val amount: Int = 0,
+
+    @SerializedName("currency")
     val currency: String = "SAR",
+
+    @SerializedName("description")
     val description: String? = null,
+
+    @SerializedName("metadata")
     val metadata: Map<String, Any?> = HashMap(),
+
+    @SerializedName("manual")
     val manual: Boolean = false,
+
+    @SerializedName("saveCard")
     val saveCard: Boolean = false,
-    @SerializedName("given_id") val givenID: String? = null,
+
+    @SerializedName("given_id")
+    val givenID: String? = null,
+
+    @SerializedName("allowedNetworks")
     val allowedNetworks: List<CreditCardNetwork> = listOf(
         CreditCardNetwork.Visa,
         CreditCardNetwork.Mastercard,
         CreditCardNetwork.Mada
     ),
+
+    @SerializedName("baseUrl")
     val baseUrl: String = "https://api.moyasar.com/",
-    @SerializedName("callback_url") val callbackUrl: String = "",
+
+    @SerializedName("callback_url")
+    val callbackUrl: String = "",
+
+    @SerializedName("createSaveOnlyToken")
     val createSaveOnlyToken: Boolean = false,
+
+    @SerializedName("buttonType")
     val buttonType: MoyasarButtonType = MoyasarButtonType.PAY,
+
+    @SerializedName("source")
     val source: PaymentSource? = null,
-    @SerializedName("apply_coupon") val applyCoupon: Boolean? = true,
+    @SerializedName("apply_coupon")
+    val applyCoupon: Boolean? = true,
 
     ) {
     fun validate(): Array<String> {
@@ -54,10 +82,9 @@ data class PaymentRequest(
             it.values.forEach { value ->
                 if (value !is Int && value !is Float && value !is String && value !is Boolean)
                     errors.add("Metadata values should be String, Integer, Float or Boolean")
-
             }
         }
 
-       return errors.toTypedArray()
+        return errors.toTypedArray()
     }
 }
