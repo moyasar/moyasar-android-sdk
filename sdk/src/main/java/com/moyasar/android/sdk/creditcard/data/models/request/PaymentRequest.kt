@@ -5,6 +5,7 @@ import com.moyasar.android.sdk.core.customviews.button.MoyasarButtonType
 import com.moyasar.android.sdk.core.data.PaymentSource
 import com.moyasar.android.sdk.core.exceptions.InvalidConfigException
 import com.moyasar.android.sdk.creditcard.data.models.CreditCardNetwork
+import com.moyasar.android.sdk.samsungpay.data.SamsungPayConfig
 
 data class PaymentRequest(
     @SerializedName("apiKey")
@@ -52,8 +53,12 @@ data class PaymentRequest(
 
     @SerializedName("source")
     val source: PaymentSource? = null,
+    
     @SerializedName("apply_coupon")
     val applyCoupon: Boolean? = true,
+
+    val merchantCountryCode: String = "SA",
+    val samsungPay: SamsungPayConfig? = null
 
     ) {
     fun validate(): Array<String> {
