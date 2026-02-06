@@ -9,7 +9,6 @@ import android.view.ViewGroup
 import com.moyasar.android.sdk.core.domain.entities.PaymentResult
 import com.moyasar.android.sdk.core.exceptions.InvalidConfigException
 import com.moyasar.android.sdk.core.extensions.show
-import com.moyasar.android.sdk.core.util.MoyasarLogger
 import com.moyasar.android.sdk.creditcard.data.models.request.PaymentRequest
 import com.moyasar.android.sdk.creditcard.presentation.di.MoyasarAppContainer
 import com.moyasar.android.sdk.creditcard.presentation.di.MoyasarAppContainer.paymentRequest
@@ -56,11 +55,8 @@ class SamsungPayFragment : Fragment() {
             paymentRequest,
             authorizePayment = { token, orderNumber ->
                 if (token != null && orderNumber != null) {
-                    MoyasarLogger.log("MoyasarSDK", "Samsung Pay token received, orderNumber: $orderNumber")
                     progressBar.show()
                     InitiateSamsungPay.authorizePayment(token, orderNumber)
-                } else {
-                    MoyasarLogger.log("MoyasarSDK", "Samsung Pay token or orderNumber is null")
                 }
             }
         )
