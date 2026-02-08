@@ -42,6 +42,9 @@ class CheckoutActivity : AppCompatActivity() {
             StartActivity.PaymentOptions.STC_CUSTOM_UI.name-> {
                 viewModel.beginDonationWithSTCCustomUI(this,  R.id.paymentSheetFragment)
             }
+            StartActivity.PaymentOptions.SAMSUNG_PAY.name-> {
+                viewModel.beginDonationWithSamsungPay(this,  R.id.paymentSheetFragment)
+            }
         }
         viewModel.status.observe(this){
             setSuccessVisibility(binding.successTv, it)
