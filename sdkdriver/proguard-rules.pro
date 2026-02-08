@@ -19,3 +19,10 @@
 # If you keep the line number information, uncomment this to
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
+
+# Samsung Pay SDK - prevent obfuscation so Binder/Parcel unmarshalling works in release
+# (BadParcelableException: ClassNotFoundException when unmarshalling)
+-keep class com.samsung.android.sdk.samsungpay.** { *; }
+-keepclassmembers class * implements android.os.Parcelable {
+    public static final android.os.Parcelable$Creator CREATOR;
+}

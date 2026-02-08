@@ -12,3 +12,12 @@
 # Retain generic signatures of TypeToken and its subclasses with R8 version 3.0 and higher.
 -keep,allowobfuscation,allowshrinking class com.google.gson.reflect.TypeToken
 -keep,allowobfuscation,allowshrinking class * extends com.google.gson.reflect.TypeToken
+
+# Samsung Pay SDK - prevent obfuscation so Binder/Parcel unmarshalling works in release
+# (BadParcelableException: ClassNotFoundException when unmarshalling in release build)
+-keep class com.samsung.android.sdk.samsungpay.** { *; }
+-keepclassmembers class * implements android.os.Parcelable {
+    public static final android.os.Parcelable$Creator CREATOR;
+}
+# Keep Moyasar SDK classes used with Samsung Pay (callbacks/listeners passed via Binder)
+-keep class com.moyasar.android.sdk.samsungpay.** { *; }
