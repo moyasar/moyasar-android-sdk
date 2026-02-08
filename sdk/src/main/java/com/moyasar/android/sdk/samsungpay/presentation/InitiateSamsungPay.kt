@@ -80,6 +80,7 @@ object InitiateSamsungPay {
                 when (status) {
                     SpaySdk.SPAY_READY -> {
                         MoyasarLogger.log("MoyasarSDK", "Samsung Pay ready")
+                        // Only proceed with payment when status is READY
                         startInAppPay(
                             paymentManager,
                             paymentRequest,
@@ -106,24 +107,34 @@ object InitiateSamsungPay {
                                 Toast.LENGTH_LONG
                             ).show()
                         }
+                        // Notify that payment cannot proceed
+                        authorizePayment(null, null)
                     }
                     SpaySdk.SPAY_NOT_ALLOWED_TEMPORALLY -> {
                         MoyasarLogger.log("MoyasarSDK", "Samsung Pay not allowed temporarily")
+                        // Notify that payment cannot proceed
+                        authorizePayment(null, null)
                     }
                     SpaySdk.SPAY_NOT_SUPPORTED -> {
                         MoyasarLogger.log(
                             "MoyasarSDK",
                             "Samsung Pay is not supported on this device or emulator/simulator"
                         )
+                        // Notify that payment cannot proceed
+                        authorizePayment(null, null)
                     }
                     else -> {
                         MoyasarLogger.log("MoyasarSDK", "Samsung Pay unknown status: $status")
+                        // Notify that payment cannot proceed
+                        authorizePayment(null, null)
                     }
                 }
             }
 
             override fun onFail(errorCode: Int, bundle: Bundle?) {
                 bundle?.let { handleOnFail(it, samsungPay, context, null) }
+                // Notify that payment cannot proceed
+                authorizePayment(null, null)
             }
         })
     }
@@ -294,7 +305,6 @@ object InitiateSamsungPay {
         val bundle = Bundle().apply {
             putString(SpaySdk.PARTNER_SERVICE_TYPE, ServiceType.INAPP_PAYMENT.toString())
         }
-        MoyasarLogger.log("MoyasarSDK", "Creating PartnerInfo with serviceId: $serviceId")
         return PartnerInfo(serviceId, bundle)
     }
 
@@ -326,14 +336,6 @@ object InitiateSamsungPay {
 
         // Extract merchant ID from API key (first 15 characters, matching React Native pattern)
         val merchantId = paymentRequest.apiKey.substring(0, minOf(15, paymentRequest.apiKey.length))
-        
-        MoyasarLogger.log("MoyasarSDK", "Creating CustomSheetPaymentInfo with:")
-        MoyasarLogger.log("MoyasarSDK", "  - merchantId: $merchantId")
-        MoyasarLogger.log("MoyasarSDK", "  - merchantName: ${samsungPayConfig.merchantName}")
-        MoyasarLogger.log("MoyasarSDK", "  - orderNumber: $orderNumber")
-        MoyasarLogger.log("MoyasarSDK", "  - merchantCountryCode: ${paymentRequest.merchantCountryCode}")
-        MoyasarLogger.log("MoyasarSDK", "  - serviceId: ${samsungPayConfig.serviceId}")
-        MoyasarLogger.log("MoyasarSDK", "  - allowedBrands: $brandList")
 
         return CustomSheetPaymentInfo.Builder()
             .setMerchantId(merchantId) // Required for MADA
@@ -354,7 +356,7 @@ object InitiateSamsungPay {
                 CreditCardNetwork.Mastercard -> brandList.add(SpaySdk.Brand.MASTERCARD)
                 CreditCardNetwork.Amex -> brandList.add(SpaySdk.Brand.AMERICANEXPRESS)
                 CreditCardNetwork.Unknown -> {
-                    MoyasarLogger.log("MoyasarSDK", "Unknown card network: $network, skipping")
+                    // Unknown card network, skip
                 }
             }
         }
