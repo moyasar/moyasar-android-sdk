@@ -46,4 +46,12 @@
         android:text="@string/donate_stc_wallet_custom_ui"
         android:textAllCaps="false" />
 
+    <Button
+        android:id="@+id/donateWithSamsungPayBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/moyasar_spacing_medium"
+        android:text="Donate with Samsung Pay"
+        android:textAllCaps="false" />
+
 </LinearLayout>
