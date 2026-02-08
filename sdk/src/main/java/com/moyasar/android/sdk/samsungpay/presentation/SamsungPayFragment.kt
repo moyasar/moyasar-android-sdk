@@ -6,6 +6,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.moyasar.android.sdk.R
 import com.moyasar.android.sdk.core.domain.entities.PaymentResult
 import com.moyasar.android.sdk.core.exceptions.InvalidConfigException
 import com.moyasar.android.sdk.core.extensions.show
@@ -13,10 +14,6 @@ import com.moyasar.android.sdk.creditcard.data.models.request.PaymentRequest
 import com.moyasar.android.sdk.creditcard.presentation.di.MoyasarAppContainer
 import com.moyasar.android.sdk.creditcard.presentation.di.MoyasarAppContainer.paymentRequest
 
-/**
- * Fragment for Samsung Pay payment flow
- * Matches React Native implementation pattern
- */
 class SamsungPayFragment : Fragment() {
 
     private lateinit var progressBar: View
@@ -47,17 +44,19 @@ class SamsungPayFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?,
     ): View? {
-        val view = inflater.inflate(com.moyasar.android.sdk.R.layout.fragment_samsung_pay, container, false)
-        progressBar = view.findViewById(com.moyasar.android.sdk.R.id.progressBar)
+        val view = inflater.inflate(R.layout.fragment_samsung_pay, container, false)
+        progressBar = view.findViewById(R.id.progressBar)
 
-        InitiateSamsungPay.initiate(
+        SamsungPayManager.initiate(
             requireActivity(),
             paymentRequest,
             authorizePayment = { token, orderNumber ->
                 if (token != null && orderNumber != null) {
                     progressBar.show()
-                    InitiateSamsungPay.authorizePayment(token, orderNumber)
+                    SamsungPayManager.authorizePayment(token, orderNumber)
                 }
+                else MoyasarAppContainer.viewModel.notifyPaymentResult(PaymentResult.Failed(
+                    Throwable("Something went wrong.")))
             }
         )
 

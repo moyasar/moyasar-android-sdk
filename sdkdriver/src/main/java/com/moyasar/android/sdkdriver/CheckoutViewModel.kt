@@ -29,7 +29,7 @@ class CheckoutViewModel : ViewModel() {
         givenID = UUID.randomUUID().toString(), // generate from your side uuid (v4 is recommended) to apply Idempotency or keep it null
         description = "Test payment",
         metadata = mapOf(
-            "size" to "250 g"
+            "order_id" to "order_123"
         ),
         manual = false,
         baseUrl = "https://api.moyasar.com",
@@ -38,6 +38,7 @@ class CheckoutViewModel : ViewModel() {
         createSaveOnlyToken = false,
         applyCoupon = true,
         merchantCountryCode = "SA",
+        // optional object for Samsung-pay
         samsungPay = SamsungPayConfig(
             serviceId = "ea810dafb758408fa530b1",
             merchantName = "Test Samsung Pay from app",

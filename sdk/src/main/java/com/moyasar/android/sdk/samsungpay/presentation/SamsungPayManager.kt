@@ -37,7 +37,6 @@ import com.samsung.android.sdk.samsungpay.v2.SpaySdk.ERROR_USER_CANCELED
 import com.samsung.android.sdk.samsungpay.v2.SpaySdk.EXTRA_ERROR_REASON
 import com.samsung.android.sdk.samsungpay.v2.SpaySdk.SPAY_NOT_READY
 import com.samsung.android.sdk.samsungpay.v2.SpaySdk.SPAY_NOT_SUPPORTED
-import com.samsung.android.sdk.samsungpay.v2.SpaySdk.SPAY_READY
 import com.samsung.android.sdk.samsungpay.v2.SpaySdk.ServiceType
 import com.samsung.android.sdk.samsungpay.v2.StatusListener
 import com.samsung.android.sdk.samsungpay.v2.payment.CardInfo
@@ -52,17 +51,8 @@ import java.util.Locale
 import java.util.UUID
 import kotlin.math.pow
 
-/**
- * Handles Samsung Pay payment initiation and processing
- * Matches the React Native implementation pattern
- */
-object InitiateSamsungPay {
-    /**
-     * Initiates Samsung Pay payment flow
-     * @param context Android context
-     * @param paymentRequest Payment request containing Samsung Pay configuration
-     * @param authorizePayment Callback to handle payment token and order number after successful Samsung Pay authorization
-     */
+object SamsungPayManager {
+
     fun initiate(
         context: Context,
         paymentRequest: PaymentRequest,
@@ -112,6 +102,11 @@ object InitiateSamsungPay {
                     }
                     SpaySdk.SPAY_NOT_ALLOWED_TEMPORALLY -> {
                         MoyasarLogger.log("MoyasarSDK", "Samsung Pay not allowed temporarily")
+                        Toast.makeText(
+                            context.applicationContext,
+                            context.getString(R.string.msg_moyasar_samsung_pay_feature_is_not_allowed_temp),
+                            Toast.LENGTH_LONG
+                        ).show()
                         // Notify that payment cannot proceed
                         authorizePayment(null, null)
                     }
@@ -120,11 +115,21 @@ object InitiateSamsungPay {
                             "MoyasarSDK",
                             "Samsung Pay is not supported on this device or emulator/simulator"
                         )
+                        Toast.makeText(
+                            context.applicationContext,
+                            context.getString(R.string.msg_moyasar_samsung_pay_feature_is_not_supported),
+                            Toast.LENGTH_LONG
+                        ).show()
                         // Notify that payment cannot proceed
                         authorizePayment(null, null)
                     }
                     else -> {
                         MoyasarLogger.log("MoyasarSDK", "Samsung Pay unknown status: $status")
+                        Toast.makeText(
+                            context.applicationContext,
+                            context.getString(R.string.msg_moyasar_samsung_pay_error),
+                            Toast.LENGTH_LONG
+                        ).show()
                         // Notify that payment cannot proceed
                         authorizePayment(null, null)
                     }
@@ -141,13 +146,11 @@ object InitiateSamsungPay {
 
     /**
      * Creates payment request with Samsung Pay token and order number in metadata
-     * Matches React Native pattern: adds samsungpay_order_id to metadata
      */
     fun authorizePayment(token: String, orderNumber: String) {
         val samsungPayConfig = paymentRequest.samsungPay
             ?: throw IllegalArgumentException("Samsung Pay configuration is required")
-
-        // Add order number to metadata (matching React Native pattern)
+        // Add order number to metadata
         val updatedMetadata = paymentRequest.metadata.toMutableMap().apply {
             put("samsungpay_order_id", orderNumber)
         }
@@ -207,7 +210,7 @@ object InitiateSamsungPay {
                         MoyasarLogger.log("MoyasarSDK", "Error getting card metadata: ${e.message}")
                     }
 
-                    // Extract token from payment credential (matching React Native pattern)
+                    // Extract token from payment credential
                     val paymentCredentialJson = Gson().fromJson(paymentCredential, PaymentCredentialJson::class.java)
                     val token = paymentCredentialJson.data?.data
                     val orderNumber = response.orderNumber
@@ -328,13 +331,13 @@ object InitiateSamsungPay {
         val customSheet = CustomSheet()
         customSheet.addControl(amountBoxControl)
 
-        // Generate order number if not provided (matching React Native pattern)
+        // Generate order number if not provided
         val orderNumber = samsungPayConfig.orderNumber ?: UUID.randomUUID().toString()
 
         // Map CreditCardNetwork to SpaySdk.Brand
         val brandList = mapCreditCardNetworksToBrands(paymentRequest.allowedNetworks)
 
-        // Extract merchant ID from API key (first 15 characters, matching React Native pattern)
+        // Extract merchant ID from API key (first 15 characters)
         val merchantId = paymentRequest.apiKey.substring(0, minOf(15, paymentRequest.apiKey.length))
 
         return CustomSheetPaymentInfo.Builder()
