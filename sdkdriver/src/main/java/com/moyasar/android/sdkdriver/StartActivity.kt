@@ -15,6 +15,8 @@ class StartActivity : AppCompatActivity() {
             findViewById<Button>(R.id.donateWithCreditCardCustomUIBtn)
         val donateWithSTCPayBtn = findViewById<Button>(R.id.donateWithSTCPayBtn)
         val donateWithSTCPayCustomUIBtn = findViewById<Button>(R.id.donateWithSTCPayCustomUIBtn)
+        val donateWithSamsungPayBtn = findViewById<Button>(R.id.donateWithSamsungPayBtn)
+        
         donateWithCreditCardBtn.setOnClickListener {
             startActivity(
                 Intent(this, CheckoutActivity::class.java).apply {
@@ -39,11 +41,17 @@ class StartActivity : AppCompatActivity() {
                     putExtra(PAYMENT_TYPE, PaymentOptions.STC_CUSTOM_UI.name)
                 })
         }
+        donateWithSamsungPayBtn?.setOnClickListener {
+            startActivity(
+                Intent(this, CheckoutActivity::class.java).apply {
+                    putExtra(PAYMENT_TYPE, PaymentOptions.SAMSUNG_PAY.name)
+                })
+        }
     }
 
     companion object {
         const val PAYMENT_TYPE = "payment_type"
     }
 
-    enum class PaymentOptions { CREDIT, STC, CREDIT_CUSTOM_UI, STC_CUSTOM_UI }
+    enum class PaymentOptions { CREDIT, STC, CREDIT_CUSTOM_UI, STC_CUSTOM_UI, SAMSUNG_PAY }
 }

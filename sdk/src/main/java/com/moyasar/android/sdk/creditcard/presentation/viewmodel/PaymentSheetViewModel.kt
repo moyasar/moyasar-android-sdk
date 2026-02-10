@@ -89,7 +89,7 @@ class PaymentSheetViewModel(
         inputFieldsValidatorLiveData.value = InputFieldsUIModel()
     }
 
-    private fun notifyPaymentResult(paymentResult: PaymentResult) = callback(paymentResult)
+    internal fun notifyPaymentResult(paymentResult: PaymentResult) = callback(paymentResult)
 
     /*************************
      * Perform Create payment Request After submit button clicked and createSaveOnlyToken = false

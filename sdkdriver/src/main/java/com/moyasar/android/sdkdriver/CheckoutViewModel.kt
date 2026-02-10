@@ -12,6 +12,8 @@ import com.moyasar.android.sdk.creditcard.data.models.CreditCardNetwork
 import com.moyasar.android.sdk.creditcard.data.models.request.PaymentRequest
 import com.moyasar.android.sdk.stcpay.presentation.view.fragments.EnterMobileNumberFragment
 import com.moyasar.android.sdk.creditcard.presentation.view.fragments.PaymentFragment
+import com.moyasar.android.sdk.samsungpay.data.SamsungPayConfig
+import com.moyasar.android.sdk.samsungpay.presentation.SamsungPayFragment
 import com.moyasar.android.sdkdriver.customui.creditcard.CustomUIPaymentFragment
 import com.moyasar.android.sdkdriver.customui.stcpay.EnterMobileNumberCustomUIFragment
 import kotlinx.parcelize.Parcelize
@@ -21,20 +23,28 @@ class CheckoutViewModel : ViewModel() {
     val status = MutableLiveData<Status>().default(Status.Idle)
     private val payment = MutableLiveData<PaymentResponse?>()
     private val paymentRequest = PaymentRequest(
-        apiKey = "pk_test_vcFUHJDBwiyRu4Bd3hFuPpTnRPY4gp2ssYdNJMY3",
-        amount = 100000,
+        apiKey = "pk_test_U38gMHTgVv4wYCd35Zk1JSEd1ZyMYyA9oQ7T4rKa",
+        amount = 20001,
         currency = "SAR",
         givenID = UUID.randomUUID().toString(), // generate from your side uuid (v4 is recommended) to apply Idempotency or keep it null
-        description = "Sample Android SDK Payment",
+        description = "Test payment",
         metadata = mapOf(
             "order_id" to "order_123"
         ),
         manual = false,
         baseUrl = "https://api.moyasar.com",
         buttonType = MoyasarButtonType.PAY,
-        allowedNetworks = listOf(CreditCardNetwork.Mastercard, CreditCardNetwork.Visa, CreditCardNetwork.Amex),
+        allowedNetworks = listOf(CreditCardNetwork.Mastercard, CreditCardNetwork.Visa, CreditCardNetwork.Amex, CreditCardNetwork.Mada),
         createSaveOnlyToken = false,
-        applyCoupon = true
+        applyCoupon = true,
+        merchantCountryCode = "SA",
+        // optional object for Samsung-pay
+        samsungPay = SamsungPayConfig(
+            serviceId = "ea810dafb758408fa530b1",
+            merchantName = "Test Samsung Pay from app",
+            orderNumber = "c553ed70-fb79-487c-b3d2-15aca6aff90c",
+            manual = false
+        )
     )
 
     // For demo purposes only
@@ -44,6 +54,7 @@ class CheckoutViewModel : ViewModel() {
     private lateinit var customUIPaymentFragment: CustomUIPaymentFragment
     private lateinit var enterMobileNumberFragment: EnterMobileNumberFragment
     private lateinit var enterMobileNumberCustomUIFragment: EnterMobileNumberCustomUIFragment
+    private lateinit var samsungPayFragment: SamsungPayFragment
 
     private fun onCreditCardPaymentResult(result: PaymentResult) {
         activity.runOnUiThread {
@@ -71,6 +82,14 @@ class CheckoutViewModel : ViewModel() {
  private fun onCustomUISTCPayPaymentResult(result: PaymentResult) {
         activity.runOnUiThread {
             activity.supportFragmentManager.beginTransaction().remove(enterMobileNumberCustomUIFragment).commit()
+        }
+
+        handlePaymentResult(result)
+    }
+
+    private fun onSamsungPayPaymentResult(result: PaymentResult) {
+        activity.runOnUiThread {
+            activity.supportFragmentManager.beginTransaction().remove(samsungPayFragment).commit()
         }
 
         handlePaymentResult(result)
@@ -148,6 +167,19 @@ class CheckoutViewModel : ViewModel() {
 
         activity.supportFragmentManager.beginTransaction().apply {
             replace(id, enterMobileNumberCustomUIFragment)
+            commit()
+        }
+    }
+
+    fun beginDonationWithSamsungPay(activity: CheckoutActivity, id: Int) {
+        this.activity = activity
+        this.samsungPayFragment = SamsungPayFragment.newInstance(
+            activity.application,
+            paymentRequest
+        ) { this.onSamsungPayPaymentResult(it) }
+
+        activity.supportFragmentManager.beginTransaction().apply {
+            replace(id, samsungPayFragment)
             commit()
         }
     }

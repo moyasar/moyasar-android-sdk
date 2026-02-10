@@ -1,4 +1,4 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <string-array name="months">
         <item>1</item>
         <item>2</item>
@@ -47,5 +47,11 @@
     <string name="lbl_moyasar_button_topup">Top Up</string>
     <string name="lbl_moyasar_button_order">Order</string>
     <string name="lbl_moyasar_button_support">Support</string>
+    <!-- Samsung Pay error messages -->
+    <string name="msg_moyasar_samsung_pay_go_to_activate_page" tools:ignore="MissingTranslation">Please activate Samsung Pay to continue</string>
+    <string name="msg_moyasar_samsung_pay_go_to_update_page" tools:ignore="MissingTranslation">Please update Samsung Pay to continue</string>
+    <string name="msg_moyasar_samsung_pay_error" tools:ignore="MissingTranslation">An error occurred while processing Samsung Pay payment</string>
+    <string name="msg_moyasar_samsung_pay_feature_is_not_supported" tools:ignore="MissingTranslation">Samsung Pay is not supported on this device</string>
+    <string name="msg_moyasar_samsung_pay_feature_is_not_allowed_temp" tools:ignore="MissingTranslation">Samsung Pay not allowed temporarily</string>
 
 </resources>

@@ -76,6 +76,7 @@ dependencies {
     testImplementation("org.mockito.kotlin:mockito-kotlin:4.0.0")
     testImplementation("org.mockito:mockito-inline:5.2.0")
     testImplementation("androidx.arch.core:core-testing:2.2.0")
-
-
+    
+    // Samsung Pay SDK
+    implementation(files("libs/samsungpay_2.22.00.jar"))
 }
