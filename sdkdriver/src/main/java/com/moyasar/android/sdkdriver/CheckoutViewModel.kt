@@ -10,6 +10,7 @@ import com.moyasar.android.sdk.core.extensions.default
 import com.moyasar.android.sdk.core.data.response.PaymentResponse
 import com.moyasar.android.sdk.creditcard.data.models.CreditCardNetwork
 import com.moyasar.android.sdk.creditcard.data.models.request.PaymentRequest
+import com.moyasar.android.sdk.creditcard.data.models.request.PaymentSplit
 import com.moyasar.android.sdk.stcpay.presentation.view.fragments.EnterMobileNumberFragment
 import com.moyasar.android.sdk.creditcard.presentation.view.fragments.PaymentFragment
 import com.moyasar.android.sdk.samsungpay.data.SamsungPayConfig
@@ -23,8 +24,8 @@ class CheckoutViewModel : ViewModel() {
     val status = MutableLiveData<Status>().default(Status.Idle)
     private val payment = MutableLiveData<PaymentResponse?>()
     private val paymentRequest = PaymentRequest(
-        apiKey = "pk_test_U38gMHTgVv4wYCd35Zk1JSEd1ZyMYyA9oQ7T4rKa",
-        amount = 20001,
+        apiKey = "pk_test_7END6RXYFNTmwDaxJ2Uqo3yaB6f5148SG11mnjsg",
+        amount = 40000,
         currency = "SAR",
         givenID = UUID.randomUUID().toString(), // generate from your side uuid (v4 is recommended) to apply Idempotency or keep it null
         description = "Test payment",
@@ -32,7 +33,7 @@ class CheckoutViewModel : ViewModel() {
             "order_id" to "order_123"
         ),
         manual = false,
-        baseUrl = "https://api.moyasar.com",
+        baseUrl = "https://apimig.moyasar.com",
         buttonType = MoyasarButtonType.PAY,
         allowedNetworks = listOf(CreditCardNetwork.Mastercard, CreditCardNetwork.Visa, CreditCardNetwork.Amex, CreditCardNetwork.Mada),
         createSaveOnlyToken = false,
@@ -44,6 +45,20 @@ class CheckoutViewModel : ViewModel() {
             merchantName = "Test Samsung Pay from app",
             orderNumber = "c553ed70-fb79-487c-b3d2-15aca6aff90c",
             manual = false
+        ),
+        // optional for apply splits
+        splits = listOf(
+            PaymentSplit(
+                recipientId = "7d2d0797-a2be-40fe-bb1b-1fdec9824c95",
+                amount = 10000,
+                description = "Platform processing fee",
+                feeSource = true,
+                refundable = false
+            ),
+            PaymentSplit(
+                recipientId = "327680bb-d790-4643-8e10-31455a1ab3a6",
+                amount = 30000
+            )
         )
     )
 

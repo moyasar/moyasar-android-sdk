@@ -1,6 +1,7 @@
 package com.moyasar.android.sdk.core.data.response
 
 import com.google.gson.annotations.SerializedName
+import com.moyasar.android.sdk.creditcard.data.models.request.PaymentSplit
 import com.moyasar.android.sdk.stcpay.data.constants.STC_PAY_TYPE
 import kotlinx.parcelize.RawValue
 
@@ -57,7 +58,10 @@ data class PaymentResponse(
     val metadata: Map<String,@RawValue Any>?,
 
     @SerializedName("source")
-    val source: MutableMap<String, String>
+    val source: MutableMap<String, String>,
+
+    @SerializedName("splits")
+    val splits: List<PaymentSplit>? = null
 ) {
     fun getCardTransactionUrl(): String {
         if (!source.containsKey("type") || !source["type"].equals("creditcard")) {
