@@ -2,6 +2,7 @@ package com.moyasar.android.sdk.core.extensions
 
 import android.util.Base64
 import com.google.gson.Gson
+import com.moyasar.android.sdk.BuildConfig
 import java.io.BufferedReader
 import java.io.InputStreamReader
 import java.net.HttpURLConnection
@@ -44,5 +45,6 @@ fun HttpURLConnection.postJson(body: Any, gson: Gson = Gson()): Response {
 
 fun HttpURLConnection.setBasicAuth(username: String, password: String) {
     val encodedKey = Base64.encodeToString("$username:$password".toByteArray(), Base64.NO_WRAP)
-    this.setRequestProperty("Authorization", "Basic $encodedKey");
+    this.setRequestProperty("Authorization", "Basic $encodedKey")
+    setRequestProperty("User-Agent", "MoyasarSDK/${BuildConfig.SDK_VERSION} (Android)")
 }
