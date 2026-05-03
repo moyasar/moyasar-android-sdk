@@ -33,10 +33,12 @@ class PaymentService(
         client.setBasicAuth(apiKey, "")
         // Log the request
         MoyasarLogger.log(TAG, "Request URL: $createUrl")
+        MoyasarLogger.log(TAG, "Request Headers: ${client.requestProperties}")
         MoyasarLogger.log(TAG, "Request Body: ${gson.toJson(request)}")
         val response = client.postJson(request)
         // Log the response
         MoyasarLogger.log(TAG, "Response Code: ${response.statusCode}")
+        MoyasarLogger.log(TAG, "Response Headers: ${response.headers}")
         MoyasarLogger.log(TAG, "Response Body: ${response.text}")
 
         if (response.statusCode !in 200..299) {
@@ -53,7 +55,16 @@ class PaymentService(
         val client = URL(createUrl).openConnection() as HttpURLConnection
 
         client.setBasicAuth(apiKey, "")
+        // Log the request
+        MoyasarLogger.log(TAG, "Request URL: $createUrl")
+        MoyasarLogger.log(TAG, "Request Headers: ${client.requestProperties}")
+        MoyasarLogger.log(TAG, "Request Body: ${gson.toJson(request)}")
+        
         val response = client.postJson(request)
+        // Log the response
+        MoyasarLogger.log(TAG, "Response Code: ${response.statusCode}")
+        MoyasarLogger.log(TAG, "Response Headers: ${response.headers}")
+        MoyasarLogger.log(TAG, "Response Body: ${response.text}")
 
         if (response.statusCode !in 200..299) {
             throw ApiException(

@@ -3,7 +3,6 @@ package com.moyasar.android.sdk.creditcard.data.models.request
 import com.google.gson.annotations.SerializedName
 import com.moyasar.android.sdk.core.customviews.button.MoyasarButtonType
 import com.moyasar.android.sdk.core.data.PaymentSource
-import com.moyasar.android.sdk.core.exceptions.InvalidConfigException
 import com.moyasar.android.sdk.creditcard.data.models.CreditCardNetwork
 import com.moyasar.android.sdk.samsungpay.data.SamsungPayConfig
 
@@ -53,7 +52,10 @@ data class PaymentRequest(
 
     @SerializedName("source")
     val source: PaymentSource? = null,
-    
+
+    @SerializedName("splits")
+    val splits: List<PaymentSplit>? = null,
+
     @SerializedName("apply_coupon")
     val applyCoupon: Boolean? = true,
 

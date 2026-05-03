@@ -1,3 +1,4 @@
+val sdkVersion = "1.0.11"
 plugins {
     id("com.android.library")
     id("org.jetbrains.kotlin.android")
@@ -11,7 +12,7 @@ publishing {
         create<MavenPublication>("MavenPublication") {
             groupId = "com.moyasar"
             artifactId = "android-sdk"
-            version = "1.0.11"
+            version = sdkVersion
             afterEvaluate {
                 from(components["release"])
             }
@@ -32,6 +33,7 @@ android {
         vectorDrawables {
             useSupportLibrary = true
         }
+        buildConfigField("String", "SDK_VERSION", "\"$sdkVersion\"")
     }
 
     buildTypes {
@@ -59,6 +61,7 @@ android {
 
     buildFeatures {
         viewBinding = true
+        buildConfig = true
     }
 }
 
