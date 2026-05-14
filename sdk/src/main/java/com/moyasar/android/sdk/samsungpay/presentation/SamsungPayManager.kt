@@ -224,10 +224,6 @@ object SamsungPayManager {
                 }
 
                 override fun onFailure(errorCode: Int, errorData: Bundle?) {
-                    if (errorCode == PaymentManager.ERROR_USER_CANCELED) {
-                        MoyasarLogger.log("MoyasarSDK", "Samsung Pay canceled by user")
-                        return
-                    }
                     handleOnFail(errorData ?: Bundle(), samsungPay, context, errorCode)
                     authorizePayment(null, null)
                 }
