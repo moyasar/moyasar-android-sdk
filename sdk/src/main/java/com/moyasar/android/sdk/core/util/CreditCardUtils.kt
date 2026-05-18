@@ -11,6 +11,7 @@ val amexRangeRegex = Regex("^3[47]")
 val visaRangeRegex = Regex("^4")
 val masterCardRangeRegex =
   Regex("^(?:5[1-5][0-9]{2}|222[1-9]|22[3-9][0-9]|2[3-6][0-9]{2}|27[01][0-9]|2720)")
+val unionPayRangeRegex = Regex("^(62|60|81)[0-9]{14,17}$")
 
 fun isValidLuhnNumber(number: String): Boolean {
   val cleanNumber = number.replace(" ", "")

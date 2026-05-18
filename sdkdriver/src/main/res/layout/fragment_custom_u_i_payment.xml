@@ -96,6 +96,15 @@
                     android:contentDescription="@null"
                     android:src="@drawable/ic_moyasar_amex"
                     android:visibility="gone" />
+
+                <ImageView
+                    android:id="@+id/img_union_pay"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="@dimen/moyasar_spacing_small"
+                    android:contentDescription="@null"
+                    android:src="@drawable/ic_moyasar_unionpay"
+                    android:visibility="gone" />
             </LinearLayout>
 
             <!-- Expiry Date -->

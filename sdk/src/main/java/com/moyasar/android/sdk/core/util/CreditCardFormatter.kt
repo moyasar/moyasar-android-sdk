@@ -4,12 +4,13 @@ internal object CreditCardFormatter {
 
   fun formatCardNumber(number: String): String {
     val cleaned = cleanNumber(number)
-    // Check if the card is AMEX based on the starting digits
-    val isAMEX = cleaned.startsWith("34") || cleaned.startsWith("37")
-    return if (isAMEX) {
-      formatAMEXCardNumber(cleaned)
-    } else {
-      formatOtherCardNumber(cleaned)
+    return when {
+      // AMEX: 4-6-5 (15 digits)
+      cleaned.startsWith("34") || cleaned.startsWith("37") -> formatAMEXCardNumber(cleaned)
+      // UnionPay: 4-4-4-4-{0-3} (16–19 digits)
+      cleaned.startsWith("62") || cleaned.startsWith("60") || cleaned.startsWith("81") -> formatUnionPayCardNumber(cleaned)
+      // All others (Visa, Mastercard, Mada): 4-4-4-4 (16 digits)
+      else -> formatOtherCardNumber(cleaned)
     }
   }
 
@@ -28,6 +29,13 @@ internal object CreditCardFormatter {
       startIndex = endIndex
     }
     return formattedNumber.toString()
+  }
+
+  /// Format for UnionPay: xxxx xxxx xxxx xxxx{xxx} --> 4-4-4-4 up to 4-4-4-4-3 (16–19 digits)
+  private fun formatUnionPayCardNumber(number: String): String {
+    val maxLength = 19
+    val truncated = number.take(maxLength)
+    return truncated.chunked(4).joinToString(" ")
   }
 
   /// Format for other cards: xxxx xxxx xxxx xxxx --> 4-4-4-4

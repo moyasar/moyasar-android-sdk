@@ -10,7 +10,6 @@ import com.moyasar.android.sdk.core.extensions.default
 import com.moyasar.android.sdk.core.data.response.PaymentResponse
 import com.moyasar.android.sdk.creditcard.data.models.CreditCardNetwork
 import com.moyasar.android.sdk.creditcard.data.models.request.PaymentRequest
-import com.moyasar.android.sdk.creditcard.data.models.request.PaymentSplit
 import com.moyasar.android.sdk.stcpay.presentation.view.fragments.EnterMobileNumberFragment
 import com.moyasar.android.sdk.creditcard.presentation.view.fragments.PaymentFragment
 import com.moyasar.android.sdk.samsungpay.data.SamsungPayConfig
@@ -35,7 +34,8 @@ class CheckoutViewModel : ViewModel() {
         manual = false,
         baseUrl = "https://apimig.moyasar.com",
         buttonType = MoyasarButtonType.PAY,
-        allowedNetworks = listOf(CreditCardNetwork.Mastercard, CreditCardNetwork.Visa, CreditCardNetwork.Amex, CreditCardNetwork.Mada),
+        allowedNetworks = listOf(CreditCardNetwork.Mastercard, CreditCardNetwork.Visa, CreditCardNetwork.Amex, CreditCardNetwork.Mada,
+            CreditCardNetwork.Unionpay),
         createSaveOnlyToken = false,
         applyCoupon = true,
         merchantCountryCode = "SA",
