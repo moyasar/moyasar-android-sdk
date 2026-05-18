@@ -76,6 +76,7 @@ class CustomUIPaymentFragment : Fragment() {
                     CreditCardNetwork.Mastercard -> binding.imgMaster.isVisible = true
                     CreditCardNetwork.Mada -> binding.imgMada.isVisible = true
                     CreditCardNetwork.Amex -> binding.imgAmex.isVisible = true
+                    CreditCardNetwork.Unionpay -> binding.imgUnionPay.isVisible = true
                     else -> Unit
                 }
             }
@@ -86,6 +87,7 @@ class CustomUIPaymentFragment : Fragment() {
                     binding.imgMaster.isVisible = false
                     binding.imgMada.isVisible = false
                     binding.imgAmex.isVisible = false
+                    binding.imgUnionPay.isVisible = false
                 }
 
                 CreditCardNetwork.Mastercard -> {
@@ -93,6 +95,7 @@ class CustomUIPaymentFragment : Fragment() {
                     binding.imgVisa.isVisible = false
                     binding.imgMada.isVisible = false
                     binding.imgAmex.isVisible = false
+                    binding.imgUnionPay.isVisible = false
                 }
 
                 CreditCardNetwork.Mada -> {
@@ -100,6 +103,7 @@ class CustomUIPaymentFragment : Fragment() {
                     binding.imgVisa.isVisible = false
                     binding.imgMaster.isVisible = false
                     binding.imgAmex.isVisible = false
+                    binding.imgUnionPay.isVisible = false
                 }
 
                 CreditCardNetwork.Amex -> {
@@ -107,6 +111,15 @@ class CustomUIPaymentFragment : Fragment() {
                     binding.imgVisa.isVisible = false
                     binding.imgMaster.isVisible = false
                     binding.imgMada.isVisible = false
+                    binding.imgUnionPay.isVisible = false
+                }
+
+                CreditCardNetwork.Unionpay -> {
+                    binding.imgUnionPay.isVisible = true
+                    binding.imgVisa.isVisible = false
+                    binding.imgMaster.isVisible = false
+                    binding.imgMada.isVisible = false
+                    binding.imgAmex.isVisible = false
                 }
 
                 else -> {
@@ -114,6 +127,7 @@ class CustomUIPaymentFragment : Fragment() {
                     binding.imgMaster.isVisible = false
                     binding.imgMada.isVisible = false
                     binding.imgAmex.isVisible = false
+                    binding.imgUnionPay.isVisible = false
                 }
             }
         }

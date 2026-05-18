@@ -28,8 +28,29 @@ class CreditCardNetworkTest {
   }
 
   @Test
-  fun `should return Unknown for number that doesn't match any pattern`() {
+  fun `should return UnionPay for number that matches UnionPay pattern`() {
     val number = "6012345678901234"
+    val result = getNetwork(number)
+    assertEquals(CreditCardNetwork.Unionpay, result)
+  }
+
+  @Test
+  fun `should return UnionPay for 62-prefix UnionPay number`() {
+    val number = "6212345678901234"
+    val result = getNetwork(number)
+    assertEquals(CreditCardNetwork.Unionpay, result)
+  }
+
+  @Test
+  fun `should return UnionPay for 81-prefix UnionPay number`() {
+    val number = "8112345678901234"
+    val result = getNetwork(number)
+    assertEquals(CreditCardNetwork.Unionpay, result)
+  }
+
+  @Test
+  fun `should return Unknown for number that doesn't match any pattern`() {
+    val number = "9012345678901234"
     val result = getNetwork(number)
     assertEquals(CreditCardNetwork.Unknown, result)
   }

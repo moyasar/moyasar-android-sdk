@@ -21,6 +21,7 @@ internal fun showAllowedCreditCardsInEditText(
                 CreditCardNetwork.Mastercard -> binding.viewCard.imgMaster.show()
                 CreditCardNetwork.Mada -> binding.viewCard.imgMada.show()
                 CreditCardNetwork.Amex -> binding.viewCard.imgAmex.show()
+                CreditCardNetwork.Unionpay -> binding.viewCard.imgUnionPay.show()
                 else -> Unit
             }
         }
@@ -31,31 +32,47 @@ internal fun showAllowedCreditCardsInEditText(
                 binding.viewCard.imgMaster.gone()
                 binding.viewCard.imgMada.gone()
                 binding.viewCard.imgAmex.gone()
+                binding.viewCard.imgUnionPay.gone()
             }
 
             CreditCardNetwork.Mastercard -> {
                 binding.viewCard.imgMaster.show()
                 binding.viewCard.imgVisa.gone()
-                binding. viewCard . imgMada.gone ()
-                binding . viewCard . imgAmex.gone ()
-        }
+                binding.viewCard.imgMada.gone()
+                binding.viewCard.imgAmex.gone()
+                binding.viewCard.imgUnionPay.gone()
+            }
+
             CreditCardNetwork.Mada -> {
                 binding.viewCard.imgMada.show()
                 binding.viewCard.imgVisa.gone()
                 binding.viewCard.imgMaster.gone()
                 binding.viewCard.imgAmex.gone()
+                binding.viewCard.imgUnionPay.gone()
             }
+
             CreditCardNetwork.Amex -> {
                 binding.viewCard.imgAmex.show()
                 binding.viewCard.imgVisa.gone()
                 binding.viewCard.imgMaster.gone()
                 binding.viewCard.imgMada.gone()
+                binding.viewCard.imgUnionPay.gone()
             }
+
+            CreditCardNetwork.Unionpay -> {
+                binding.viewCard.imgUnionPay.show()
+                binding.viewCard.imgVisa.gone()
+                binding.viewCard.imgMaster.gone()
+                binding.viewCard.imgMada.gone()
+                binding.viewCard.imgAmex.gone()
+            }
+
             else -> {
                 binding.viewCard.imgVisa.gone()
                 binding.viewCard.imgMaster.gone()
                 binding.viewCard.imgMada.gone()
                 binding.viewCard.imgAmex.gone()
+                binding.viewCard.imgUnionPay.gone()
             }
         }
     }

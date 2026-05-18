@@ -354,6 +354,9 @@ object SamsungPayManager {
                 CreditCardNetwork.Visa -> brandList.add(SpaySdk.Brand.VISA)
                 CreditCardNetwork.Mastercard -> brandList.add(SpaySdk.Brand.MASTERCARD)
                 CreditCardNetwork.Amex -> brandList.add(SpaySdk.Brand.AMERICANEXPRESS)
+                CreditCardNetwork.Unionpay -> {
+                    // UnionPay is not supported by Samsung Pay, skip
+                }
                 CreditCardNetwork.Unknown -> {
                     // Unknown card network, skip
                 }

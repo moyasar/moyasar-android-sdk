@@ -51,9 +51,10 @@ internal fun getNumberValidationRules(): MutableList<ValidationRule> {
         )
     )
     rules.add(ValidationRule({
-        !isValidLuhnNumber(
-            it ?: ""
-        ) || it?.cleanSpaces().orEmpty().length < 15
+        val stripped = it?.cleanSpaces().orEmpty()
+        val network = getNetwork(stripped)
+        val minLength = if (network == CreditCardNetwork.Unionpay) 16 else 15
+        !isValidLuhnNumber(stripped) || stripped.length < minLength
     }, application.getString(R.string.invalid_card_number)))
     rules.add(ValidationRule({
         getNetwork(
