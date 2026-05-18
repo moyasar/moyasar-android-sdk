@@ -1,4 +1,4 @@
-val sdkVersion = "1.0.13"
+val sdkVersion = "1.0.14"
 plugins {
     id("com.android.library")
     id("org.jetbrains.kotlin.android")
