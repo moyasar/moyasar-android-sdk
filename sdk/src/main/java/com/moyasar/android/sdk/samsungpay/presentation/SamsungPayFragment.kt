@@ -50,13 +50,18 @@ class SamsungPayFragment : Fragment() {
         SamsungPayManager.initiate(
             requireActivity(),
             paymentRequest,
+            onCanceled = {
+                MoyasarAppContainer.viewModel.notifyPaymentResult(PaymentResult.Canceled)
+            },
             authorizePayment = { token, orderNumber ->
                 if (token != null && orderNumber != null) {
                     progressBar.show()
                     SamsungPayManager.authorizePayment(token, orderNumber)
+                } else {
+                    MoyasarAppContainer.viewModel.notifyPaymentResult(
+                        PaymentResult.Failed(Throwable("Something went wrong."))
+                    )
                 }
-                else MoyasarAppContainer.viewModel.notifyPaymentResult(PaymentResult.Failed(
-                    Throwable("Something went wrong.")))
             }
         )
 
