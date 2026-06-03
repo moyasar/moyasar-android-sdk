@@ -56,6 +56,7 @@ object SamsungPayManager {
     fun initiate(
         context: Context,
         paymentRequest: PaymentRequest,
+        onCanceled: () -> Unit = {},
         authorizePayment: (String?, String?) -> Unit
     ) {
         val samsungPayConfig = paymentRequest.samsungPay
@@ -76,6 +77,7 @@ object SamsungPayManager {
                             paymentRequest,
                             context,
                             samsungPay,
+                            onCanceled,
                             authorizePayment
                         )
                     }
@@ -173,6 +175,7 @@ object SamsungPayManager {
         paymentRequest: PaymentRequest,
         context: Context,
         samsungPay: SamsungPay,
+        onCanceled: () -> Unit,
         authorizePayment: (String?, String?) -> Unit
     ) {
         val customSheetPaymentInfo = makeCustomSheetPaymentInfo(paymentRequest)
@@ -224,6 +227,11 @@ object SamsungPayManager {
                 }
 
                 override fun onFailure(errorCode: Int, errorData: Bundle?) {
+                    if (errorCode == ERROR_USER_CANCELED) {
+                        MoyasarLogger.log("MoyasarSDK", "Samsung Pay canceled by user")
+                        onCanceled()
+                        return
+                    }
                     handleOnFail(errorData ?: Bundle(), samsungPay, context, errorCode)
                     authorizePayment(null, null)
                 }
