@@ -16,7 +16,7 @@
             android:layout_height="wrap_content"
             android:textSize="@dimen/moyasar_font_size_l"
             android:textColor="@color/m_dark"
-            android:fontFamily="@font/aeonik_regular"
+            android:fontFamily="@font/readex_pro_regular"
             tools:text="Card" />
 
         <TextView
@@ -25,7 +25,7 @@
             android:layout_height="wrap_content"
             android:textColor="@color/red"
             android:textSize="@dimen/moyasar_font_size_m"
-            android:fontFamily="@font/aeonik_regular"
+            android:fontFamily="@font/readex_pro_regular"
             android:visibility="gone"
             tools:text="REQUIRED" />
     </LinearLayout>
@@ -54,7 +54,7 @@
                 android:background="@null"
                 android:digits="0123456789 "
                 android:layoutDirection="ltr"
-                android:fontFamily="@font/aeonik_regular"
+                android:fontFamily="@font/readex_pro_regular"
                 android:maxLines="1"
                 android:inputType="number"
                 android:padding="@dimen/moyasar_views_margin_s"
@@ -129,7 +129,7 @@
                 android:layout_weight="1"
                 android:background="@null"
                 android:digits="0123456789 "
-                android:fontFamily="@font/aeonik_regular"
+                android:fontFamily="@font/readex_pro_regular"
                 android:layoutDirection="ltr"
                 android:maxLines="1"
                 android:inputType="number"
@@ -154,7 +154,7 @@
                 android:digits="0123456789 "
                 android:layoutDirection="ltr"
                 android:inputType="number"
-                android:fontFamily="@font/aeonik_regular"
+                android:fontFamily="@font/readex_pro_regular"
                 android:maxLines="1"
                 android:maxLength="4"
                 android:padding="@dimen/moyasar_views_margin_s"
