@@ -54,7 +54,9 @@ class PaymentAuthFragment : Fragment() {
         request: WebResourceRequest?,
         error: WebResourceError?,
       ) {
-        onReceivedError(error?.description?.toString())
+        if (request?.isForMainFrame == true) {
+          onReceivedError(error?.description?.toString())
+        }
       }
 
       @Deprecated("Deprecated in Java")
@@ -64,7 +66,9 @@ class PaymentAuthFragment : Fragment() {
         description: String?,
         failingUrl: String?,
       ) {
-        onReceivedError(description)
+        if (failingUrl == authUrl) {
+          onReceivedError(description)
+        }
       }
     }
   }

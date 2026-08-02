@@ -41,6 +41,7 @@ import com.moyasar.android.sdk.stcpay.presentation.model.STCPayViewState
 import com.moyasar.android.sdk.stcpay.presentation.model.formatter.SaudiPhoneNumberFormatter
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
+import java.util.concurrent.atomic.AtomicBoolean
 
 class PaymentSheetViewModel(
     application: Application,
@@ -56,6 +57,7 @@ class PaymentSheetViewModel(
     private var ccOnChangeLocked = false
     private var mobileNumberOnChangeLocked = false
     private var ccExpiryOnChangeLocked = false
+    private val paymentResultDelivered = AtomicBoolean(false)
 
     private val _creditCardStatus =
         MutableLiveData<PaymentStatusViewState>().default(PaymentStatusViewState.Reset)
@@ -89,7 +91,11 @@ class PaymentSheetViewModel(
         inputFieldsValidatorLiveData.value = InputFieldsUIModel()
     }
 
-    internal fun notifyPaymentResult(paymentResult: PaymentResult) = callback(paymentResult)
+    internal fun notifyPaymentResult(paymentResult: PaymentResult) {
+        if (paymentResultDelivered.compareAndSet(false, true)) {
+            callback(paymentResult)
+        }
+    }
 
     /*************************
      * Perform Create payment Request After submit button clicked and createSaveOnlyToken = false
