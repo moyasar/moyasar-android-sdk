@@ -33,6 +33,7 @@ class STCPayPaymentService(
         val response = client.postJson(request)
         // Log the response
         MoyasarLogger.log(TAG, "Response Code: ${response.statusCode}")
+        MoyasarLogger.log(TAG, "Response Body: ${response.text}")
 
         if (response.statusCode !in 200..299) {
             throw ApiException(
