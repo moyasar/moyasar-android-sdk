@@ -6,6 +6,7 @@ import com.moyasar.android.sdk.core.extensions.postJson
 import com.moyasar.android.sdk.core.data.response.ErrorResponse
 import com.moyasar.android.sdk.core.data.response.PaymentResponse
 import com.moyasar.android.sdk.core.util.MoyasarLogger
+import com.moyasar.android.sdk.core.util.redactedForLogging
 import com.moyasar.android.sdk.stcpay.data.models.request.STCPayOTPRequest
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -28,11 +29,10 @@ class STCPayPaymentService(
 
         // Log the request
         MoyasarLogger.log(TAG, "Request URL: $transactionURL")
-        MoyasarLogger.log(TAG, "Request Body: ${gson.toJson(request)}")
+        MoyasarLogger.log(TAG, "Request Body: ${gson.toJson(request.redactedForLogging())}")
         val response = client.postJson(request)
         // Log the response
         MoyasarLogger.log(TAG, "Response Code: ${response.statusCode}")
-        MoyasarLogger.log(TAG, "Response Body: ${response.text}")
 
         if (response.statusCode !in 200..299) {
             throw ApiException(
