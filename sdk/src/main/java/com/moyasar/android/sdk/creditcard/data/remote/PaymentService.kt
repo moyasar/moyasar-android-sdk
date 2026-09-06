@@ -8,6 +8,7 @@ import com.moyasar.android.sdk.core.extensions.setBasicAuth
 import com.moyasar.android.sdk.core.data.response.ErrorResponse
 import com.moyasar.android.sdk.core.data.response.PaymentResponse
 import com.moyasar.android.sdk.core.util.MoyasarLogger
+import com.moyasar.android.sdk.core.util.redactedForLogging
 import com.moyasar.android.sdk.creditcard.data.models.request.PaymentRequest
 import com.moyasar.android.sdk.creditcard.data.models.response.TokenResponse
 import com.moyasar.android.sdk.creditcard.data.models.request.TokenRequest
@@ -34,7 +35,7 @@ class PaymentService(
         // Log the request
         MoyasarLogger.log(TAG, "Request URL: $createUrl")
         MoyasarLogger.log(TAG, "Request Headers: ${client.requestProperties}")
-        MoyasarLogger.log(TAG, "Request Body: ${gson.toJson(request)}")
+        MoyasarLogger.log(TAG, "Request Body: ${gson.toJson(request.redactedForLogging())}")
         val response = client.postJson(request)
         // Log the response
         MoyasarLogger.log(TAG, "Response Code: ${response.statusCode}")
@@ -58,8 +59,8 @@ class PaymentService(
         // Log the request
         MoyasarLogger.log(TAG, "Request URL: $createUrl")
         MoyasarLogger.log(TAG, "Request Headers: ${client.requestProperties}")
-        MoyasarLogger.log(TAG, "Request Body: ${gson.toJson(request)}")
-        
+        MoyasarLogger.log(TAG, "Request Body: ${gson.toJson(request.redactedForLogging())}")
+
         val response = client.postJson(request)
         // Log the response
         MoyasarLogger.log(TAG, "Response Code: ${response.statusCode}")
